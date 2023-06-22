@@ -128,8 +128,8 @@ App.post('/webhook', async (req, res) => {
 App.post('/chatgpt', async (req, res) => {
 
 
-    const {message} = req.body
-    console.log("message received by chatgpt", message)
+    // const {message} = req.body
+    console.log("message received by chatgpt", req.body)
 
     // initiating the chatmodel - openai
     const chat = new ChatOpenAI({ temperature: 0 });
