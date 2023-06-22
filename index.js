@@ -95,29 +95,31 @@ App.get('/webhook', (req, res) => {
     }
 });
 
-App.post('/webhook', (req, res) => {
+App.post('/webhook', async (req, res) => {
     let data = req.body;
+    let message = "test"
 
     // Iterate over each entry - there may be multiple if batched
     data.entry.forEach((entry) => {
 
         // Iterate over each messaging event
-        entry.changes.forEach(async (change) => {
+        entry.changes.forEach((change) => {
             console.log('Webhook received: ', change.field);
             console.log('Value: ', change.value);
             console.log('Text:', change.value.messages[0].text.body)
-            let message = JSON.stringify(change.value.messages[0].text.body)
-
-            try {
-                let response = await axios.post("https://geriang-manychat.onrender.com/chatgpt", message) // await for the Promise to resolve
-                console.log("Response:", response); // then log the response
-            } catch (err) {
-                console.error("Error sending message:", err);
-            }
+            message = JSON.stringify(change.value.messages[0].text.body)
 
         });
 
     });
+
+    try {
+        console.log("Whatsapp message", message)
+        let response = await axios.post("https://geriang-manychat.onrender.com/chatgpt", message) // await for the Promise to resolve
+        console.log("Response:", response); // then log the response
+    } catch (err) {
+        console.error("Error sending message:", err);
+    }
 
     res.sendStatus(200);
 });
