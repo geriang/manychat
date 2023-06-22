@@ -133,7 +133,7 @@ App.post('/chatgpt', async (req, res) => {
     console.log("message received by chatgpt", message)
 
     // initiating the chatmodel - openai
-    const chat = new ChatOpenAI({ temperature: 0 });
+    const chat = new ChatOpenAI({ temperature: 0, openAIApiKey:process.env.OPENAI_API_KEY });
 
     // defining the prompt templates
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
