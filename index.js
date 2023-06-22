@@ -91,8 +91,8 @@ App.get('/webhook', (req, res) => {
         res.status(200).send(req.query['hub.challenge']);
     } else {
         console.error('Failed validation. Make sure the validation tokens match.');
-        res.sendStatus(403);          
-    }  
+        res.sendStatus(403);
+    }
 });
 
 App.post('/webhook', (req, res) => {
@@ -102,15 +102,18 @@ App.post('/webhook', (req, res) => {
     data.entry.forEach((entry) => {
 
         // Iterate over each messaging event
-        entry.changes.forEach((change) => {
+        entry.changes.forEach(async (change) => {
             console.log('Webhook received: ', change.field);
             console.log('Value: ', change.value);
-            console.log('Text:',change.value.messages[0].text.body)
+            console.log('Text:', change.value.messages[0].text.body)
             let message = JSON.stringify(change.value.messages[0].text.body)
-            
-            const sendInput = axios.post("https://geriang-manychat.onrender.com/chatgpt", message)
 
-            console.log("send input", sendInput)
+            try {
+                let response = await axios.post("https://geriang-manychat.onrender.com/chatgpt", message) // await for the Promise to resolve
+                console.log("Response:", response); // then log the response
+            } catch (err) {
+                console.error("Error sending message:", err);
+            }
 
         });
 
@@ -161,10 +164,10 @@ App.post('/chatgpt', async (req, res) => {
 App.post('/webhook', (req, res) => {
     console.log('Received a POST request');
     console.log(req.body); // Logs the body of the request to the console
-  
+
     res.sendStatus(200); // Responds to the request with a 200 OK status code
-  });
-  
+});
+
 
 App.listen(process.env.PORT || 3000, () => {
     console.log('server started')
