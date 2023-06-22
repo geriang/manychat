@@ -85,44 +85,32 @@ App.use(express.urlencoded({
 
 
 App.get('/webhook', (req, res) => {
-    // Parse the query params from the request
-    const mode = req.query['hub.mode'];
-    const token = req.query['hub.verify_token'];
-    const challenge = req.query['hub.challenge'];
-    
-    // Check if a token and mode is in the query string of the request
-    if (mode && token) {
-      // Checks the mode and token sent is correct
-      if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-        // Responds with the challenge token from the request
-        console.log('WEBHOOK_VERIFIED');
-        res.status(200).send(challenge);
-      } else {
-        // Responds with '403 Forbidden' if verify tokens do not match
-        res.sendStatus(403);      
-      }
-    }
-  });
-  
-  App.post('/webhook', (req, res) => {
-    const body = req.body;
-  
-    // Checks this is an event from a page subscription
-    if (body.object === 'page') {
-      // Iterates over each entry - there may be multiple if batched
-      body.entry.forEach(function(entry) {
-        // Gets the body of the webhook event
-        let webhook_event = entry.messaging[0];
-        console.log(webhook_event);
-      });
-  
-      // Returns a '200 OK' response to all requests
-      res.status(200).send('EVENT_RECEIVED');
+    if (req.query['hub.mode'] === 'subscribe' &&
+        req.query['hub.verify_token'] === 'your_verify_token') {
+        console.log('Validating webhook');
+        res.status(200).send(req.query['hub.challenge']);
     } else {
-      // Returns a '404 Not Found' if event is not from a page subscription
-      res.sendStatus(404);
-    }
-  });
+        console.error('Failed validation. Make sure the validation tokens match.');
+        res.sendStatus(403);          
+    }  
+});
+
+App.post('/webhook', (req, res) => {
+    let data = req.body;
+
+    // Iterate over each entry - there may be multiple if batched
+    data.entry.forEach((entry) => {
+
+        // Iterate over each messaging event
+        entry.changes.forEach((change) => {
+            console.log('Webhook received: ', change.field);
+            console.log('Value: ', change.value);
+        });
+
+    });
+
+    res.sendStatus(200);
+});
 
 
 App.post('/chatgpt', async (req, res) => {
