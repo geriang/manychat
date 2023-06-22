@@ -97,7 +97,7 @@ App.get('/webhook', (req, res) => {
 
 App.post('/webhook', async (req, res) => {
     let data = req.body;
-    let message = "test"
+    let message = ""
 
     // Iterate over each entry - there may be multiple if batched
     data.entry.forEach((entry) => {
@@ -128,7 +128,7 @@ App.post('/webhook', async (req, res) => {
 App.post('/chatgpt', async (req, res) => {
 
 
-    const message = req.body
+    const {message} = req.body
     console.log("message received by chatgpt", message)
 
     // initiating the chatmodel - openai
