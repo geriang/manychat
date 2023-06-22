@@ -1,3 +1,4 @@
+global.Headers = require('node-fetch').Headers;
 const express = require("express");
 require('dotenv').config();
 const cors = require('cors');
