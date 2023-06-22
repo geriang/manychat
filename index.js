@@ -2,7 +2,7 @@ const express = require("express");
 require('dotenv').config();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const crypto = require('crypto');
+const axios = require('axios');
 
 const App = express();
 
@@ -105,7 +105,13 @@ App.post('/webhook', (req, res) => {
         entry.changes.forEach((change) => {
             console.log('Webhook received: ', change.field);
             console.log('Value: ', change.value);
-            console.log('Text:',change.value.messages[0].text)
+            console.log('Text:',change.value.messages[0].text.body)
+            let message = change.value.messages[0].text.body
+            
+            const sendInput = axios.post("https://geriang-manychat.onrender.com/chatgpt", message)
+
+            console.log("send input", sendInput)
+
         });
 
     });
@@ -146,7 +152,8 @@ App.post('/chatgpt', async (req, res) => {
         input: `${message}`,
     });
 
-    res.send(response)
+    // res.send(response)
+    console.log("ChatGPT Response", response)
 })
 
 // whatsapp webhook
