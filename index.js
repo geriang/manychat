@@ -97,7 +97,7 @@ App.get('/webhook', (req, res) => {
 });
 
 // Handle events
-app.post('/webhook', (req, res) => {
+App.post('/webhook', (req, res) => {
     var data = req.body;
     var signature = req.headers['x-hub-signature-256'];
 
