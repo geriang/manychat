@@ -115,7 +115,8 @@ App.post('/webhook', async (req, res) => {
 
     try {
         console.log("Whatsapp message", message)
-        let response = await axios.post("https://geriang-manychat.onrender.com/chatgpt", message) // await for the Promise to resolve
+        const data = {message}
+        let response = await axios.post("https://geriang-manychat.onrender.com/chatgpt", data) // await for the Promise to resolve
         console.log("Response:", response); // then log the response
     } catch (err) {
         console.error("Error sending message:", err);
@@ -128,8 +129,8 @@ App.post('/webhook', async (req, res) => {
 App.post('/chatgpt', async (req, res) => {
 
 
-    // const {message} = req.body
-    console.log("message received by chatgpt", req.body)
+    const message = req.body.message
+    console.log("message received by chatgpt", message)
 
     // initiating the chatmodel - openai
     const chat = new ChatOpenAI({ temperature: 0 });
