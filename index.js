@@ -106,7 +106,7 @@ App.post('/webhook', (req, res) => {
             console.log('Webhook received: ', change.field);
             console.log('Value: ', change.value);
             console.log('Text:',change.value.messages[0].text.body)
-            let message = change.value.messages[0].text.body
+            let message = JSON.stringify(change.value.messages[0].text.body)
             
             const sendInput = axios.post("https://geriang-manychat.onrender.com/chatgpt", message)
 
