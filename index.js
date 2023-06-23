@@ -64,7 +64,7 @@ App.post('/webhook', async (req, res) => {
     // Handle different types of messages
     if (data.entry) {
         // Handle text message
-        let message = JSON.stringify(data.entry[0].change[0].value.messages[0].text.body)
+        let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body)
         res.sendStatus(200);
 
         try {
