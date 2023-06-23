@@ -167,7 +167,7 @@ App.post('/chatgpt', async (req, res) => {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer EAADRINB2rtYBAIm5quZBBZCM2EdkDnEAfHhOQSy65un2D4rijuSE7KmaHSB4RRRqUSfW76ARDf3jMgAew5rZAr8ll0l9OBUown5yaRqTIXvFIKHhg2cDfcGYivMbmjxVXj7q0CnTK2AAU5wfLG6wwawZCOzvnQMiI4I4Tup3ZArvhNlOgDTyKJ9rLv9IJwkANUH4WsBkzMAZDZD'
+                'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
             }
         };
 
