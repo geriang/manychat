@@ -58,7 +58,7 @@ App.get('/webhook', (req, res) => {
 App.post('/webhook', async (req, res) => {
     let data = req.body;
     let message = ""
-    
+
 
     // Iterate over each entry - there may be multiple if batched
     data.entry.forEach((entry) => {
@@ -135,7 +135,41 @@ App.post('/chatgpt', async (req, res) => {
         const response = await chain.call({
             input: `${message}`
         })
-       
+
+        const sendMessage = async () => {
+            const url = 'https://graph.facebook.com/v17.0/100199353129672/messages';
+
+            const data = {
+                messaging_product: 'whatsapp',
+                to: '6584430486',
+                type: 'template',
+                template: {
+                    name: 'hello world',
+                    language: {
+                        code: 'en_US'
+                    }
+                }
+            };
+
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
+                }
+            };
+
+            try {
+                const response = await axios.post(url, data, config);
+                console.log("whatsapp send message status", response.status);
+                console.log("whatsapp send message data", response.data);
+                
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        sendMessage();
+
         console.log("After chain.call");
         console.log("ChatGPT Response", response)
 
@@ -143,9 +177,7 @@ App.post('/chatgpt', async (req, res) => {
         console.error("Error in POST /chatgpt:", err);
     }
 
-    
-    // res.send(response)
-    // console.log("ChatGPT Response", response)
+
     //     const sendMessage = async () => {
     //         const url = 'https://graph.facebook.com/v17.0/100199353129672/messages';
 
