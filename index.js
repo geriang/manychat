@@ -74,15 +74,7 @@ App.post('/webhook', async (req, res) => {
 
     });
 
-    // try {
-    //     console.log("Whatsapp message", message)
-    //     const data = {message}
-    //     let response = await axios.post("https://geriang-manychat.onrender.com/chatgpt", data) // await for the Promise to resolve
-    //     console.log("Response:", response); // then log the response
-    // } catch (err) {
-    //     console.error("Error sending message:", err);
-    // }
-
+ 
     try {
         // console.log("Whatsapp message", message)
         const data = { message }
