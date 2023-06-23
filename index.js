@@ -57,6 +57,7 @@ App.use(express.urlencoded({
 App.post('/webhook', (req, res) => {
     // WhatsApp sends data as JSON in the body of the request
     let data = req.body;
+    let message = "";
 
     // Log received data for debugging
     console.log('Webhook received:', data);
@@ -68,6 +69,9 @@ App.post('/webhook', (req, res) => {
             if (event.changes) {
                 // Handle text message
                 console.log('Received text:', event.changes);
+                event.changes.forEach((obj)=>{
+                    message = JSON.stringify(obj.value.messages[0].text.body)
+                })
                 // Respond with a 200 to acknowledge receipt of the message
                 res.sendStatus(200);
 
