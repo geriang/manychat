@@ -47,7 +47,7 @@ App.use(express.urlencoded({
 App.get('/webhook', (req, res) => {
     if (req.query['hub.mode'] === 'subscribe' &&
         req.query['hub.verify_token'] === VERIFY_TOKEN) {
-        console.log('Validating webhook');
+        // console.log('Validating webhook');
         res.status(200).send(req.query['hub.challenge']);
     } else {
         console.error('Failed validation. Make sure the validation tokens match.');
@@ -65,9 +65,9 @@ App.post('/webhook', async (req, res) => {
 
         // Iterate over each messaging event
         entry.changes.forEach((change) => {
-            console.log('Webhook received: ', change.field);
-            console.log('Value: ', change.value);
-            console.log('Text:', change.value.messages[0].text.body)
+            // console.log('Webhook received: ', change.field);
+            // console.log('Value: ', change.value);
+            // console.log('Text:', change.value.messages[0].text.body)
             message = JSON.stringify(change.value.messages[0].text.body)
 
         });
@@ -84,10 +84,10 @@ App.post('/webhook', async (req, res) => {
     // }
 
     try {
-        console.log("Whatsapp message", message)
+        // console.log("Whatsapp message", message)
         const data = { message }
-        let response = await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
-        console.log("Response:", response);
+        await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
+        // console.log("Response:", response);
     } catch (err) {
         console.error("Error in POST /webhook:", err);
     }
@@ -131,7 +131,7 @@ App.post('/chatgpt', async (req, res) => {
     //     input: `${message}`,
     // });
     try {
-        console.log("Before chain.call");
+        // console.log("Before chain.call");
         const response = await chain.call({
             input: `${message}`
         })
@@ -144,7 +144,7 @@ App.post('/chatgpt', async (req, res) => {
                 to: '6584430486',
                 type: 'text',
                 text: {
-                    "body": "Yo yo yo yo!"
+                    "body": `${response}`
                 }
             };
 
@@ -167,48 +167,13 @@ App.post('/chatgpt', async (req, res) => {
 
         sendMessage();
 
-        console.log("After chain.call");
-        console.log("ChatGPT Response", response)
+        // console.log("After chain.call");
+        // console.log("ChatGPT Response", response)
 
     } catch (err) {
         console.error("Error in POST /chatgpt:", err);
     }
-
-
-    //     const sendMessage = async () => {
-    //         const url = 'https://graph.facebook.com/v17.0/100199353129672/messages';
-
-    //         const data = {
-    //             messaging_product: 'whatsapp',
-    //             to: '6584430486',
-    //             type: 'template',
-    //             template: {
-    //                 name: 'hello world',
-    //                 language: {
-    //                     code: 'en_US'
-    //                 }
-    //             }
-    //         };
-
-    //         const config = {
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
-    //             }
-    //         };
-
-    //         try {
-    //             const response = await axios.post(url, data, config);
-    //             console.log(response.status);
-    //             console.log(response.data);
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     };
-
-    //     sendMessage();
 })
-
 
 
 App.listen(process.env.PORT || 3000, () => {
