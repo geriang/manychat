@@ -144,7 +144,7 @@ App.post('/chatgpt', async (req, res) => {
                 to: '6584430486',
                 type: 'text',
                 text: {
-                    "body": `${response}`
+                    "body": `${response.data}`
                 }
             };
 
