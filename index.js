@@ -54,42 +54,29 @@ App.use(express.urlencoded({
 //     }
 // });
 
-App.post('/webhook', (req, res) => {
+App.post('/webhook', async (req, res) => {
     // WhatsApp sends data as JSON in the body of the request
     let data = req.body;
-    let message = "";
 
     // Log received data for debugging
     console.log('Webhook received:', data);
 
     // Handle different types of messages
     if (data.entry) {
-        // Loop through each message
-        data.entry.forEach(async (event) => {
-            if (event.changes) {
-                // Handle text message
-                console.log('Received text:', event.changes);
-                message = JSON.stringify(event.change[0].value.messages[0].text.body)
-                // event.changes.forEach((obj)=>{
-                //     message = JSON.stringify(obj.value.messages[0].text.body)
-                //     console.log("object", obj)
-                //     console.log("message", message)
-                // })
-                // Respond with a 200 to acknowledge receipt of the message
-                res.sendStatus(200);
+        // Handle text message
+        let message = JSON.stringify(data.entry[0].change[0].value.messages[0].text.body)
+        res.sendStatus(200);
 
-                try {
-                    // console.log("Whatsapp message", message)
-                    const data = { message }
-                    await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
-                    // console.log("Response:", response);
-                    
-                } catch (err) {
-                    console.error("Error in POST /webhook:", err);
-                }
-            }
-            // Add handling for other message types if needed
-        });
+        try {
+            const data = { message }
+            await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
+
+        } catch (err) {
+            console.error("Error in POST /webhook:", err);
+        }
+
+        // Add handling for other message types if needed
+
     }
 
     if (data.errors) {
@@ -98,8 +85,6 @@ App.post('/webhook', (req, res) => {
             console.log('Received error:', error);
         });
     }
-
-
 
 });
 
