@@ -66,14 +66,16 @@ App.post('/webhook', async (req, res) => {
     // if (data.entry) {
     // Handle text message
     let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body)
-    res.sendStatus(200);
+   
 
     try {
         const data = { message }
-        return await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
+        await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
+        res.sendStatus(200);
 
     } catch (err) {
         console.error("Error in POST /webhook:", err);
+        res.sendStatus(200);
     }
 
     // Add handling for other message types if needed
@@ -85,6 +87,8 @@ App.post('/webhook', async (req, res) => {
         data.errors.forEach((error) => {
             console.log('Received error:', error);
         });
+
+        res.sendStatus(200);
     }
 
 });
