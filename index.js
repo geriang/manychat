@@ -60,6 +60,8 @@ App.post('/webhook', (req, res) => {
 
     // Log received data for debugging
     console.log('Webhook received:', data);
+    // Respond with a 200 to acknowledge receipt of the message
+    res.sendStatus(200);
 
     // Handle different types of messages
     if (data.messages) {
@@ -90,8 +92,7 @@ App.post('/webhook', (req, res) => {
     }
 
 
-    // Respond with a 200 to acknowledge receipt of the message
-    res.sendStatus(200);
+    
 });
 
 
