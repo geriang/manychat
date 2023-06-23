@@ -33,9 +33,7 @@ const { BufferWindowMemory } = require("langchain/memory");
 
 
 const VERIFY_TOKEN = process.env.WHATSAPP_WEBHOOK_TOKEN;
-const APP_SECRET = process.env.APP_SECRET;
 
-// const message = "do you know anything about Singapore Property?"
 
 App.use(cors({
     origin: true
@@ -48,7 +46,7 @@ App.use(express.urlencoded({
 
 App.get('/webhook', (req, res) => {
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === 'your_verify_token') {
+        req.query['hub.verify_token'] === VERIFY_TOKEN) {
         console.log('Validating webhook');
         res.status(200).send(req.query['hub.challenge']);
     } else {
@@ -60,6 +58,7 @@ App.get('/webhook', (req, res) => {
 App.post('/webhook', async (req, res) => {
     let data = req.body;
     let message = ""
+    
 
     // Iterate over each entry - there may be multiple if batched
     data.entry.forEach((entry) => {
@@ -87,9 +86,7 @@ App.post('/webhook', async (req, res) => {
     try {
         console.log("Whatsapp message", message)
         const data = { message }
-        let response = await axios.post("https://geriang-manychat.onrender.com/chatgpt", data).catch((error) => {
-            console.error("Error sending message:", error);
-        });
+        let response = await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
         console.log("Response:", response);
     } catch (err) {
         console.error("Error in POST /webhook:", err);
