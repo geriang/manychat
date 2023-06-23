@@ -180,14 +180,6 @@ App.post('/chatgpt', async (req, res) => {
     //     sendMessage();
 })
 
-// whatsapp webhook
-
-App.post('/webhook', (req, res) => {
-    console.log('Received a POST request');
-    console.log(req.body); // Logs the body of the request to the console
-
-    res.sendStatus(200); // Responds to the request with a 200 OK status code
-});
 
 
 App.listen(process.env.PORT || 3000, () => {
