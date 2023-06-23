@@ -6,8 +6,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "langchain": "^0.0.56",
-    "node-fetch": "^2.6.1",
-    "nodemon": "^2.0.22"
+    "node-fetch": "^2.6.1"
   },
   "name": "manychat",
   "version": "1.0.0",

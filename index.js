@@ -144,7 +144,7 @@ App.post('/chatgpt', async (req, res) => {
                 to: '6584430486',
                 type: 'text',
                 text: {
-                    "body": `${response.data}`
+                    "body": `${toSting(response.data)}`
                 }
             };
 
@@ -168,7 +168,7 @@ App.post('/chatgpt', async (req, res) => {
         sendMessage();
 
         // console.log("After chain.call");
-        // console.log("ChatGPT Response", response)
+        console.log("ChatGPT Response", response)
 
     } catch (err) {
         console.error("Error in POST /chatgpt:", err);
