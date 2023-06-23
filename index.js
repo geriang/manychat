@@ -143,11 +143,8 @@ App.post('/chatgpt', async (req, res) => {
                 messaging_product: 'whatsapp',
                 to: '6584430486',
                 type: 'text',
-                template: {
-                    name: 'hello world',
-                    language: {
-                        code: 'en_US'
-                    }
+                text: {
+                    "body": "Yo yo yo yo!"
                 }
             };
 
