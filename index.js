@@ -43,44 +43,54 @@ App.use(express.urlencoded({
 }))
 
 
-App.get('/webhook', (req, res) => {
-    if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === VERIFY_TOKEN) {
-        // console.log('Validating webhook');
-        res.status(200).send(req.query['hub.challenge']);
-    } else {
-        console.error('Failed validation. Make sure the validation tokens match.');
-        res.sendStatus(403);
-    }
-});
+// App.get('/webhook', (req, res) => {
+//     if (req.query['hub.mode'] === 'subscribe' &&
+//         req.query['hub.verify_token'] === VERIFY_TOKEN) {
+//         // console.log('Validating webhook');
+//         res.status(200).send(req.query['hub.challenge']);
+//     } else {
+//         console.error('Failed validation. Make sure the validation tokens match.');
+//         res.sendStatus(403);
+//     }
+// });
 
-App.post('/webhook', async (req, res) => {
+App.post('/webhook', (req, res) => {
+    // WhatsApp sends data as JSON in the body of the request
     let data = req.body;
-    let message = ""
 
-    // Iterate over each entry - there may be multiple if batched
-    data.entry.forEach((entry) => {
+    // Log received data for debugging
+    console.log('Webhook received:', data);
 
-        // Iterate over each messaging event
-        entry.changes.forEach((change) => {
-            // console.log('Webhook received: ', change.field);
-            // console.log('Value: ', change.value);
-            // console.log('Text:', change.value.messages[0].text.body)
-            message = JSON.stringify(change.value.messages[0].text.body)
+    // Handle different types of messages
+    if (data.messages) {
+        // Loop through each message
+        data.messages.forEach(async (message) => {
+            if (message.type === 'text') {
+                // Handle text message
+                console.log('Received text:', message.text.body);
+
+                try {
+                    // console.log("Whatsapp message", message)
+                    const data = { message }
+                    await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
+                    // console.log("Response:", response);
+                } catch (err) {
+                    console.error("Error in POST /webhook:", err);
+                }
+            }
+            // Add handling for other message types if needed
         });
-
-    });
-
- 
-    try {
-        // console.log("Whatsapp message", message)
-        const data = { message }
-        await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
-        // console.log("Response:", response);
-    } catch (err) {
-        console.error("Error in POST /webhook:", err);
     }
 
+    if (data.errors) {
+        // Loop through each error
+        data.errors.forEach((error) => {
+            console.log('Received error:', error);
+        });
+    }
+
+
+    // Respond with a 200 to acknowledge receipt of the message
     res.sendStatus(200);
 });
 
