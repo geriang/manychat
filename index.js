@@ -13,7 +13,6 @@ const axios = require('axios');
 
 const App = express();
 
-
 App.use(express.json()); // Middleware for parsing JSON bodies of incoming requests
 App.use(bodyParser.json());
 
@@ -59,7 +58,6 @@ App.post('/webhook', async (req, res) => {
     let data = req.body;
     let message = ""
 
-
     // Iterate over each entry - there may be multiple if batched
     data.entry.forEach((entry) => {
 
@@ -69,7 +67,6 @@ App.post('/webhook', async (req, res) => {
             // console.log('Value: ', change.value);
             // console.log('Text:', change.value.messages[0].text.body)
             message = JSON.stringify(change.value.messages[0].text.body)
-
         });
 
     });
@@ -119,11 +116,7 @@ App.post('/chatgpt', async (req, res) => {
     });
 
 
-    // const response = await chain.call({
-    //     input: `${message}`,
-    // });
     try {
-        // console.log("Before chain.call");
         const response = await chain.call({
             input: `${message}`
         })
@@ -148,9 +141,9 @@ App.post('/chatgpt', async (req, res) => {
             };
 
             try {
-                const response = await axios.post(url, data, config);
-                console.log("whatsapp send message status", response.status);
-                console.log("whatsapp send message data", response.data);
+                await axios.post(url, data, config);
+                // console.log("whatsapp send message status", response.status);
+                // console.log("whatsapp send message data", response.data);
 
             } catch (error) {
                 console.error(error);
@@ -159,14 +152,12 @@ App.post('/chatgpt', async (req, res) => {
 
         sendMessage();
 
-        // console.log("After chain.call");
-        console.log("ChatGPT Response", response)
+        // console.log("ChatGPT Response", response)
 
     } catch (err) {
         console.error("Error in POST /chatgpt:", err);
     }
 })
-
 
 App.listen(process.env.PORT || 3000, () => {
     console.log('server started')
