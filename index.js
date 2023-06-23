@@ -148,7 +148,39 @@ App.post('/chatgpt', async (req, res) => {
 
 
     // res.send(response)
-    console.log("ChatGPT Response", response)
+    // console.log("ChatGPT Response", response)
+    const sendMessage = async () => {
+        const url = 'https://graph.facebook.com/v17.0/100199353129672/messages';
+
+        const data = {
+            messaging_product: 'whatsapp',
+            to: '6584430486',
+            type: 'template',
+            template: {
+                name: 'hello world',
+                language: {
+                    code: 'en_US'
+                }
+            }
+        };
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer EAADRINB2rtYBAIm5quZBBZCM2EdkDnEAfHhOQSy65un2D4rijuSE7KmaHSB4RRRqUSfW76ARDf3jMgAew5rZAr8ll0l9OBUown5yaRqTIXvFIKHhg2cDfcGYivMbmjxVXj7q0CnTK2AAU5wfLG6wwawZCOzvnQMiI4I4Tup3ZArvhNlOgDTyKJ9rLv9IJwkANUH4WsBkzMAZDZD'
+            }
+        };
+
+        try {
+            const response = await axios.post(url, data, config);
+            console.log(response.status);
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    sendMessage();
 })
 
 // whatsapp webhook
