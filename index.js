@@ -60,22 +60,23 @@ App.post('/webhook', (req, res) => {
 
     // Log received data for debugging
     console.log('Webhook received:', data);
-    // Respond with a 200 to acknowledge receipt of the message
-    res.sendStatus(200);
 
     // Handle different types of messages
-    if (data.messages) {
+    if (data.entry) {
         // Loop through each message
-        data.messages.forEach(async (message) => {
-            if (message.type === 'text') {
+        data.entry.forEach(async (event) => {
+            if (event.changes) {
                 // Handle text message
-                console.log('Received text:', message.text.body);
+                console.log('Received text:', event.changes);
+                // Respond with a 200 to acknowledge receipt of the message
+                res.sendStatus(200);
 
                 try {
                     // console.log("Whatsapp message", message)
                     const data = { message }
                     await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
                     // console.log("Response:", response);
+                    
                 } catch (err) {
                     console.error("Error in POST /webhook:", err);
                 }
@@ -92,7 +93,7 @@ App.post('/webhook', (req, res) => {
     }
 
 
-    
+
 });
 
 
