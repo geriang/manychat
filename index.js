@@ -60,12 +60,13 @@ App.post('/webhook', async (req, res) => {
 
     // Log received data for debugging
     console.log('Webhook received:', data);
+    res.sendStatus(200);
 
     // Handle different types of messages
     if (data.entry) {
         // Handle text message
         let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body)
-        res.sendStatus(200);
+        
 
         try {
             const data = { message }
