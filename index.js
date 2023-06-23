@@ -71,6 +71,8 @@ App.post('/webhook', (req, res) => {
                 console.log('Received text:', event.changes);
                 event.changes.forEach((obj)=>{
                     message = JSON.stringify(obj.value.messages[0].text.body)
+                    console.log("object", obj)
+                    console.log("message", message)
                 })
                 // Respond with a 200 to acknowledge receipt of the message
                 res.sendStatus(200);
