@@ -136,51 +136,51 @@ App.post('/chatgpt', async (req, res) => {
     try {
         console.log("Before chain.call");
         const response = await chain.call({
-            input: `${message}`,
-        }).catch((error) => {
-            console.error("Error in chain.call:", error);
-        });
-        console.log("After chain.call");
+            input: `${message}`
+        })
        
+        console.log("After chain.call");
+        console.log("ChatGPT Response", response)
+
     } catch (err) {
         console.error("Error in POST /chatgpt:", err);
     }
 
-    console.log("ChatGPT Response", response)
+    
     // res.send(response)
     // console.log("ChatGPT Response", response)
-//     const sendMessage = async () => {
-//         const url = 'https://graph.facebook.com/v17.0/100199353129672/messages';
+    //     const sendMessage = async () => {
+    //         const url = 'https://graph.facebook.com/v17.0/100199353129672/messages';
 
-//         const data = {
-//             messaging_product: 'whatsapp',
-//             to: '6584430486',
-//             type: 'template',
-//             template: {
-//                 name: 'hello world',
-//                 language: {
-//                     code: 'en_US'
-//                 }
-//             }
-//         };
+    //         const data = {
+    //             messaging_product: 'whatsapp',
+    //             to: '6584430486',
+    //             type: 'template',
+    //             template: {
+    //                 name: 'hello world',
+    //                 language: {
+    //                     code: 'en_US'
+    //                 }
+    //             }
+    //         };
 
-//         const config = {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
-//             }
-//         };
+    //         const config = {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
+    //             }
+    //         };
 
-//         try {
-//             const response = await axios.post(url, data, config);
-//             console.log(response.status);
-//             console.log(response.data);
-//         } catch (error) {
-//             console.error(error);
-//         }
-//     };
+    //         try {
+    //             const response = await axios.post(url, data, config);
+    //             console.log(response.status);
+    //             console.log(response.data);
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     };
 
-//     sendMessage();
+    //     sendMessage();
 })
 
 // whatsapp webhook
