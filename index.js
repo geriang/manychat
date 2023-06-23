@@ -142,7 +142,7 @@ App.post('/chatgpt', async (req, res) => {
             const data = {
                 messaging_product: 'whatsapp',
                 to: '6584430486',
-                type: 'template',
+                type: 'text',
                 template: {
                     name: 'hello world',
                     language: {
@@ -162,7 +162,7 @@ App.post('/chatgpt', async (req, res) => {
                 const response = await axios.post(url, data, config);
                 console.log("whatsapp send message status", response.status);
                 console.log("whatsapp send message data", response.data);
-                
+
             } catch (error) {
                 console.error(error);
             }
