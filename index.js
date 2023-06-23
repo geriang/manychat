@@ -54,44 +54,44 @@ App.use(express.urlencoded({
 //     }
 // });
 
-App.post('/webhook', async (req, res) => {
-    // WhatsApp sends data as JSON in the body of the request
-    let data = req.body;
+// App.post('/webhook', async (req, res) => {
+//     // WhatsApp sends data as JSON in the body of the request
+//     let data = req.body;
 
-    // Log received data for debugging
-    console.log('Webhook received:', data);
+//     // Log received data for debugging
+//     console.log('Webhook received:', data);
  
 
-    // Handle different types of messages
-    // if (data.entry) {
-    // Handle text message
-    let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body)
+//     // Handle different types of messages
+//     // if (data.entry) {
+//     // Handle text message
+//     let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body)
    
 
-    try {
-        const data = { message }
-        await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
-        res.sendStatus(200);
+//     try {
+//         const data = { message }
+//         await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
+//         res.sendStatus(200);
 
-    } catch (err) {
-        console.error("Error in POST /webhook:", err);
-        res.sendStatus(200);
-    }
+//     } catch (err) {
+//         console.error("Error in POST /webhook:", err);
+//         res.sendStatus(200);
+//     }
 
-    // Add handling for other message types if needed
+//     // Add handling for other message types if needed
 
-    // }
+//     // }
 
-    if (data.errors) {
-        // Loop through each error
-        data.errors.forEach((error) => {
-            console.log('Received error:', error);
-        });
+//     if (data.errors) {
+//         // Loop through each error
+//         data.errors.forEach((error) => {
+//             console.log('Received error:', error);
+//         });
 
-        res.sendStatus(200);
-    }
+//         res.sendStatus(200);
+//     }
 
-});
+// });
 
 
 App.post('/chatgpt', async (req, res) => {
@@ -130,36 +130,38 @@ App.post('/chatgpt', async (req, res) => {
             input: `${message}`
         })
 
-        const sendMessage = async () => {
-            const url = 'https://graph.facebook.com/v17.0/100199353129672/messages';
+        res.send(response)
 
-            const data = {
-                messaging_product: 'whatsapp',
-                to: '6584430486',
-                type: 'text',
-                text: {
-                    "body": `${response.response}`
-                }
-            };
+        // const sendMessage = async () => {
+        //     const url = 'https://graph.facebook.com/v17.0/100199353129672/messages';
 
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
-                }
-            };
+        //     const data = {
+        //         messaging_product: 'whatsapp',
+        //         to: '6584430486',
+        //         type: 'text',
+        //         text: {
+        //             "body": `${response.response}`
+        //         }
+        //     };
 
-            try {
-                await axios.post(url, data, config);
-                // console.log("whatsapp send message status", response.status);
-                // console.log("whatsapp send message data", response.data);
+        //     const config = {
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
+        //         }
+        //     };
 
-            } catch (error) {
-                console.error(error);
-            }
-        };
+        //     try {
+        //         await axios.post(url, data, config);
+        //         // console.log("whatsapp send message status", response.status);
+        //         // console.log("whatsapp send message data", response.data);
 
-        sendMessage();
+        //     } catch (error) {
+        //         console.error(error);
+        //     }
+        // };
+
+        // sendMessage();
 
         // console.log("ChatGPT Response", response)
 
