@@ -60,25 +60,25 @@ App.post('/webhook', async (req, res) => {
 
     // Log received data for debugging
     console.log('Webhook received:', data);
-    res.sendStatus(200);
+ 
 
     // Handle different types of messages
-    if (data.entry) {
-        // Handle text message
-        let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body)
-        
+    // if (data.entry) {
+    // Handle text message
+    let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body)
+    res.sendStatus(200);
 
-        try {
-            const data = { message }
-            await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
+    try {
+        const data = { message }
+        return await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
 
-        } catch (err) {
-            console.error("Error in POST /webhook:", err);
-        }
-
-        // Add handling for other message types if needed
-
+    } catch (err) {
+        console.error("Error in POST /webhook:", err);
     }
+
+    // Add handling for other message types if needed
+
+    // }
 
     if (data.errors) {
         // Loop through each error
