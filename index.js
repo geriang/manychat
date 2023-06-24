@@ -92,8 +92,14 @@ App.post('/chatgpt', async (req, res) => {
     console.log("whatsappid received by chatgpt", whatsapp_id)
     // await connectToMongoDB()
     const pastMessagesData = await retrieveChatHistory(whatsapp_id)
-    console.log("past messages data received by chatgpt", pastMessagesData)
+    // console.log("past messages data received by chatgpt", pastMessagesData)
 
+    const pastMessages = [
+        new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+        new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
+    ]
+
+    console.log("past messages", pastMessages)
 
     // initiating the chatmodel - openai
     const chat = new ChatOpenAI({ temperature: 0 });
@@ -106,12 +112,7 @@ App.post('/chatgpt', async (req, res) => {
     //     ];
     // });
 
-    const pastMessages = [
-        new HumanChatMessage((pastMessagesData.map((obj) => { return (obj.client) })).toString()),
-        new AIChatMessage((pastMessagesData.map((obj) => { return (obj.bot) })).toString())
-    ]
-
-    console.log("past messages", pastMessages)
+    
 
     // defining the prompt templates
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
@@ -149,7 +150,7 @@ App.post('/chatgpt', async (req, res) => {
 
         let data = {
             "client": `${message}`,
-            "bot": `${response}`
+            "bot": `${response.response}`
         }
 
         await addChatData(whatsapp_id, data)
