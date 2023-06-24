@@ -28,7 +28,7 @@ const {
     SystemMessagePromptTemplate,
 } = require("langchain/prompts");
 const { ConversationChain } = require("langchain/chains");
-const { BufferMemory, ConversationSummaryMemory } = require("langchain/memory");
+const { BufferMemory, BufferWindowMemory } = require("langchain/memory");
 
 
 
@@ -62,13 +62,14 @@ App.post('/chatgpt', async (req, res) => {
          2. What is the nature of enquiry? Is it a sales enquiry, rental enquiry or general enquiry?
          3. Which property or property address is the enquirer enquirying on? 
          4. From where did the enquirer find the contact information to start the enquiry?`),
-        new MessagesPlaceholder("history"),
+        // new MessagesPlaceholder("history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
     // initiating chain with memory function and chatprompt which introduces templates
     const chain = new ConversationChain({
-        memory: new BufferMemory({ returnMessages: true, memoryKey: "history" }),
+        // memory: new BufferMemory({ returnMessages: true, memoryKey: "history" }),
+        memory: new BufferWindowMemory({ k: 20 }),
         prompt: chatPrompt,
         llm: chat,
     });
