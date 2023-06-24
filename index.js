@@ -9,19 +9,25 @@ const express = require("express");
 require('dotenv').config();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const axios = require('axios');
+// const axios = require('axios');
 
 const App = express();
 
 App.use(express.json()); // Middleware for parsing JSON bodies of incoming requests
 App.use(bodyParser.json());
+App.use(cors({
+    origin: true
+}))
+
+App.use(express.urlencoded({
+    extended: false
+}))
 
 
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const {
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
-    MessagesPlaceholder,
     SystemMessagePromptTemplate,
 } = require("langchain/prompts");
 const { ConversationChain } = require("langchain/chains");
@@ -57,17 +63,6 @@ async function retrieveChatHistory(id) {
     }
 }
 
-
-App.use(cors({
-    origin: true
-}))
-
-App.use(express.urlencoded({
-    extended: false
-}))
-
-
-
 App.post('/chatgpt', async (req, res) => {
 
     let message = req.body.data.message
@@ -94,14 +89,14 @@ App.post('/chatgpt', async (req, res) => {
         new HumanChatMessage("My name's Jonas"),
         new AIChatMessage("Nice to meet you, Jonas!"),
     ]
-    
+
     console.log("past messages", pastMessages)
 
-    const memory = new BufferMemory({
-        chatHistory: new ChatMessageHistory(pastMessages),
-        returnMessages: true
-        // memoryKey: "history"
-    })
+    // const memory = new BufferMemory({
+    //     chatHistory: new ChatMessageHistory(pastMessages),
+    //     returnMessages: true
+    //     // memoryKey: "history"
+    // })
 
     // defining the prompt templates
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
@@ -114,7 +109,8 @@ App.post('/chatgpt', async (req, res) => {
          2. What is the nature of enquiry? Is it a sales enquiry, rental enquiry or general enquiry?
          3. Which property or property address is the enquirer enquirying on? 
          4. From where did the enquirer find the contact information to start the enquiry?
-
+         Refer to the following past conversation as reference if any:
+         {chat_history}
          `),
         // new MessagesPlaceholder("history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
@@ -123,7 +119,11 @@ App.post('/chatgpt', async (req, res) => {
     // initiating chain with memory function and chatprompt which introduces templates
     const chain = new ConversationChain({
         prompt: chatPrompt,
-        memory: memory,
+        memory: new BufferMemory({
+            chatHistory: new ChatMessageHistory(pastMessages),
+            returnMessages: true,
+            memoryKey: "history"
+        }),
         llm: chat,
     });
 
