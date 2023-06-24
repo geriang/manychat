@@ -110,10 +110,9 @@ App.post('/chatgpt', async (req, res) => {
          2. What is the nature of enquiry? Is it a sales enquiry, rental enquiry or general enquiry?
          3. Which property or property address is the enquirer enquirying on? 
          4. From where did the enquirer find the contact information to start the enquiry?
-         Refer to the following past conversation as reference if any:
-         {chat_history}
+       
          `),
-        new MessagesPlaceholder("chat_history"),
+    
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
