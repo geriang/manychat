@@ -140,7 +140,7 @@ App.post('/chatgpt', async (req, res) => {
         }),
         llm: chat,
     });
-    // console.log("chain", chain)
+    console.log("chain", chain)
     try {
         const response = await chain.call({
             input: `${message}`
