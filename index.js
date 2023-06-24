@@ -87,8 +87,8 @@ App.post('/chatgpt', async (req, res) => {
     // });
 
     const pastMessages = [
-        new HumanChatMessage(pastMessagesData.map((obj) => { return obj.client})),
-        new AIChatMessage(pastMessagesData.map((obj) => {return obj.bot}))
+        new HumanChatMessage(toString(pastMessagesData.map((obj) => { return obj.client}))),
+        new AIChatMessage(toString(pastMessagesData.map((obj) => {return obj.bot})))
     ]
 
     console.log("past messages", pastMessages)
