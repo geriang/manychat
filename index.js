@@ -112,7 +112,7 @@ App.post('/chatgpt', async (req, res) => {
          4. From where did the enquirer find the contact information to start the enquiry?
        
          `),
-    
+        new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
