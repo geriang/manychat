@@ -82,7 +82,7 @@ App.post('/chatgpt', async (req, res) => {
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
     await connectToMongoDB()
-    await retrieveChatHistory()
+    await retrieveChatHistory("6588454340")
 
 
     // *** initializing vector store and memory
