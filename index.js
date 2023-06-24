@@ -84,8 +84,8 @@ App.post('/chatgpt', async (req, res) => {
     // initiating memory and past messages
     const pastMessages = await pastMessagesData.map((message) => {
         return [
-            new HumanChatMessage(message.client),
-            new AIChatMessage(message.bot),
+            new HumanChatMessage({text: message.client}),
+            new AIChatMessage({text: message.bot}),
         ];
     }).flat();
 
@@ -118,6 +118,8 @@ App.post('/chatgpt', async (req, res) => {
         memory: memory,
         llm: chat,
     });
+
+    console.log("chain", chain)
 
 
     try {
