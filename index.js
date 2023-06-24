@@ -44,13 +44,13 @@ async function connectToMongoDB() {
     }
 }
 
-async function retrieveChatHistory() {
+async function retrieveChatHistory(id) {
     try {
         const db = client.db("project"); // Replace with your database name
         const collection = db.collection("chat_history"); // Replace with your collection name
-
-        const chatHistory = await collection.find().toArray();
-        console.log("Chat History:", chatHistory);
+        const whatsappId = id
+        const chatHistory = await collection.findOne({whatsapp_id: whatsappId});
+        console.log("Chat History:", chatHistory.message);
     } catch (error) {
         console.error("Failed to retrieve chat history", error);
     } finally {
