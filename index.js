@@ -28,6 +28,7 @@ const { ConversationChain } = require("langchain/chains");
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 
+
 const { MongoClient } = require("mongodb");
 const uri = process.env.MONGO_URI
 const client = new MongoClient(uri);
@@ -82,19 +83,24 @@ App.post('/chatgpt', async (req, res) => {
     const chat = new ChatOpenAI({ temperature: 0 });
 
     // initiating memory and past messages
-    const pastMessages = await pastMessagesData.map((message) => {
-        return [
-            new HumanChatMessage(message.client),
-            new AIChatMessage(message.bot),
-        ];
-    });
+    // const pastMessages = await pastMessagesData.map((message) => {
+    //     return [
+    //         new HumanChatMessage(message.client),
+    //         new AIChatMessage(message.bot),
+    //     ];
+    // });
 
+    const pastMessages = [
+        new HumanChatMessage("My name's Jonas"),
+        new AIChatMessage("Nice to meet you, Jonas!"),
+    ]
+    
     console.log("past messages", pastMessages)
 
     const memory = new BufferMemory({
         chatHistory: new ChatMessageHistory(pastMessages),
-        returnMessages: true,
-        memoryKey: "history"
+        returnMessages: true
+        // memoryKey: "history"
     })
 
     // defining the prompt templates
@@ -110,7 +116,7 @@ App.post('/chatgpt', async (req, res) => {
          4. From where did the enquirer find the contact information to start the enquiry?
 
          `),
-        new MessagesPlaceholder("history"),
+        // new MessagesPlaceholder("history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
