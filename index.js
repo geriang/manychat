@@ -110,7 +110,7 @@ App.post('/chatgpt', async (req, res) => {
          3. Which property or property address is the enquirer enquirying on? 
          4. From where did the enquirer find the contact information to start the enquiry?
          Refer to the following past conversation as reference if any:
-         {chat_history}
+         {history}
          `),
         // new MessagesPlaceholder("history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
