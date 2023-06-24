@@ -45,7 +45,7 @@ async function retrieveChatHistory(id) {
     try {
         const db = client.db("project"); // Replace with your database name
         const collection = db.collection("chat_history"); // Replace with your collection name
-        const chatHistory = await collection.findOne({whatsapp_id: id});
+        const chatHistory = await collection.findOne({ whatsapp_id: id });
         console.log("Chat History:", chatHistory.message);
         return chatHistory.message
     } catch (error) {
@@ -73,7 +73,6 @@ App.use(express.urlencoded({
 
 App.post('/chatgpt', async (req, res) => {
 
-
     let message = req.body.data.message
     let whatsapp_id = req.body.data.whatsapp_id
     console.log("message received by chatgpt", message)
@@ -82,26 +81,21 @@ App.post('/chatgpt', async (req, res) => {
     const pastMessagesData = await retrieveChatHistory("6588454340")
     console.log("past messages data received by chatgpt", pastMessagesData)
 
-    const pastMessages = pastMessagesData.map((message) => {
-        return [
-          new HumanChatMessage(message.client),
-          new AIChatMessage(message.bot),
-        ];
-      }).flat();
-
-
-    // *** initializing vector store and memory
-    // const vectorStore = new MemoryVectorStore(new OpenAIEmbeddings());
-    // const memory = new VectorStoreRetrieverMemory({
-    //     // 1 is how many documents to return, you might want to return more, eg. 4
-    //     vectorStoreRetriever: vectorStore.asRetriever(10),
-    //     memoryKey: "history",
-    // });
-
-
 
     // initiating the chatmodel - openai
     const chat = new ChatOpenAI({ temperature: 0 });
+
+    // initiating memory and past messages
+    const pastMessages = pastMessagesData.map((message) => {
+        return [
+            new HumanChatMessage(message.client),
+            new AIChatMessage(message.bot),
+        ];
+    }).flat();
+
+    const memory = new BufferMemory({
+        chatHistory: new ChatMessageHistory(pastMessages)
+    })
 
     // defining the prompt templates
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
@@ -123,8 +117,6 @@ App.post('/chatgpt', async (req, res) => {
     // initiating chain with memory function and chatprompt which introduces templates
     const chain = new LLMChain({
         prompt: chatPrompt,
-        memory: new BufferMemory({
-            chatHistory: new ChatMessageHistory(pastMessages)}),
         llm: chat,
     });
 
