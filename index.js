@@ -82,7 +82,7 @@ App.post('/chatgpt', async (req, res) => {
     const chat = new ChatOpenAI({ temperature: 0 });
 
     // initiating memory and past messages
-    const pastMessages = pastMessagesData.map((message) => {
+    const pastMessages = await pastMessagesData.map((message) => {
         return [
             new HumanChatMessage(message.client),
             new AIChatMessage(message.bot),
