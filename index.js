@@ -21,10 +21,10 @@ const { ChatOpenAI } = require("langchain/chat_models/openai");
 const {
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
-    PromptTemplate,
+    MessagesPlaceholder,
     SystemMessagePromptTemplate,
 } = require("langchain/prompts");
-const { ConversationChain, LLMChain } = require("langchain/chains");
+const { ConversationChain } = require("langchain/chains");
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 
@@ -110,7 +110,7 @@ App.post('/chatgpt', async (req, res) => {
          4. From where did the enquirer find the contact information to start the enquiry?
 
          `),
-        // new MessagesPlaceholder("history"),
+        new MessagesPlaceholder("history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
