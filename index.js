@@ -57,10 +57,6 @@ async function retrieveChatHistory(id) {
 }
 
 
-
-
-
-
 App.use(cors({
     origin: true
 }))
@@ -115,7 +111,7 @@ App.post('/chatgpt', async (req, res) => {
     ]);
 
     // initiating chain with memory function and chatprompt which introduces templates
-    const chain = new LLMChain({
+    const chain = new ConversationChain({
         prompt: chatPrompt,
         memory: memory,
         llm: chat,
@@ -127,10 +123,6 @@ App.post('/chatgpt', async (req, res) => {
             input: `${message}`
         })
 
-        await memory.saveContext(
-            { input: `${message}` },
-            { output: `${response}` }
-        );
 
         res.send(response)
 
