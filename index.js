@@ -25,9 +25,12 @@ const {
     SystemMessagePromptTemplate,
 } = require("langchain/prompts");
 const { ConversationChain, LLMChain } = require("langchain/chains");
-const { VectorStoreRetrieverMemory, BufferWindowMemory } = require("langchain/memory");
+import { VectorStoreRetrieverMemory } from "langchain/memory";
+// const { VectorStoreRetrieverMemory } = require("langchain/memory");
 const { MemoryVectorStore } = require("langchain/vectorstores/memory");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
+
+
 
 
 
