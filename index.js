@@ -45,7 +45,7 @@ async function retrieveChatHistory(id) {
     try {
         const db = client.db("project"); // Replace with your database name
         const collection = db.collection("chat_history"); // Replace with your collection name
-        const chatHistory = await collection.findOne({whatsapp_id: id});
+        return chatHistory = await collection.findOne({whatsapp_id: id});
         console.log("Chat History:", chatHistory.message);
     } catch (error) {
         console.error("Failed to retrieve chat history", error);
