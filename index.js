@@ -17,6 +17,7 @@ App.use(express.json()); // Middleware for parsing JSON bodies of incoming reque
 App.use(bodyParser.json());
 
 
+const { OpenAI } = require("langchain/llms/openai")
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const {
     ChatPromptTemplate,
@@ -25,7 +26,7 @@ const {
     SystemMessagePromptTemplate,
 } = require("langchain/prompts");
 const { ConversationChain, LLMChain } = require("langchain/chains");
-import { VectorStoreRetrieverMemory } from "langchain/memory";
+// import { VectorStoreRetrieverMemory } from "langchain/memory";
 // const { VectorStoreRetrieverMemory } = require("langchain/memory");
 const { MemoryVectorStore } = require("langchain/vectorstores/memory");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
@@ -47,16 +48,18 @@ App.use(express.urlencoded({
 App.post('/chatgpt', async (req, res) => {
 
 
-    let message = req.body.message
+    let message = req.body.data.message
+    let whatsapp_id = req.body.data.whatsapp_id
     console.log("message received by chatgpt", message)
+    console.log("whatsappid received by chatgpt", whatsapp_id)
 
     // *** initializing vector store and memory
-    const vectorStore = new MemoryVectorStore(new OpenAIEmbeddings());
-    const memory = new VectorStoreRetrieverMemory({
-        // 1 is how many documents to return, you might want to return more, eg. 4
-        vectorStoreRetriever: vectorStore.asRetriever(10),
-        memoryKey: "history",
-    });
+    // const vectorStore = new MemoryVectorStore(new OpenAIEmbeddings());
+    // const memory = new VectorStoreRetrieverMemory({
+    //     // 1 is how many documents to return, you might want to return more, eg. 4
+    //     vectorStoreRetriever: vectorStore.asRetriever(10),
+    //     memoryKey: "history",
+    // });
 
 
 
