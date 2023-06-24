@@ -26,6 +26,7 @@ const {
 } = require("langchain/prompts");
 const { ConversationChain, LLMChain } = require("langchain/chains");
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
+const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 
 const { MongoClient } = require("mongodb");
 const uri = process.env.MONGO_URI
@@ -77,7 +78,15 @@ App.post('/chatgpt', async (req, res) => {
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
     await connectToMongoDB()
-    await retrieveChatHistory("6588454340")
+    const pastMessagesData = await retrieveChatHistory("6588454340")
+    console.log("past messages data received by chatgpt", pastMessagesData)
+
+    const pastMessages = pastMessagesData.map((message) => {
+        return [
+          new HumanChatMessage(message.client),
+          new AIChatMessage(message.bot),
+        ];
+      }).flat();
 
 
     // *** initializing vector store and memory
@@ -104,15 +113,11 @@ App.post('/chatgpt', async (req, res) => {
          2. What is the nature of enquiry? Is it a sales enquiry, rental enquiry or general enquiry?
          3. Which property or property address is the enquirer enquirying on? 
          4. From where did the enquirer find the contact information to start the enquiry?
-         
-         Relevant pieces of previous conversation:
-         {pastMessages}
-         (You do not need to use these pieces of information if not relevant)
 
          `),
         // new MessagesPlaceholder("history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
-    ]);
+    ]).withMemory(memory);
 
     // initiating chain with memory function and chatprompt which introduces templates
     const chain = new LLMChain({
