@@ -79,20 +79,16 @@ App.post('/chatgpt', async (req, res) => {
     const chat = new ChatOpenAI({ temperature: 0 });
 
     // initiating memory and past messages
-    // let pastMessages = await pastMessagesData.map((obj) => {
-    //     return [
-    //         new HumanChatMessage(obj.client),
-    //         new AIChatMessage(obj.bot),
-    //     ];
-    // });
+    let pastMessages = await pastMessagesData.map((obj) => {
+        return [
+            new HumanChatMessage((obj.client).toString()),
+            new AIChatMessage((obj.bot).toString()),
+        ];
+    });
 
-    const pastMessages = [
-        new HumanChatMessage((pastMessagesData.map((obj) => { return (obj.client) })).toString()),
-        new AIChatMessage((pastMessagesData.map((obj) => { return (obj.bot) })).toString())
-    ]
     // const pastMessages = [
-    //     new HumanChatMessage("My name's Jonas"),
-    //     new AIChatMessage("Nice to meet you, Jonas!")
+    //     new HumanChatMessage((pastMessagesData.map((obj) => { return (obj.client) })).toString()),
+    //     new AIChatMessage((pastMessagesData.map((obj) => { return (obj.bot) })).toString())
     // ]
 
     console.log("past messages", pastMessages)
