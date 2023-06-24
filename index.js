@@ -1,3 +1,10 @@
+const fetch = require('node-fetch');
+global.Headers = require('node-fetch').Headers;
+global.fetch = fetch;
+global.Request = fetch.Request;
+global.Response = fetch.Response;
+global.Headers = fetch.Headers;
+
 const express = require("express");
 require('dotenv').config();
 const cors = require('cors');
@@ -20,7 +27,7 @@ const {
     SystemMessagePromptTemplate,
 } = require("langchain/prompts");
 const { ConversationChain } = require("langchain/chains");
-const { BufferWindowMemory, ConversationSummaryMemory } = require("langchain/memory");
+const { BufferMemory, ConversationSummaryMemory } = require("langchain/memory");
 
 
 
@@ -53,18 +60,14 @@ App.post('/chatgpt', async (req, res) => {
          1. Who is the enquirer? Is the person a direct client or a co-broke agent?
          2. What is the nature of enquiry? Is it a sales enquiry, rental enquiry or general enquiry?
          3. Which property or property address is the enquirer enquirying on? 
-         4. From where did the enquirer find the contact information to start the enquiry?
-         Refer to any past conversation in chat history labeled below and use it as the context before you reply.
-         Current conversation:
-         {chat_history}
-         Enquirer: {input}
-         Bot:`),
+         4. From where did the enquirer find the contact information to start the enquiry?`),
+        new MessagesPlaceholder("history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
     // initiating chain with memory function and chatprompt which introduces templates
     const chain = new ConversationChain({
-        memory: new ConversationSummaryMemory({memoryKey: "chat_history"}),
+        memory: new BufferMemory({ returnMessages: true, memoryKey: "history" }),
         prompt: chatPrompt,
         llm: chat,
     });
