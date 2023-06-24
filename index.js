@@ -79,25 +79,19 @@ App.post('/chatgpt', async (req, res) => {
     const chat = new ChatOpenAI({ temperature: 0 });
 
     // initiating memory and past messages
-    // const pastMessages = await pastMessagesData.map((message) => {
-    //     return [
-    //         new HumanChatMessage(message.client),
-    //         new AIChatMessage(message.bot),
-    //     ];
-    // });
+    const pastMessages = await pastMessagesData.map((message) => {
+        return [
+            new HumanChatMessage(message.client),
+            new AIChatMessage(message.bot),
+        ];
+    });
 
-    const pastMessages = [
-        new HumanChatMessage("My name's Jonas"),
-        new AIChatMessage("Nice to meet you, Jonas!"),
-    ]
+    // const pastMessages = [
+    //     new HumanChatMessage("My name's Jonas"),
+    //     new AIChatMessage("Nice to meet you, Jonas!"),
+    // ]
 
     console.log("past messages", pastMessages)
-
-    // const memory = new BufferMemory({
-    //     chatHistory: new ChatMessageHistory(pastMessages),
-    //     returnMessages: true
-    //     // memoryKey: "history"
-    // })
 
     // defining the prompt templates
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
@@ -110,8 +104,6 @@ App.post('/chatgpt', async (req, res) => {
          2. What is the nature of enquiry? Is it a sales enquiry, rental enquiry or general enquiry?
          3. Which property or property address is the enquirer enquirying on? 
          4. From where did the enquirer find the contact information to start the enquiry?
-         Refer to the following past conversation as reference if any:
-         {chat_history}
          `),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
