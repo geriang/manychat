@@ -114,7 +114,7 @@ App.post('/chatgpt', async (req, res) => {
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
-    const chatPromptWithMemory = chatPrompt.withMemory(memory)
+    const chatPromptWithMemory = ChatPromptTemplate.withMemory(chatPrompt, memory);
 
     // initiating chain with memory function and chatprompt which introduces templates
     const chain = new LLMChain({
