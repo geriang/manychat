@@ -24,6 +24,7 @@ const {
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
     PromptTemplate,
+    MessagesPlaceholder,
     SystemMessagePromptTemplate,
 } = require("langchain/prompts");
 const { ConversationChain } = require("langchain/chains");
