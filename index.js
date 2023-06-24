@@ -74,7 +74,7 @@ App.post('/chatgpt', async (req, res) => {
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
     await connectToMongoDB()
-    const pastMessagesData = await retrieveChatHistory("6588454340")
+    const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     console.log("past messages data received by chatgpt", pastMessagesData)
 
 
@@ -84,8 +84,8 @@ App.post('/chatgpt', async (req, res) => {
     // initiating memory and past messages
     const pastMessages = await pastMessagesData.map((message) => {
         return [
-            new HumanChatMessage({text: message.client}),
-            new AIChatMessage({text: message.bot}),
+            new HumanChatMessage(message.client),
+            new AIChatMessage(message.bot),
         ];
     });
 
@@ -94,6 +94,7 @@ App.post('/chatgpt', async (req, res) => {
     const memory = new BufferMemory({
         chatHistory: new ChatMessageHistory(pastMessages),
         returnMessages: true,
+        memoryKey: "history"
     })
 
     // defining the prompt templates
@@ -117,7 +118,7 @@ App.post('/chatgpt', async (req, res) => {
     const chain = new ConversationChain({
         prompt: chatPrompt,
         memory: memory,
-        llm: model,
+        llm: chat,
     });
 
     console.log("chain", chain)
