@@ -27,6 +27,7 @@ App.use(express.urlencoded({
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const {
     ChatPromptTemplate,
+    MessagesPlaceholder,
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
 } = require("langchain/prompts");
@@ -110,9 +111,9 @@ App.post('/chatgpt', async (req, res) => {
          3. Which property or property address is the enquirer enquirying on? 
          4. From where did the enquirer find the contact information to start the enquiry?
          Refer to the following past conversation as reference if any:
-         {history}
+         {chat_history}
          `),
-        // new MessagesPlaceholder("history"),
+        new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
@@ -122,7 +123,7 @@ App.post('/chatgpt', async (req, res) => {
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
             returnMessages: true,
-            memoryKey: "history"
+            memoryKey: "chat_history"
         }),
         llm: chat,
     });
