@@ -17,7 +17,6 @@ App.use(express.json()); // Middleware for parsing JSON bodies of incoming reque
 App.use(bodyParser.json());
 
 
-const { OpenAI } = require("langchain/llms/openai")
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const {
     ChatPromptTemplate,
@@ -26,10 +25,7 @@ const {
     SystemMessagePromptTemplate,
 } = require("langchain/prompts");
 const { ConversationChain, LLMChain } = require("langchain/chains");
-// import { VectorStoreRetrieverMemory } from "langchain/memory";
-// const { VectorStoreRetrieverMemory } = require("langchain/memory");
-const { MemoryVectorStore } = require("langchain/vectorstores/memory");
-const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
+const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 
 const { MongoClient } = require("mongodb");
 const uri = process.env.MONGO_URI
@@ -48,8 +44,7 @@ async function retrieveChatHistory(id) {
     try {
         const db = client.db("project"); // Replace with your database name
         const collection = db.collection("chat_history"); // Replace with your collection name
-        const whatsappId = id
-        const chatHistory = await collection.findOne({whatsapp_id: whatsappId});
+        const chatHistory = await collection.findOne({whatsapp_id: id});
         console.log("Chat History:", chatHistory.message);
     } catch (error) {
         console.error("Failed to retrieve chat history", error);
@@ -111,7 +106,7 @@ App.post('/chatgpt', async (req, res) => {
          4. From where did the enquirer find the contact information to start the enquiry?
          
          Relevant pieces of previous conversation:
-         {history}
+         {pastMessages}
          (You do not need to use these pieces of information if not relevant)
 
          `),
@@ -122,6 +117,8 @@ App.post('/chatgpt', async (req, res) => {
     // initiating chain with memory function and chatprompt which introduces templates
     const chain = new LLMChain({
         prompt: chatPrompt,
+        memory: new BufferMemory({
+            chatHistory: new ChatMessageHistory(pastMessages)}),
         llm: chat,
     });
 
