@@ -89,6 +89,8 @@ App.post('/chatgpt', async (req, res) => {
         ];
     }).flat();
 
+    console.log("past messages", pastMessages)
+
     const memory = new BufferMemory({
         chatHistory: new ChatMessageHistory(pastMessages)
     })
