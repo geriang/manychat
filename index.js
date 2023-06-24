@@ -87,12 +87,13 @@ App.post('/chatgpt', async (req, res) => {
             new HumanChatMessage({text: message.client}),
             new AIChatMessage({text: message.bot}),
         ];
-    }).flat();
+    });
 
     console.log("past messages", pastMessages)
 
     const memory = new BufferMemory({
-        chatHistory: new ChatMessageHistory(pastMessages)
+        chatHistory: new ChatMessageHistory(pastMessages),
+        returnMessages: true,
     })
 
     // defining the prompt templates
@@ -116,7 +117,7 @@ App.post('/chatgpt', async (req, res) => {
     const chain = new ConversationChain({
         prompt: chatPrompt,
         memory: memory,
-        llm: chat,
+        llm: model,
     });
 
     console.log("chain", chain)
