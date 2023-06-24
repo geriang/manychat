@@ -31,6 +31,35 @@ const { ConversationChain, LLMChain } = require("langchain/chains");
 const { MemoryVectorStore } = require("langchain/vectorstores/memory");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 
+const { MongoClient } = require("mongodb");
+const uri = process.env.MONGO_URI
+const client = new MongoClient(uri);
+
+async function connectToMongoDB() {
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+    } catch (error) {
+        console.error("Failed to connect to MongoDB", error);
+    }
+}
+
+async function retrieveChatHistory() {
+    try {
+        const db = client.db("project"); // Replace with your database name
+        const collection = db.collection("chat_history"); // Replace with your collection name
+
+        const chatHistory = await collection.find().toArray();
+        console.log("Chat History:", chatHistory);
+    } catch (error) {
+        console.error("Failed to retrieve chat history", error);
+    } finally {
+        await client.close();
+        console.log("Disconnected from MongoDB");
+    }
+}
+
+
 
 
 
@@ -52,6 +81,9 @@ App.post('/chatgpt', async (req, res) => {
     let whatsapp_id = req.body.data.whatsapp_id
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
+    await connectToMongoDB()
+    await retrieveChatHistory()
+
 
     // *** initializing vector store and memory
     // const vectorStore = new MemoryVectorStore(new OpenAIEmbeddings());
@@ -89,7 +121,6 @@ App.post('/chatgpt', async (req, res) => {
 
     // initiating chain with memory function and chatprompt which introduces templates
     const chain = new LLMChain({
-        memory,
         prompt: chatPrompt,
         llm: chat,
     });
