@@ -40,17 +40,18 @@ const { MongoClient } = require("mongodb");
 const uri = process.env.MONGO_URI
 const client = new MongoClient(uri);
 
-async function connectToMongoDB() {
-    try {
-        await client.connect();
-        console.log("Connected to MongoDB");
-    } catch (error) {
-        console.error("Failed to connect to MongoDB", error);
-    }
-}
+// async function connectToMongoDB() {
+//     try {
+//         await client.connect();
+//         console.log("Connected to MongoDB");
+//     } catch (error) {
+//         console.error("Failed to connect to MongoDB", error);
+//     }
+// }
 
 async function retrieveChatHistory(id) {
     try {
+        await client.connect();
         const db = client.db("project"); // Replace with your database name
         const collection = db.collection("chat_history"); // Replace with your collection name
         const chatHistory = await collection.findOne({ whatsapp_id: id });
@@ -64,13 +65,32 @@ async function retrieveChatHistory(id) {
     }
 }
 
+async function addChatData(id, data) {
+    try {
+        await client.connect();
+        const collection = client.db("project").collection("chat_history"); // replace "test" and "users" with your database and collection name
+        const query = { whatsapp_id: id };
+        const update = {
+            $setOnInsert: { whatsapp_id: id },
+            $push: { message: data },
+        };
+        const options = { upsert: true };
+        const result = await collection.updateOne(query, update, options);
+        console.log(`A document was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
+    } catch (err) {
+        console.error(err);
+    } finally {
+        await client.close();
+    }
+}
+
 App.post('/chatgpt', async (req, res) => {
 
     let message = req.body.data.message
     let whatsapp_id = req.body.data.whatsapp_id
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
-    await connectToMongoDB()
+    // await connectToMongoDB()
     const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     console.log("past messages data received by chatgpt", pastMessagesData)
 
@@ -79,17 +99,17 @@ App.post('/chatgpt', async (req, res) => {
     const chat = new ChatOpenAI({ temperature: 0 });
 
     // initiating memory and past messages
-    let pastMessages = await pastMessagesData.map((obj) => {
-        return [
-            new HumanChatMessage((obj.client).toString()),
-            new AIChatMessage((obj.bot).toString()),
-        ];
-    });
+    // let pastMessages = await pastMessagesData.map((obj) => {
+    //     return [
+    //         new HumanChatMessage((obj.client).toString()),
+    //         new AIChatMessage((obj.bot).toString()),
+    //     ];
+    // });
 
-    // const pastMessages = [
-    //     new HumanChatMessage((pastMessagesData.map((obj) => { return (obj.client) })).toString()),
-    //     new AIChatMessage((pastMessagesData.map((obj) => { return (obj.bot) })).toString())
-    // ]
+    const pastMessages = [
+        new HumanChatMessage((pastMessagesData.map((obj) => { return (obj.client) })).toString()),
+        new AIChatMessage((pastMessagesData.map((obj) => { return (obj.bot) })).toString())
+    ]
 
     console.log("past messages", pastMessages)
 
@@ -110,7 +130,7 @@ App.post('/chatgpt', async (req, res) => {
     ]);
 
     // initiating chain with memory function and chatprompt which introduces templates
-    const chain =  new ConversationChain({
+    const chain = new ConversationChain({
         prompt: chatPrompt,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
@@ -119,17 +139,20 @@ App.post('/chatgpt', async (req, res) => {
         }),
         llm: chat,
     });
-
-    console.log("chain", chain)
-
-
+    // console.log("chain", chain)
     try {
         const response = await chain.call({
             input: `${message}`
         })
 
-
         res.send(response)
+
+        let data = {
+            "client": `${message}`,
+            "bot": `${response}`
+        }
+
+        await addChatData(whatsapp_id, data)
 
     } catch (err) {
         console.error("Error in POST /chatgpt:", err);
