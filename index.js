@@ -198,30 +198,26 @@ App.post('/chatgpt', async (req, res) => {
     });
 
     // Now set up the router and it's template
-    let routerTemplate = 'Given a raw text input to a ' +
-        'language model select the model prompt best suited for the input. ' +
-        'You will be given the names of the available prompts and a ' +
-        'description of what the prompt is best suited for. ' +
-        'You may also revise the original input if you think that revising ' +
-        'it will ultimately lead to a better response from the language model.\n\n' +
-        '<< FORMATTING >>\n' +
-        'Return a markdown code snippet with a JSON object formatted to look like:\n' +
-        '```json\n' +
-        '{{\n' +
-        '    "destination": string, // name of the prompt to use or "DEFAULT"\n' +
-        '    "next_inputs": string // a potentially modified version of the original input\n' +
-        '}}\n' +
-        '```\n\n' +
-        'REMEMBER: "destination" MUST be one of the candidate prompt ' +
-        'names specified below OR it can be "DEFAULT" if the input is not ' +
-        'well suited for any of the candidate prompts. ' +
-        'REMEMBER: "next_inputs" can just be the original input ' +
-        'if you don\'t think any modifications are needed.\n\n' +
-        '<< CANDIDATE PROMPTS >>\n' +
-        '{destinations}\n\n' +
-        '<< INPUT >>\n' +
-        '{input}\n\n' +
-        '<< OUTPUT (remember to include the ```json)>>';
+    let routerTemplate =
+        `Based on the input question to an large language model take the following steps:` +
+        `1) decide if the question can be answered by any of the destinations based on the destination descriptions.` +
+        `2) If none of the destinations are a good fit use "DEFAULT" as the response, For example if the question is about pharmacology but there is no "health care" destination use DEFAULT.` +
+        `3) Check is set to DEFAULT, if there is no match or set it to DEFAULT.` +
+        `4) You may also revise the original input if you think that revising it will ultimately lead to a better response from the language model.` +
+        `You ONLY have the following destinations to choose from:` +
+        `<Destinations>` +
+        `{destinations}` +
+        `<Destinations>` +
+        `This is the question provided:` +
+        `<Input>` +
+        `{input}` +
+        `<Input>` +
+        `When you respond be sure to use the following format:` +
+        `<Formatting>` +
+        `{format_instructions}` +
+        `<Formatting>` +
+        `IMPORTANT: "destination" MUST be one of the destination names provided OR it can be "DEFAULT" if there is no good match.` +
+        `IMPORTANT: "next_inputs" can just be the original input if you don't think any modifications are needed.`
 
     // Now we can construct the router with the list of route names and descriptions
     routerTemplate = routerTemplate.replace('{destinations}', destinations);
