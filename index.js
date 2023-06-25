@@ -153,7 +153,7 @@ App.post('/chatgpt', async (req, res) => {
     for (const item of templates) {
         let prompt = ChatPromptTemplate.fromPromptMessages([SystemMessagePromptTemplate.fromTemplate(`${item.template}`),
         new MessagesPlaceholder("chat_history"),
-        HumanMessagePromptTemplate.fromTemplate("{input")]);
+        HumanMessagePromptTemplate.fromTemplate("{input}")]);
         let chain = new ConversationChain({
             prompt: prompt,
             memory: new BufferMemory({
