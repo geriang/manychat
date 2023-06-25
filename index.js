@@ -106,6 +106,7 @@ App.post('/chatgpt', async (req, res) => {
 
 
     // defining the prompt templates
+
     let templates = [
         {
             name: 'agent',
@@ -169,9 +170,28 @@ App.post('/chatgpt', async (req, res) => {
     let destinations = templates.map(item => (item.name + ': ' + item.description)).join('\n');
 
     // Create a default destination in case the LLM cannot decide
-    let defaultPrompt = PromptTemplate.fromTemplate('{input}');
+    const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
+        SystemMessagePromptTemplate.fromTemplate(`You are a helpful real estate agent Bot from Huttons Sales & Auction.
+         Your job is to answer to enquiries from both co-broke agents and prospective clients truthfully. 
+         If there is any information that you cannot find, you have to refer the enquirer to contact Geri @ 84430486 for more information. 
+         Always keep your reply to not more than 255 characters.
+         At the start of an incoming enquiry, you need to determine the following:
+         1. Who is the enquirer? Is the person a direct client or a co-broke agent?
+         2. What is the nature of enquiry? Is it a sales enquiry, rental enquiry or general enquiry?
+         3. Which property or property address is the enquirer enquirying on? 
+         4. From where did the enquirer find the contact information to start the enquiry?
+         `),
+        new MessagesPlaceholder("chat_history"),
+        HumanMessagePromptTemplate.fromTemplate("{input}"),
+    ]);
 
-    let defaultChain = new LLMChain({ llm: llm, prompt: defaultPrompt });
+    let defaultChain = new ConversationChain({ llm: llm, 
+        prompt: defaultPrompt, 
+        memory: new BufferMemory({
+        chatHistory: new ChatMessageHistory(pastMessages),
+        returnMessages: true,
+        memoryKey: "chat_history"
+    }) });
 
     // Now set up the router and it's template
     let routerTemplate = 'Given a raw text input to a ' +
@@ -237,21 +257,6 @@ App.post('/chatgpt', async (req, res) => {
 
     console.log("multiPromptChain", multiPromptChain)
 
-    // const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-    //     SystemMessagePromptTemplate.fromTemplate(`You are a helpful real estate agent Bot from Huttons Sales & Auction.
-    //      Your job is to answer to enquiries from both co-broke agents and prospective clients truthfully. 
-    //      If there is any information that you cannot find, you have to refer the enquirer to contact Geri @ 84430486 for more information. 
-    //      Always keep your reply to not more than 255 characters.
-    //      At the start of an incoming enquiry, you need to determine the following:
-    //      1. Who is the enquirer? Is the person a direct client or a co-broke agent?
-    //      2. What is the nature of enquiry? Is it a sales enquiry, rental enquiry or general enquiry?
-    //      3. Which property or property address is the enquirer enquirying on? 
-    //      4. From where did the enquirer find the contact information to start the enquiry?
-    //      `),
-    //     new MessagesPlaceholder("chat_history"),
-    //     HumanMessagePromptTemplate.fromTemplate("{input}"),
-    // ]);
-
 
     // const promptTemplates = [physicsTemplate, mathTemplate, historyTemplate];
 
@@ -278,7 +283,9 @@ App.post('/chatgpt', async (req, res) => {
     try {
         // const response = await chain.call({
         //     input: `${message}`
-        const response = await multiPromptChain.run(`${message}`)
+        const response = await multiPromptChain.run({
+            input: `${message}`
+        })
 
         res.send(response)
 
