@@ -278,9 +278,7 @@ App.post('/chatgpt', async (req, res) => {
     try {
         // const response = await chain.call({
         //     input: `${message}`
-        const response = await multiPromptChain.run({
-            input: `${message}`
-        })
+        const response = await multiPromptChain.run(`${message}`)
 
         res.send(response)
 
