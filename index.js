@@ -185,13 +185,15 @@ App.post('/chatgpt', async (req, res) => {
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
-    let defaultChain = new ConversationChain({ llm: llm, 
-        prompt: defaultPrompt, 
+    let defaultChain = new ConversationChain({
+        llm: llm,
+        prompt: defaultPrompt,
         memory: new BufferMemory({
-        chatHistory: new ChatMessageHistory(pastMessages),
-        returnMessages: true,
-        memoryKey: "chat_history"
-    }) });
+            chatHistory: new ChatMessageHistory(pastMessages),
+            returnMessages: true,
+            memoryKey: "chat_history"
+        })
+    });
 
     // Now set up the router and it's template
     let routerTemplate = 'Given a raw text input to a ' +
@@ -201,7 +203,8 @@ App.post('/chatgpt', async (req, res) => {
         'You may also revise the original input if you think that revising ' +
         'it will ultimately lead to a better response from the language model.\n\n' +
         '<< FORMATTING >>\n' +
-        'Return a markdown code snippet to look like:\n' +
+        'Return a markdown code snippet with a JSON object formatted to look like:\n' +
+        '```json\n' +
         '{{\n' +
         '    "destination": string, // name of the prompt to use or "DEFAULT"\n' +
         '    "next_inputs": string // a potentially modified version of the original input\n' +
@@ -218,22 +221,13 @@ App.post('/chatgpt', async (req, res) => {
         '{input}\n\n' +
         '<< OUTPUT (remember to include the ```json)>>';
 
-
-    // 
+    // ***
     let routerParser = RouterOutputParser.fromNamesAndDescriptions({
         destination: 'name of the prompt to use or "DEFAULT"',
         next_inputs: 'a potentially modified version of the original input'
     });
 
-    // let routerFormat = routerParser.getFormatInstructions();
-    // console.log("router format",routerFormat);
-
-    // let result = routerParser.parse('```json\n{\n' +
-    //     '    "destination": "physics",\n' +
-    //     '    "next_inputs": "What is black body radiation?"\n' +
-    //     '}\n```');
-
-    //   
+    // ***
 
     // Now we can construct the router with the list of route names and descriptions
     routerTemplate = routerTemplate.replace('{destinations}', destinations);
@@ -278,11 +272,11 @@ App.post('/chatgpt', async (req, res) => {
     // });
 
     // console.log("chain", chain)
-    
+
     try {
         // const response = await chain.call({
         //     input: `${message}`
-        const response = await multiPromptChain.run({
+        const response = await multiPromptChain.call({
             input: `${message}`
         })
 
