@@ -206,8 +206,8 @@ App.post('/chatgpt', async (req, res) => {
         next_inputs: 'a potentially modified version of the original input',
     });
 
-    let routerFormat = routerParser.getFormatInstructions();
-    console.log("router format",routerFormat);
+    // let routerFormat = routerParser.getFormatInstructions();
+    // console.log("router format",routerFormat);
 
     // let result = routerParser.parse('```json\n{\n' +
     //     '    "destination": "physics",\n' +
@@ -234,6 +234,8 @@ App.post('/chatgpt', async (req, res) => {
         defaultChain,
         verbose: true
     });
+
+    console.log("multiPromptChain", multiPromptChain)
 
     // const chatPrompt = ChatPromptTemplate.fromPromptMessages([
     //     SystemMessagePromptTemplate.fromTemplate(`You are a helpful real estate agent Bot from Huttons Sales & Auction.
