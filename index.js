@@ -220,10 +220,10 @@ App.post('/chatgpt', async (req, res) => {
 
 
     // 
-    // let routerParser = RouterOutputParser.fromNamesAndDescriptions({
-    //     destination: 'client',
-    //     next_inputs: {},
-    // });
+    let routerParser = RouterOutputParser.fromNamesAndDescriptions({
+        destination: 'name of the prompt to use or "DEFAULT"',
+        next_inputs: 'a potentially modified version of the original input'
+    });
 
     // let routerFormat = routerParser.getFormatInstructions();
     // console.log("router format",routerFormat);
@@ -241,7 +241,7 @@ App.post('/chatgpt', async (req, res) => {
     let routerPrompt = new PromptTemplate({
         template: routerTemplate,
         inputVariables: ['input'],
-        outputParser: new RouterOutputParser()
+        outputParser: routerParser
     });
 
     let routerChain = LLMRouterChain.fromLLM(llm, routerPrompt);
