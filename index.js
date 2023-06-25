@@ -201,8 +201,7 @@ App.post('/chatgpt', async (req, res) => {
         'You may also revise the original input if you think that revising ' +
         'it will ultimately lead to a better response from the language model.\n\n' +
         '<< FORMATTING >>\n' +
-        'Return a markdown code snippet with a JSON object formatted to look like:\n' +
-        '```json\n' +
+        'Return a markdown code snippet to look like:\n' +
         '{{\n' +
         '    "destination": string, // name of the prompt to use or "DEFAULT"\n' +
         '    "next_inputs": string // a potentially modified version of the original input\n' +
@@ -221,10 +220,10 @@ App.post('/chatgpt', async (req, res) => {
 
 
     // 
-    let routerParser = RouterOutputParser.fromNamesAndDescriptions({
-        destination: 'client',
-        next_inputs: `${message}`,
-    });
+    // let routerParser = RouterOutputParser.fromNamesAndDescriptions({
+    //     destination: 'client',
+    //     next_inputs: {},
+    // });
 
     // let routerFormat = routerParser.getFormatInstructions();
     // console.log("router format",routerFormat);
@@ -242,7 +241,7 @@ App.post('/chatgpt', async (req, res) => {
     let routerPrompt = new PromptTemplate({
         template: routerTemplate,
         inputVariables: ['input'],
-        outputParser: routerParser
+        outputParser: new RouterOutputParser()
     });
 
     let routerChain = LLMRouterChain.fromLLM(llm, routerPrompt);
