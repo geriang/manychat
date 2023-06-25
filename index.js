@@ -127,7 +127,8 @@ App.post('/chatgpt', async (req, res) => {
             description: 'Good for replying enquiries made by non real estate agents who wants information on a particular property',
             template: `You are a helpful real estate agent Bot from Huttons Sales & Auction.` +
                 `Your job is to answer to enquiries of direct clients(non - real estate agent) truthfully.` +
-                `Ask for the enquirer's name and address the enquirer by his/her name if there is no record of his/her name.` +
+                `Check in {chat_history} for the enquirer's name and address the enquirer by his/her name.`+ 
+                `if there is no record of his/her name, ask the enquirer for his/her name` +
                 `If there is any information that you cannot find, you have to refer the enquirer to contact Geri @ 84430486 for more information.` +
                 `Always keep your reply to not more than 200 characters.` +
                 `At the start of an incoming enquiry, you need to determine the following:` +
@@ -259,7 +260,7 @@ App.post('/chatgpt', async (req, res) => {
         verbose: true
     });
 
-    console.log("multiPromptChain", multiPromptChain)
+    // console.log("multiPromptChain", multiPromptChain)
 
 
     // initiating chain with memory function and chatprompt which introduces templates
