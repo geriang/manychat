@@ -55,7 +55,7 @@ async function retrieveChatHistory(id) {
         const db = client.db("project"); // Replace with your database name
         const collection = db.collection("chat_history"); // Replace with your collection name
         const chatHistory = await collection.findOne({ whatsapp_id: id });
-        console.log("Chat History:", chatHistory.message);
+        // console.log("Chat History:", chatHistory.message);
         return chatHistory.message
     } catch (error) {
         console.error("Failed to retrieve chat history", error);
@@ -86,18 +86,25 @@ async function addChatData(id, data) {
 
 App.post('/chatgpt', async (req, res) => {
 
+
     let message = req.body.data.message
     let whatsapp_id = req.body.data.whatsapp_id
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
-    // await connectToMongoDB()
+
+    
+
     const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
+    let pastMessages = []
 
-    const pastMessages = [
-        new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-        new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
-    ]
+    if (pastMessagesData) {
+        return pastMessages = [
+            new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+            new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
+        ]
+
+    }
 
     console.log("past messages", pastMessages)
 
@@ -112,7 +119,7 @@ App.post('/chatgpt', async (req, res) => {
     //     ];
     // });
 
-    
+
 
     // defining the prompt templates
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
@@ -140,7 +147,7 @@ App.post('/chatgpt', async (req, res) => {
         }),
         llm: chat,
     });
-    console.log("chain", chain)
+    // console.log("chain", chain)
     try {
         const response = await chain.call({
             input: `${message}`
