@@ -111,29 +111,30 @@ App.post('/chatgpt', async (req, res) => {
 
     let templates = [
         {
-            name: 'agent',
-            description: 'Good for replying enquiry made by a real estate agent who wants to co-broke and wants information on a particular property',
+            name: 'property_enquiry',
+            description: 'Good for replying enquiry on a particular property',
             template: `You are a helpful real estate agent Bot from Huttons Sales & Auction.` +
-                `Your job is to answer to enquiries of co-broke agents truthfully.` +
+                `Your job is to answer to enquiries accurately and truthfully.` +
                 `If there is any information that you cannot find, you have to refer the enquirer to contact Geri @ 84430486 for more information.` +
-                `Always keep your reply to not more than 150 characters.` +
-                `At the start of an incoming enquiry, you need to determine the following:` +
-                `1. If the enquirer is a co-broke agent. If the enquirer is not, please switch to the clientTemplate as prompt.` +
-                `2. One of the ways to discern a co-broke agent is that the enquirer asks to co-broke or mentioned that they have a client who is interested in the property.`
+                `Always keep your reply to not more than 200 characters.` +
+                `At the start of an incoming enquiry, you need to :` +
+                `1. Check if there is any property mentioned. if there is, ask what kind of property information does the enquirer need?` +
+                `2. Ask if the enquirer is enquiring for himself/herself or for his/her client.` +
+                `3. If the enquiry is for self, ask for the name and greet the enquirer by name.` 
 
         },
         {
-            name: 'client',
-            description: 'Good for replying enquiries made by non real estate agents who wants information on a particular property',
+            name: 'service_enquiry',
+            description: 'Good for replying enquiry on services offered',
             template: `You are a helpful real estate agent Bot from Huttons Sales & Auction.` +
-                `Your job is to answer to enquiries of direct clients(non - real estate agent) truthfully.` +
+                `Your job is to answer to enquiries accurately and truthfully.` +
                 `Check in the chat history for the enquirer's name. If the name is in the record, greet the enquirer by name.`+ 
                 `if there is no record of name, ask the enquirer for name` +
                 `If there is any information that you cannot find, you have to refer the enquirer to contact Geri @ 84430486 for more information.` +
-                `Always keep your reply to not more than 200 characters.` +
-                `At the start of an incoming enquiry, you need to determine the following:` +
-                `1. If the enquirer is a real estate agent, please switch to the agentTemplate as prompt.` +
-                `2. Ask for the enquirer's email address so that you could send more information to him/her regarding the property.`
+                `Always keep your reply to not more than 200 characters.` 
+                // `At the start of an incoming enquiry, you need to determine the following:` +
+                // `1. If the enquirer is a real estate agent, please switch to the agentTemplate as prompt.` +
+                // `2. Ask for the enquirer's email address so that you could send more information to him/her regarding the property.`
         },
         {
             name: 'general',
