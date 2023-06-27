@@ -113,6 +113,7 @@ App.post('/webhook', async (req, res) => {
         let profile_name = JSON.stringify(data.entry[0].changes[0].value.contacts[0].profile.name);
         // console.log("contacts", data.entry[0].changes[0].value.contacts)
         // console.log("messages", data.entry[0].changes[0].value.messages)
+        res.sendStatus(200);
         try {
             const data = {
                 message,
@@ -128,8 +129,6 @@ App.post('/webhook', async (req, res) => {
     } else {
         res.sendStatus(400);
     }
-
-    res.sendStatus(200);
     // if (data.errors) {
     //     // Loop through each error
     //     data.errors.forEach((error) => {
