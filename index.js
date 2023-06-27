@@ -174,12 +174,12 @@ App.post('/chatgpt', async (req, res) => {
         // })
 
         console.log("response", response)
-        console.log("response.output", response.output)
+        // console.log("response.output", response.output)
         res.send(response.output)
 
         let data = {
             "client": `${message}`,
-            "bot": `${response.response}`
+            "bot": `${response.output}`
         }
 
         await addChatData(whatsapp_id, data)
