@@ -157,7 +157,7 @@ App.post('/chatgpt', async (req, res) => {
     // console.log("past messages", pastMessages)
 
     // initiating the chatmodel - openai
-    const llm = new ChatOpenAI({ temperature: 0, modelName:"gpt-3.5-turbo-16k" });
+    const llm = new ChatOpenAI({ temperature: 0 });
 
     //  to embed property listing information
     /* Load in the file we want to do question answering over */
