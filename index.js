@@ -182,11 +182,11 @@ App.post('/chatgpt', async (req, res) => {
     // define the tools available
     const tools = [
         new Calculator(),
-        new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
-            location: "Singapore",
-            hl: "en",
-            gl: "sg",
-        }),
+        // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
+        //     location: "Singapore",
+        //     hl: "en",
+        //     gl: "sg",
+        // }),
         propertyDatabaseTool,
     ];
 
