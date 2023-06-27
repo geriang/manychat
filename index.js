@@ -175,7 +175,7 @@ App.post('/chatgpt', async (req, res) => {
 
         console.log("response", response)
         // console.log("response.output", response.output)
-        res.send(response.output)
+        res.send(response)
 
         let data = {
             "client": `${message}`,
