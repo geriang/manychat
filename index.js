@@ -102,29 +102,30 @@ App.post('/webhook', async (req, res) => {
     console.log('Webhook received:', data);
 
     // Handle different types of messages
-    if (data.entry&&
-        data.entry[0].changes[0].value.messages&&
-        data.entry[0].changes[0].value.messages[0]) {
-    // Handle text message
-    let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body);
-    let phone_number = data.entry[0].changes[0].value.metadata.phone_number_id;
-    // let from = data.entry[0].changes[0].value.message[0].from;
-    console.log("contacts",data.entry[0].changes[0].value.contacts)
-    console.log("messages",data.entry[0].changes[0].value.messages)
-    console.log("message, phone_number, from", message, phone_number)
+    if (data.entry &&
+        data.entry[0].changes[0].value.messages &&
+        data.entry[0].changes[0].value.contacts) {
+        // Handle text message
+        let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body);
+        let whatsapp_id = JSON.stringify(data.entry[0].changes[0].value.contacts[0].wa_id);
+        let profile_name = JSON.stringify(data.entry[0].changes[0].value.contacts[0].profile.name);
+        console.log("contacts", data.entry[0].changes[0].value.contacts)
+        console.log("messages", data.entry[0].changes[0].value.messages)
 
-    try {
-        const data = { "message":message,
-                     "whatsapp_id": phone_number }
-        await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
-        res.sendStatus(200);
+        try {
+            const data = {
+                message,
+                whatsapp_id,
+                profile_name
+            }
+            await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
+            res.sendStatus(200);
 
-    } catch (err) {
-        console.error("Error in POST /webhook:", err);
-        res.sendStatus(200);
-    }
+        } catch (err) {
+            console.error("Error in POST /webhook:", err);
+            res.sendStatus(200);
+        }
 
-    // Add handling for other message types if needed
     }
 
     if (data.errors) {
@@ -142,11 +143,12 @@ App.post('/webhook', async (req, res) => {
 
 App.post('/chatgpt', async (req, res) => {
 
-    let message = req.body.data.message
-    let whatsapp_id = req.body.data.whatsapp_id
+    // console.log("chatgpt req.body", req.body)
+    // let message = req.body.data.message
+    // let whatsapp_id = req.body.data.whatsapp_id
     console.log("req.body received by chatgpt", req.body)
-    console.log("message received by chatgpt", message)
-    console.log("whatsappid received by chatgpt", whatsapp_id)
+    // console.log("message received by chatgpt", message)
+    // console.log("whatsappid received by chatgpt", whatsapp_id)
 
     const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
