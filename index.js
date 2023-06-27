@@ -157,7 +157,7 @@ App.post('/chatgpt', async (req, res) => {
     // console.log("past messages", pastMessages)
 
     // initiating the chatmodel - openai
-    const llm = new ChatOpenAI({ temperature: 0 });
+    const llm = new ChatOpenAI({ temperature: 0, modelName:"gpt-3.5-turbo-16k" });
 
     //  to embed property listing information
     /* Load in the file we want to do question answering over */
@@ -202,7 +202,7 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "you are a Real Estate Chatbot from Huttons Sales & Auction in Singapore. Your priority is to chat with enquirers and use tools only when you need to search for real estate related information. Extract the enquirer's name from {chat_history} and greet the enquirer by name if any. Otherwise, ask for a name. ",
+            prefix: "you are a Real Estate Chatbot from Huttons Sales & Auction in Singapore. Your priority is to chat with enquirers and use tools only when you need to search for real estate related information.",
             suffix: "Keep reply concise and within 200 characters"
         }
     });
