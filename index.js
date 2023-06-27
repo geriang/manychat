@@ -188,23 +188,7 @@ App.post('/chatgpt', async (req, res) => {
     const tools = [
         new Calculator(), // Older existing single input tools will still work
         propertyDatabaseTool,
-        // greetingTool
-        // new DynamicTool({
-        //   name: "conversation etiquette",
-        //   description:
-        //     "You are a helpful real estate agent Bot from Huttons Sales & Auction that answers to queries. If there are no relevant tools to use, just greet and ask for the enquirer's name!.",
-        //     func: () => "reply as you wish base on input"
-        // }),
-        // new DynamicStructuredTool({
-        //   name: "property_listing_database",
-        //   description: "a tool to search for available property listings by Huttons Sales & Auction.",
-        //   schema: z.object({
-        //     low: z.number().describe("The lower bound of the generated number"),
-        //     high: z.number().describe("The upper bound of the generated number"),
-        //   }),
-        //   func: async ({ low, high }) =>
-        //     (Math.random() * (high - low) + low).toString(), // Outputs still must be strings
-        // }),
+
     ];
 
 
@@ -226,14 +210,30 @@ App.post('/chatgpt', async (req, res) => {
     });
 
     try {
-        const response = await executor.call({ input: `${message}` });
-        // const response = await multiPromptChain.call({
-        //     input: `${message}`
-        // })
 
+        const version = process.env.WHATSAPP_VERSION
+        const phoneNumberID = process.env.PHONE_NUMBER_ID
+        const response = await executor.call({ input: `${message}` });
         console.log("response", response)
-        // console.log("response.output", response.output)
-        res.send(response)
+
+        await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
+
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": `${whatsapp_id}`,
+            "type": "text",
+            "text": {
+                "preview_url": true,
+                "body": `${response.output}`,
+            }
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
+            }
+        })
+        // res.send(response)
+
 
         let data = {
             "client": `${message}`,
@@ -241,6 +241,7 @@ App.post('/chatgpt', async (req, res) => {
         }
 
         await addChatData(whatsapp_id, data)
+        res.sendStatus(200);
 
     } catch (err) {
         console.error("Error in POST /chatgpt:", err);
