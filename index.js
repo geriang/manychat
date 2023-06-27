@@ -125,9 +125,7 @@ App.post('/webhook', async (req, res) => {
             console.error("Error in POST /webhook:", err);
             res.sendStatus(200);
         }
-
     }
-
     if (data.errors) {
         // Loop through each error
         data.errors.forEach((error) => {
@@ -187,7 +185,12 @@ App.post('/chatgpt', async (req, res) => {
 
     // define the tools available
     const tools = [
-        new Calculator(), // Older existing single input tools will still work
+        new Calculator(), 
+        new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
+            location: "Singapore",
+            hl: "en",
+            gl: "sg",
+          }),
         propertyDatabaseTool,
     ];
 
