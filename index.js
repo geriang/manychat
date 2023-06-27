@@ -100,14 +100,12 @@ App.get('/webhook', (req, res) => {
 App.post('/webhook', async (req, res) => {
     // WhatsApp sends data as JSON in the body of the request
     let data = req.body;
-    // Log received data for debugging
-    // console.log('Webhook received:', data);
-
     // Handle different types of messages
     if (data.entry &&
         data.entry[0].changes[0].value.messages &&
         data.entry[0].changes[0].value.contacts) {
         // Handle text message
+        data.entry[0].changes[0].value.messages = data.entry[0].changes[0].value.messages.filter((message) => message.timestamp > (Date.now() - 1000 * 60 * 5)/1000);
         let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body);
         let whatsapp_id = JSON.stringify(data.entry[0].changes[0].value.contacts[0].wa_id);
         let profile_name = JSON.stringify(data.entry[0].changes[0].value.contacts[0].profile.name);
