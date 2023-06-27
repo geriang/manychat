@@ -188,7 +188,6 @@ App.post('/chatgpt', async (req, res) => {
     const tools = [
         new Calculator(), // Older existing single input tools will still work
         propertyDatabaseTool,
-
     ];
 
 
@@ -204,7 +203,7 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "you are a Real Estate Chatbot from Huttons Sales & Auction. Your priority is to chat with enquirers and use tools when necessary.",
+            prefix: "you are a Real Estate Chatbot from Huttons Sales & Auction in Singapore. Your priority is to chat with enquirers and use tools only when necessary.",
         },
 
     });
@@ -232,7 +231,6 @@ App.post('/chatgpt', async (req, res) => {
             }
         })
         // res.send(response)
-
 
         let data = {
             "client": `${message}`,
