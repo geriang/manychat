@@ -106,7 +106,7 @@ App.post('/webhook', async (req, res) => {
         data.entry[0].changes[0].value.messages&&
         data.entry[0].changes[0].value.messages[0]) {
     // Handle text message
-    let message = data.entry[0].changes[0].value.messages[0].text.body;
+    let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body);
     let phone_number = data.entry[0].changes[0].value.metadata.phone_number_id;
     // let from = data.entry[0].changes[0].value.message[0].from;
     console.log("message, phone_number, from", message, phone_number)
