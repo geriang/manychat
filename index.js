@@ -83,10 +83,62 @@ async function addChatData(id, data) {
     }
 }
 
+// Whatsapp webhook
+App.get('/webhook', (req, res) => {
+    if (req.query['hub.mode'] === 'subscribe' &&
+        req.query['hub.verify_token'] === VERIFY_TOKEN) {
+        // console.log('Validating webhook');
+        res.status(200).send(req.query['hub.challenge']);
+    } else {
+        console.error('Failed validation. Make sure the validation tokens match.');
+        res.sendStatus(403);
+    }
+});
+
+App.post('/webhook', async (req, res) => {
+    // WhatsApp sends data as JSON in the body of the request
+    let data = req.body;
+    // Log received data for debugging
+    console.log('Webhook received:', data);
+
+    // Handle different types of messages
+    if (data.entry) {
+    // Handle text message
+    let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body)
+    let phone_number = data.entry[0].changes[0].value.metadata.phone_number_id;
+    let from = data.entry[0].changes[0].value.message[0].from;
+
+    try {
+        const data = { message, "whatsapp_id": phone_number }
+        await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
+        res.sendStatus(200);
+
+    } catch (err) {
+        console.error("Error in POST /webhook:", err);
+        res.sendStatus(200);
+    }
+
+    // Add handling for other message types if needed
+    }
+
+    if (data.errors) {
+        // Loop through each error
+        data.errors.forEach((error) => {
+            console.log('Received error:', error);
+        });
+
+        res.sendStatus(200);
+    }
+});
+
+// whatsapp webhook end
+
+
 App.post('/chatgpt', async (req, res) => {
 
     let message = req.body.data.message
     let whatsapp_id = req.body.data.whatsapp_id
+    console.log("req.body received by chatgpt", req.body)
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
 
