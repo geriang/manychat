@@ -105,7 +105,7 @@ App.post('/webhook', async (req, res) => {
         data.entry[0].changes[0].value.messages &&
         data.entry[0].changes[0].value.contacts) {
         // Handle text message
-        data.entry[0].changes[0].value.messages = data.entry[0].changes[0].value.messages.filter((message) => message.timestamp > (Date.now() - 1000 * 60 * 5)/1000);
+        // data.entry[0].changes[0].value.messages = data.entry[0].changes[0].value.messages.filter((message) => message.timestamp > (Date.now() - 1000 * 60 * 5)/1000);
         let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body);
         let whatsapp_id = JSON.stringify(data.entry[0].changes[0].value.contacts[0].wa_id);
         let profile_name = JSON.stringify(data.entry[0].changes[0].value.contacts[0].profile.name);
@@ -203,7 +203,7 @@ App.post('/chatgpt', async (req, res) => {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
             prefix: "you are a Real Estate Chatbot from Huttons Sales & Auction in Singapore. Your priority is to chat with enquirers and use tools only when necessary. Keep reply concise and within 200 characters",
-            suffix: "Extract the enquirer's name from chat history and greet the enquirer by name if any. Otherwise, ask for a name."
+            suffix: "Extract the enquirer's name from {chat_history} and greet the enquirer by name if any. Otherwise, ask for a name."
         }
     });
 
