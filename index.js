@@ -108,7 +108,7 @@ App.post('/webhook', async (req, res) => {
     // Handle text message
     let message = data.entry[0].changes[0].value.messages[0].text.body;
     let phone_number = data.entry[0].changes[0].value.metadata.phone_number_id;
-    let from = data.entry[0].changes[0].value.message[0].from;
+    // let from = data.entry[0].changes[0].value.message[0].from;
 
     try {
         const data = { message, "whatsapp_id": phone_number }
