@@ -88,7 +88,8 @@ App.get('/webhook', (req, res) => {
     if (req.query['hub.mode'] === 'subscribe' &&
         req.query['hub.verify_token'] === WHATSAPP_WEBHOOK_TOKEN) {
         // console.log('Validating webhook');
-        res.status(200).send(req.query['hub.challenge']);
+        res.sendStatus(200)
+        // res.status(200).send(req.query['hub.challenge']);
     } else {
         console.error('Failed validation. Make sure the validation tokens match.');
         res.sendStatus(403);
@@ -189,7 +190,6 @@ App.post('/chatgpt', async (req, res) => {
         new Calculator(), // Older existing single input tools will still work
         propertyDatabaseTool,
     ];
-
 
     // initialize the agent
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
