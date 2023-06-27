@@ -90,6 +90,7 @@ App.get('/webhook', (req, res) => {
         // console.log('Validating webhook');
         // res.sendStatus(200)
         res.status(200).send(req.query['hub.challenge']);
+        // res.sendStatus(200)
     } else {
         console.error('Failed validation. Make sure the validation tokens match.');
         res.sendStatus(403);
@@ -119,21 +120,22 @@ App.post('/webhook', async (req, res) => {
                 profile_name
             }
             await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
-            res.sendStatus(200);
 
         } catch (err) {
             console.error("Error in POST /webhook:", err);
-            res.sendStatus(200);
-        }
-    }
-    if (data.errors) {
-        // Loop through each error
-        data.errors.forEach((error) => {
-            console.log('Received error:', error);
-        });
 
-        res.sendStatus(200);
+        }
+    } else {
+        res.sendStatus(400);
     }
+
+    res.sendStatus(200);
+    // if (data.errors) {
+    //     // Loop through each error
+    //     data.errors.forEach((error) => {
+    //         console.log('Received error:', error);
+    //     });
+    // }
 });
 
 // whatsapp webhook end
@@ -185,12 +187,12 @@ App.post('/chatgpt', async (req, res) => {
 
     // define the tools available
     const tools = [
-        new Calculator(), 
+        new Calculator(),
         new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
             location: "Singapore",
             hl: "en",
             gl: "sg",
-          }),
+        }),
         propertyDatabaseTool,
     ];
 
@@ -207,7 +209,7 @@ App.post('/chatgpt', async (req, res) => {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
             prefix: "you are a Real Estate Chatbot from Huttons Sales & Auction in Singapore. Your priority is to chat with enquirers and use tools only when necessary.",
-            suffix: "keep your replies concise and within 200 characters."
+            suffix: "keep replies concise and within 200 characters. Extract the enquirer's name from chat history and greet the enquirer by name if any. Otherwise, ask for a name."
         },
 
     });
