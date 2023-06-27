@@ -86,7 +86,7 @@ async function addChatData(id, data) {
 // Whatsapp webhook
 App.get('/webhook', (req, res) => {
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === VERIFY_TOKEN) {
+        req.query['hub.verify_token'] === WHATSAPP_WEBHOOK_TOKEN) {
         // console.log('Validating webhook');
         res.status(200).send(req.query['hub.challenge']);
     } else {
