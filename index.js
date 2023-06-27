@@ -26,21 +26,11 @@ App.use(express.urlencoded({
 
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const {
-    PromptTemplate,
-    ChatPromptTemplate,
     MessagesPlaceholder,
-    HumanMessagePromptTemplate,
-    SystemMessagePromptTemplate,
 } = require("langchain/prompts");
-const { LLMChain, LLMRouterChain, MultiPromptChain } = require("langchain/chains");
-const { VectorStoreRetrieverMemory } = require("langchain/memory")
-const { RouterOutputParser } = require('langchain/output_parsers');
 const { z } = require("zod")
-const { ConversationChain } = require("langchain/chains");
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
-const { initializeAgentExecutorWithOptions } = require("langchain/agents");
-const { SerpAPI } = require("langchain/tools");
 const { Calculator } = require("langchain/tools/calculator");
 
 const { SerpAPI, ChainTool } = require("langchain/tools");
@@ -94,7 +84,6 @@ async function addChatData(id, data) {
 
 App.post('/chatgpt', async (req, res) => {
 
-
     let message = req.body.data.message
     let whatsapp_id = req.body.data.whatsapp_id
     console.log("message received by chatgpt", message)
@@ -109,7 +98,6 @@ App.post('/chatgpt', async (req, res) => {
             new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
             new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
         ]
-
     }
 
     console.log("past messages", pastMessages)
@@ -126,7 +114,7 @@ App.post('/chatgpt', async (req, res) => {
     /* Create the vectorstore */
     const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
     /* Create the chain */
-    const chain = VectorDBQAChain.fromLLM(model, vectorStore);
+    const chain = VectorDBQAChain.fromLLM(llm, vectorStore);
 
     // create new tool for searching property information
     const propertyDatabaseTool = new ChainTool({
@@ -162,12 +150,13 @@ App.post('/chatgpt', async (req, res) => {
 
 
     // initialize the agent
-    const executor = await initializeAgentExecutorWithOptions(tools, model, {
+    const executor = await initializeAgentExecutorWithOptions(tools, llm, {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         memory: new BufferMemory({
-            memoryKey: "chat_history",
+            chatHistory: new ChatMessageHistory(pastMessages),
             returnMessages: true,
+            memoryKey: "chat_history"
         }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
