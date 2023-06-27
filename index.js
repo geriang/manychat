@@ -103,7 +103,8 @@ App.post('/webhook', async (req, res) => {
 
     // Handle different types of messages
     if (data.entry&&
-        data.entry[0].changes[0].value.messages) {
+        data.entry[0].changes[0].value.messages&&
+        data.entry[0].changes[0].value.messages[0]) {
     // Handle text message
     let message = data.entry[0].changes[0].value.messages[0].text.body;
     let phone_number = data.entry[0].changes[0].value.metadata.phone_number_id;
