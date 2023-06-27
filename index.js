@@ -124,7 +124,6 @@ App.post('/webhook', async (req, res) => {
 
         } catch (err) {
             console.error("Error in POST /webhook:", err);
-
         }
     } else {
         res.sendStatus(400);
@@ -136,9 +135,7 @@ App.post('/webhook', async (req, res) => {
     //     });
     // }
 });
-
 // whatsapp webhook end
-
 
 App.post('/chatgpt', async (req, res) => {
 
@@ -159,7 +156,7 @@ App.post('/chatgpt', async (req, res) => {
         ]
     }
 
-    console.log("past messages", pastMessages)
+    // console.log("past messages", pastMessages)
 
     // initiating the chatmodel - openai
     const llm = new ChatOpenAI({ temperature: 0 });
@@ -207,10 +204,9 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "you are a Real Estate Chatbot from Huttons Sales & Auction in Singapore. Your priority is to chat with enquirers and use tools only when necessary.",
-            suffix: "keep replies concise and within 200 characters. Extract the enquirer's name from chat history and greet the enquirer by name if any. Otherwise, ask for a name."
-        },
-
+            prefix: "you are a Real Estate Chatbot from Huttons Sales & Auction in Singapore. Your priority is to chat with enquirers and use tools only when necessary. Keep reply concise and within 200 characters",
+            suffix: "Extract the enquirer's name from chat history and greet the enquirer by name if any. Otherwise, ask for a name."
+        }
     });
 
     try {
