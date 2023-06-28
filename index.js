@@ -181,12 +181,18 @@ App.post('/chatgpt', async (req, res) => {
 
     // define the tools available
     const tools = [
-        new Calculator(),
+        // new Calculator(),
         new DynamicTool({
             name: "chatting_tool",
             description:
                 "use this tool to simply chat with human.",
             func: async (input) => `${input}`,
+            // func: async (input) =>{
+            //     const chat = new ChatOpenAI();
+            //     return await chat.call([
+            //       new HumanChatMessage(input),
+            //     ]);
+            // },
             returnDirect: true
         }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
