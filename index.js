@@ -182,12 +182,12 @@ App.post('/chatgpt', async (req, res) => {
     // define the tools available
     const tools = [
         new Calculator(),
-        new DynamicTool({
-            name: "chatting_tool",
-            description:
-                "use this tool to simply chat with human.",
-            func: () => "chat. use completion as answer, or ask questions such as what is your name?",
-        }),
+        // new DynamicTool({
+        //     name: "chatting_tool",
+        //     description:
+        //         "use this tool to simply chat with human.",
+        //     func: () => "chat. use completion as answer, or ask questions such as what is your name?",
+        // }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
         //     location: "Singapore",
         //     hl: "en",
@@ -198,7 +198,7 @@ App.post('/chatgpt', async (req, res) => {
 
     // initialize the agent
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
-        agentType: "chat-conversational-react-description",
+        agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 4,
         memory: new BufferMemory({
