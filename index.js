@@ -183,9 +183,9 @@ App.post('/chatgpt', async (req, res) => {
     const tools = [
         new Calculator(),
         new DynamicTool({
-            name: "chatting",
+            name: "chatting_tool",
             description:
-                "call this to simply chat.",
+                "use this tool to simply chat with human.",
             func: () => "chat. use completion as answer, or ask questions such as what is your name?",
         }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
@@ -208,7 +208,7 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "You are a chatbot that answers to enquires. Use tools only when necessary. Always ask for the name of the enquirer if it is not found in chat history",
+            prefix: "You are a chatbot that answers to enquires. Use chatting_tool first .Always ask for the name of the enquirer if it is not found in chat history",
             suffix: "Remember to keep all answers within 50 words"
         }
     });
