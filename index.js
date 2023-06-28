@@ -187,25 +187,13 @@ App.post('/chatgpt', async (req, res) => {
             description:
                 "use this tool to simply chat with human, or when other tools are not found to be suitable",
             func: async (input) => `${input}`,
-            // func: async (input) =>{
-            //     const chat = new ChatOpenAI();
-            //     return await chat.call([
-            //       new HumanChatMessage(input),
-            //     ]);
-            // },
             returnDirect: true
         }),
         new DynamicTool({
             name: "questioning_tool",
             description:
-                "use this tool to ask human question, or when you need more guidance for your tasks",
+                "use this tool to ask human question, or when you need more guidance to your tasks",
             func: async (input) => `${input}`,
-            // func: async (input) =>{
-            //     const chat = new ChatOpenAI();
-            //     return await chat.call([
-            //       new HumanChatMessage(input),
-            //     ]);
-            // },
             returnDirect: true
         }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
@@ -218,7 +206,7 @@ App.post('/chatgpt', async (req, res) => {
 
     // initialize the agent
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
-        agentType: "chat-conversational-react-description",
+        agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 4,
         memory: new BufferMemory({
@@ -229,8 +217,8 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "You are a chatbot that answers to enquires by using chatting_tool first.",
-            suffix: "Remember to "
+            prefix: "You are a chatbot that answers to enquires by using chatting_tool or questioning_tool first.",
+            suffix: "Skip actions when necessary."
         }
     });
 
