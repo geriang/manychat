@@ -29,12 +29,12 @@ const { initializeAgentExecutorWithOptions } = require("langchain/agents");
 const {
     MessagesPlaceholder,
 } = require("langchain/prompts");
-const { z } = require("zod")
+// const { z } = require("zod")
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { Calculator } = require("langchain/tools/calculator");
 
-const { SerpAPI, ChainTool } = require("langchain/tools");
+const { SerpAPI, ChainTool, DynamicTool } = require("langchain/tools");
 const { VectorDBQAChain } = require("langchain/chains");
 const { HNSWLib } = require("langchain/vectorstores/hnswlib");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
@@ -182,6 +182,12 @@ App.post('/chatgpt', async (req, res) => {
     // define the tools available
     const tools = [
         new Calculator(),
+        new DynamicTool({
+            name: "chatting",
+            description:
+                "call this to start chatting with Human.",
+            func: () => "baz",
+        }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
         //     location: "Singapore",
         //     hl: "en",
@@ -192,7 +198,7 @@ App.post('/chatgpt', async (req, res) => {
 
     // initialize the agent
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
-        agentType: "chat-zero-shot-react-description",
+        agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
