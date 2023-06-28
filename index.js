@@ -157,7 +157,7 @@ App.post('/chatgpt', async (req, res) => {
     // console.log("past messages", pastMessages)
 
     // initiating the chatmodel - openai
-    const llm = new ChatOpenAI({ temperature: 0 });
+    const llm = new ChatOpenAI({ temperature: 0, modelName:"GPT-4" });
 
     //  to embed property listing information
     /* Load in the file we want to do question answering over */
@@ -200,7 +200,7 @@ App.post('/chatgpt', async (req, res) => {
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
-        maxIterations: 5,
+        maxIterations: 4,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
             returnMessages: true,
