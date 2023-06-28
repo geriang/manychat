@@ -200,10 +200,11 @@ App.post('/chatgpt', async (req, res) => {
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
+        maxIterations: 3,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
             returnMessages: true,
-            memoryKey: "chat_history"
+            memoryKey: "chat_history",
         }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
