@@ -186,7 +186,8 @@ App.post('/chatgpt', async (req, res) => {
             name: "chatting_tool",
             description:
                 "use this tool to simply chat with human.",
-            func: () => "chat. use completion as answer, or ask questions such as what is your name?",
+            func: () => "chat. use completion as answer, or ask questions such as what is your name? Always ask for the name of the enquirer if it is not found in chat history",
+            returnDirect: true
         }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
         //     location: "Singapore",
@@ -209,8 +210,8 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "You are a chatbot that answers to enquires by using chatting_tool first. Always ask for the name of the enquirer if it is not found in chat history",
-            // suffix: "Remember to keep all answers within 50 words"
+            prefix: "You are a chatbot that answers to enquires by using chatting_tool first.",
+            suffix: "Remember to "
         }
     });
 
