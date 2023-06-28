@@ -186,7 +186,7 @@ App.post('/chatgpt', async (req, res) => {
             name: "chatting",
             description:
                 "call this to simply chat.",
-            func: () => "chat. use completion as answer",
+            func: () => "chat. use completion as answer, or ask questions such as what is your name?",
         }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
         //     location: "Singapore",
