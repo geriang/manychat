@@ -200,7 +200,7 @@ App.post('/chatgpt', async (req, res) => {
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
-        maxIterations: 3,
+        maxIterations: 5,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
             returnMessages: true,
@@ -209,8 +209,8 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "You are a chatbot that answers to enquires. Use chatting_tool first .Always ask for the name of the enquirer if it is not found in chat history",
-            suffix: "Remember to keep all answers within 50 words"
+            prefix: "You are a chatbot that answers to enquires by using chatting_tool first .Always ask for the name of the enquirer if it is not found in chat history",
+            // suffix: "Remember to keep all answers within 50 words"
         }
     });
 
