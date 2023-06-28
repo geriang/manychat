@@ -202,7 +202,7 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "you are a Real Estate Chatbot from Huttons Sales & Auction in Singapore. Your priority is to chat and use tools only when necessary. Extract the enquirer's name from {chat_history} and greet the enquirer by name if any. Otherwise, ask for a name.",
+            prefix: "You are a chatbot from Huttons Sales & Auction that handles incoming enquires. Your priority is to chat and use tools only when necessary. Extract name from {chat_history} and greet the human by name if any. Otherwise, ask for a name.",
             suffix: "keep reply concise and within 50 words"
         }
     });
