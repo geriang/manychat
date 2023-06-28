@@ -185,8 +185,8 @@ App.post('/chatgpt', async (req, res) => {
         new DynamicTool({
             name: "chatting",
             description:
-                "call this to start chatting with Human.",
-            func: () => "baz",
+                "call this to simply chat.",
+            func: () => "chat. use completion as answer",
         }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
         //     location: "Singapore",
@@ -208,15 +208,15 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            // prefix: "Answer the following questions as best you can, use tools only when necessary. You have access to the following tools:",
-            // suffix: "Remember to keep all answers within 50 words"
+            prefix: "You are a chatbot that answers to enquires. Use tools only when necessary. Always ask for the name of the enquirer if it is not found in chat history",
+            suffix: "Remember to keep all answers within 50 words"
         }
     });
 
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await executor.call({ input: `${message}` });
+        const response = await executor.call({ input: `${message}`, timeout:60000 });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
