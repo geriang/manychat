@@ -186,12 +186,7 @@ App.post('/chatgpt', async (req, res) => {
             name: "chatting_tool",
             description:
                 "use this tool to simply chat with human.",
-            func: async (input) =>{
-                const chat = new ChatOpenAI();
-                await chat.call([
-                  new HumanChatMessage(input),
-                ]);
-            },
+            func: async (input) => `${input}`,
             returnDirect: true
         }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
