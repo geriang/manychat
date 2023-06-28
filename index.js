@@ -157,7 +157,7 @@ App.post('/chatgpt', async (req, res) => {
     // console.log("past messages", pastMessages)
 
     // initiating the chatmodel - openai
-    const llm = new ChatOpenAI({ temperature: 0 });
+    const llm = new ChatOpenAI({ modelName: "gpt-4-0613", temperature: 0 });
 
     //  to embed property listing information
     /* Load in the file we want to do question answering over */
@@ -198,7 +198,7 @@ App.post('/chatgpt', async (req, res) => {
 
     // initialize the agent
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
-        agentType: "structured-chat-zero-shot-react-description",
+        agentType: "chat-conversational-react-description",
         verbose: true,
         maxIterations: 4,
         memory: new BufferMemory({
@@ -209,7 +209,7 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "You are a chatbot that answers to enquires",
+            prefix: "You are a chatbot that answers to enquires by using chatting_tool first. Always ask for the name of the enquirer if it is not found in chat history",
             // suffix: "Remember to keep all answers within 50 words"
         }
     });
