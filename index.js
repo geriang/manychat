@@ -185,7 +185,20 @@ App.post('/chatgpt', async (req, res) => {
         new DynamicTool({
             name: "chatting_tool",
             description:
-                "use this tool to simply chat with human.",
+                "use this tool to simply chat with human, or when other tools are not found to be suitable",
+            func: async (input) => `${input}`,
+            // func: async (input) =>{
+            //     const chat = new ChatOpenAI();
+            //     return await chat.call([
+            //       new HumanChatMessage(input),
+            //     ]);
+            // },
+            returnDirect: true
+        }),
+        new DynamicTool({
+            name: "questioning_tool",
+            description:
+                "use this tool to ask human question, or when you need more guidance for your tasks",
             func: async (input) => `${input}`,
             // func: async (input) =>{
             //     const chat = new ChatOpenAI();
