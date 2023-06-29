@@ -209,11 +209,11 @@ App.post('/chatgpt', async (req, res) => {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
-        memory: new BufferMemory({
-            chatHistory: new ChatMessageHistory(pastMessages),
-            returnMessages: false,
-            memoryKey: "chat_history",
-        }),
+        // memory: new BufferMemory({
+        //     chatHistory: new ChatMessageHistory(pastMessages),
+        //     returnMessages: true,
+        //     memoryKey: "chat_history",
+        // }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
