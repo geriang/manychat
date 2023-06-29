@@ -218,11 +218,11 @@ App.post('/chatgpt', async (req, res) => {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
             // prefix: "You are a chatbot that answers to enquires by using chatting_tool or questioning_tool first.",
-            // suffix: "Remember to ALWAYS use the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction:\n```json\n$JSON_BLOB\n```\nObservation: the result of the action\n... (this Thought/Action/Observation can repeat N times)\nThought: I now know the final answer\nAction:\n```json\n{\n  \"action\": \"Final Answer\",\n  \"action_input\": \"Final response to human\"\n}\n"
+            suffix: "Remember to ALWAYS use the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction:\n```json\n$JSON_BLOB\n```\nObservation: the result of the action\n... (this Thought/Action/Observation can repeat N times)\nThought: I now know the final answer\nAction:\n```json\n{\n  \"action\": \"Final Answer\",\n  \"action_input\": \"Final response to human\"\n}\n"
         }
     });
 
-    console.log("Check template", executor.agent.llm_chain)
+    console.log("Check template", executor.agent)
 
     try {
         const version = process.env.WHATSAPP_VERSION
