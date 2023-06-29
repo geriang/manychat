@@ -222,7 +222,7 @@ App.post('/chatgpt', async (req, res) => {
         }
     });
 
-    console.log("Check template", executor.agent)
+    console.log("Check template", executor.agent.StructuredChatAgent.llmChain.prompt)
 
     try {
         const version = process.env.WHATSAPP_VERSION
