@@ -157,7 +157,7 @@ App.post('/chatgpt', async (req, res) => {
     // console.log("past messages", pastMessages)
 
     // initiating the chatmodel - openai
-    const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0 });
+    const llm = new ChatOpenAI({ temperature: 0 });
 
     //  to embed property listing information
     /* Load in the file we want to do question answering over */
@@ -222,7 +222,7 @@ App.post('/chatgpt', async (req, res) => {
         }
     });
 
-    console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0])
+    console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0].prompt.template)
 
     try {
         const version = process.env.WHATSAPP_VERSION
