@@ -218,11 +218,11 @@ App.post('/chatgpt', async (req, res) => {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
             // prefix: "You are a chatbot that answers to enquires by using chatting_tool or questioning_tool first.",
-            suffix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer"
+            suffix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES"
         }
     });
 
-    console.log("Check template", executor.agent.llmChain.prompt)
+    console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0])
 
     try {
         const version = process.env.WHATSAPP_VERSION
