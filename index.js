@@ -217,8 +217,8 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "You are a chatbot that answers to enquires by using chatting_tool or questioning_tool first.",
-            suffix: "Skip actions when necessary."
+            // prefix: "You are a chatbot that answers to enquires by using chatting_tool or questioning_tool first.",
+            // suffix: "Skip actions when necessary."
         }
     });
 
