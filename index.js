@@ -211,7 +211,7 @@ App.post('/chatgpt', async (req, res) => {
         maxIterations: 5,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
-            returnMessages: true,
+            returnMessages: false,
             memoryKey: "chat_history",
         }),
         agentArgs: {
