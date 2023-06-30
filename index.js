@@ -150,7 +150,7 @@ App.post('/chatgpt', async (req, res) => {
     if (pastMessagesData) {
         pastMessages = [
             new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-            // new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
+            new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
         ]
     }
 
