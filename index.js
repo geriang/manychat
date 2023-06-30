@@ -235,9 +235,10 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is not found in chat history.",
+            // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for the person's name if it is not found in chat history. If a name is found, greet the person by name."
+            suffix: "if the user's name is not known: Ask for the name politely. if the user's name is known: hello, {user's name} how may i help?"
         }
     });
 
