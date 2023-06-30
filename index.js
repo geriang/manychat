@@ -149,7 +149,7 @@ App.post('/chatgpt', async (req, res) => {
 
     if (pastMessagesData) {
         pastMessages = [
-            // new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+            new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString())
             // new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
         ]
     }
@@ -196,16 +196,16 @@ App.post('/chatgpt', async (req, res) => {
             func: async (input) => `${input}`,
             returnDirect: true
         }),
-        new DynamicTool({
-            name: "chat_history_tool",
-            description:
-                "use this tool to refer to chat history.",
-            func: async () => {
-                const pastMessagesData = await retrieveChatHistory(whatsapp_id)
-                return (pastMessagesData.map((obj) => { return obj.client }).toString())
-            }
+        // new DynamicTool({
+        //     name: "chat_history_tool",
+        //     description:
+        //         "use this tool to refer to chat history.",
+        //     func: async () => {
+        //         const pastMessagesData = await retrieveChatHistory(whatsapp_id)
+        //         return (pastMessagesData.map((obj) => { return obj.client }).toString())
+        //     }
 
-        }),
+        // }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
         //     location: "Singapore",
         //     hl: "en",
