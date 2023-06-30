@@ -142,22 +142,31 @@ App.post('/chatgpt', async (req, res) => {
     // console.log("past messages data received by chatgpt", pastMessagesData)
     let pastMessages = []
 
-    // if (pastMessagesData) {
+    if (pastMessagesData) {
+
+        for (let i = 0; i < pastMessagesData.length; i++) {
+            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+
+            pastMessages.push(humanMessage);
+            pastMessages.push(aiMessage);
+        }
 
         // return (pastMessages = pastMessagesData.map((obj)=>{ return [new HumanChatMessage((obj.client).toString()), new AIChatMessage((obj.bot).toString())]
-
-
         // }))
-        pastMessages = pastMessagesData.map((obj, index) => {
-            return (
-                new HumanChatMessage((obj.client).toString()[index]), new AIChatMessage((obj.bot).toString()[index]) 
-            )
-        })
+
+        // let humanMessages = pastMessagesData.map((obj) => {
+        //     return (
+        //         new HumanChatMessage((obj.client).toString()) 
+        //     )
+        // })
+
+
         // pastMessages = [
         //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
         //     new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
         // ]
-    // }
+    }
 
     // console.log("past messages", pastMessages)
 
