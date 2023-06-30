@@ -140,16 +140,7 @@ App.post('/chatgpt', async (req, res) => {
 
     const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
-    let pastMessages = null
-
-    if (pastMessagesData) {
-        pastMessages = pastMessagesData.map((obj) => {
-          const humanMessage = new HumanChatMessage(obj.client.toString());
-          const aiMessage = new AIChatMessage(obj.bot.toString());
-          return [humanMessage, aiMessage];
-        });
-        return pastMessages;
-      }
+    let pastMessages = []
 
     // if (pastMessagesData) {
 
@@ -157,10 +148,11 @@ App.post('/chatgpt', async (req, res) => {
 
 
         // }))
-        // pastMessages = pastMessagesData.map((obj) => {
-        //     return (
-        //         new HumanChatMessage((obj.client).toString()))
-        // })
+        pastMessages = pastMessagesData.map((obj, index) => {
+            return (
+                new HumanChatMessage((obj.client).toString()[index]), new AIChatMessage((obj.bot).toString()[index]) 
+            )
+        })
         // pastMessages = [
         //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
         //     new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
