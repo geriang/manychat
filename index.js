@@ -144,17 +144,17 @@ App.post('/chatgpt', async (req, res) => {
 
     if (pastMessagesData) {
 
-        for (let i = 0; i < pastMessagesData.length; i++) {
-            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+        // for (let i = 0; i < pastMessagesData.length; i++) {
+        //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+        //     let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
 
-            pastMessages.push("");
-            pastMessages.push("");
-        }
+        //     pastMessages.push(humanMessage);
+        //     pastMessages.push(aiMessage);
+        // }
 
-        // pastMessages = pastMessagesData.map((obj) => {
-        //     return new HumanChatMessage((obj.client).toString()) 
-        // })
+        pastMessages = pastMessagesData.map((obj) => {
+            return new HumanChatMessage("") 
+        })
 
         // pastMessages = [
         //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
