@@ -145,10 +145,10 @@ App.post('/chatgpt', async (req, res) => {
     if (pastMessagesData) {
 
         for (let i = 0; i < pastMessagesData.length; i++) {
-            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+            // let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
             // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
 
-            pastMessages.push(humanMessage);
+            // pastMessages.push(humanMessage);
             // pastMessages.push(aiMessage);
         }
 
@@ -235,7 +235,7 @@ App.post('/chatgpt', async (req, res) => {
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
-            prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history or chat record. If a name is found, greet the person by name.",
+            prefix: "You are a chatbot that answers to enquires. Always ask for the person's name if it is not found in chat history. If a name is found, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES"
         }
