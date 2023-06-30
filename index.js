@@ -229,7 +229,7 @@ App.post('/chatgpt', async (req, res) => {
             // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for a name if you do not know the person's name."
-            prefix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
+            suffix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
         }
     });
 
