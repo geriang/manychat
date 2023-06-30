@@ -150,7 +150,7 @@ App.post('/chatgpt', async (req, res) => {
     if (pastMessagesData) {
         pastMessages = [
             new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-            new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
+            // new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
         ]
     }
 
@@ -209,14 +209,14 @@ App.post('/chatgpt', async (req, res) => {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
-        // memory: new BufferMemory({
-        //     chatHistory: new ChatMessageHistory(pastMessages),
-        //     returnMessages: true,
-        //     memoryKey: "chat_history",
-        // }),
+        memory: new BufferMemory({
+            chatHistory: new ChatMessageHistory(pastMessages),
+            returnMessages: true,
+            memoryKey: "chat_history",
+        }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad"],
-            // memoryPrompts: [new MessagesPlaceholder("chat_history")],
+            memoryPrompts: [new MessagesPlaceholder("chat_history")],
             // prefix: "You are a chatbot that answers to enquires by using chatting_tool or questioning_tool first.",
             prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES"
@@ -254,7 +254,7 @@ App.post('/chatgpt', async (req, res) => {
             "bot": `${response.output}`
         }
 
-        // await addChatData(whatsapp_id, data)
+        await addChatData(whatsapp_id, data)
         res.sendStatus(200);
 
     } catch (err) {
