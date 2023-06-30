@@ -214,11 +214,11 @@ App.post('/chatgpt', async (req, res) => {
         //     }
 
         // }),
-        // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
-        //     location: "Singapore",
-        //     hl: "en",
-        //     gl: "sg",
-        // }),
+        new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
+            location: "Singapore",
+            hl: "en",
+            gl: "sg",
+        }),
         propertyDatabaseTool,
     ];
 
@@ -237,7 +237,7 @@ App.post('/chatgpt', async (req, res) => {
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
             // prefix: "You are a chatbot that answers to enquires. Always ask for the person's name if it is not found in chat history. If a name is found, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
-            suffix: "Ask for the person's name if it is not found in chat history. If a name is found, greet the person by name."
+            // suffix: "Politely asks for the person's name if it is not found in chat history. If a name is found, greet the person by name."
         }
     });
 
