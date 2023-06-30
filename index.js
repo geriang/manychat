@@ -238,7 +238,7 @@ App.post('/chatgpt', async (req, res) => {
             // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for the person's name if it is not found in chat history. If a name is found, greet the person by name."
-            suffix: "if the user's name is not known: Ask for the name politely. if the user's name is known: hello, {user's name} how may i help?"
+            suffix: "if the user's name is not known, ask for the name politely."
         }
     });
 
