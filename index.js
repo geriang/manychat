@@ -143,21 +143,29 @@ App.post('/chatgpt', async (req, res) => {
     let pastMessages = null
 
     if (pastMessagesData) {
+        pastMessages = pastMessagesData.map((obj) => {
+          const humanMessage = new HumanChatMessage(obj.client.toString());
+          const aiMessage = new AIChatMessage(obj.bot.toString());
+          return [humanMessage, aiMessage];
+        });
+        return pastMessages;
+      }
 
-        return (pastMessages = pastMessagesData.map((obj)=>{ return [new HumanChatMessage((obj.client).toString()), new AIChatMessage((obj.bot).toString())]
+    // if (pastMessagesData) {
+
+        // return (pastMessages = pastMessagesData.map((obj)=>{ return [new HumanChatMessage((obj.client).toString()), new AIChatMessage((obj.bot).toString())]
 
 
-        }))
+        // }))
         // pastMessages = pastMessagesData.map((obj) => {
         //     return (
         //         new HumanChatMessage((obj.client).toString()))
-
         // })
         // pastMessages = [
         //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
         //     new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
         // ]
-    }
+    // }
 
     // console.log("past messages", pastMessages)
 
