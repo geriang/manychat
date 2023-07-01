@@ -140,7 +140,7 @@ App.post('/chatgpt', async (req, res) => {
 
     const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
-    let pastMessages = ["Chat History:"]
+    let pastMessages = [new HumanChatMessage("Chat history:")]
 
     if (pastMessagesData) {
 
