@@ -138,23 +138,23 @@ App.post('/chatgpt', async (req, res) => {
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
 
-    const pastMessagesData = await retrieveChatHistory(whatsapp_id)
+    // const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
-    let pastMessages = []
+    // let pastMessages = []
 
-    if (pastMessagesData) {
+    // if (pastMessagesData) {
 
-        // pastMessages = [
-        //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-        // ]
+    //     // pastMessages = [
+    //     //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+    //     // ]
 
-        for (let i = 0; i < pastMessagesData.length; i++) {
-            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-            pastMessages.push(humanMessage);
-            pastMessages.push(aiMessage);
-        }
-    }
+    //     for (let i = 0; i < pastMessagesData.length; i++) {
+    //         let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+    //         let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+    //         pastMessages.push(humanMessage);
+    //         pastMessages.push(aiMessage);
+    //     }
+    // }
 
     // console.log("past messages", pastMessages)
 
@@ -224,7 +224,7 @@ App.post('/chatgpt', async (req, res) => {
         // earlyStoppingMethod: "force",
         // returnIntermediateSteps: false,
         memory: new BufferMemory({
-            chatHistory: new ChatMessageHistory(pastMessages),
+            // chatHistory: new ChatMessageHistory(pastMessages),
             returnMessages: true,
             memoryKey: "chat_history",
         }),
