@@ -218,7 +218,7 @@ App.post('/chatgpt', async (req, res) => {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
-        earlyStoppingMethod: "force",
+        // earlyStoppingMethod: "force",
         // returnIntermediateSteps: false,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
@@ -232,7 +232,7 @@ App.post('/chatgpt', async (req, res) => {
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for a name if you do not know the person's name."
             // suffix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
-            prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history. If a name is found, greet the person by name.",
+            // prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history. If a name is found, greet the person by name.",
         }
     });
 
