@@ -146,17 +146,17 @@ App.post('/chatgpt', async (req, res) => {
 
         for (let i = 0; i < pastMessagesData.length; i++) {
             let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+            // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
 
             pastMessages.push(humanMessage);
-            pastMessages.push(aiMessage);
+            // pastMessages.push(aiMessage);
         }
     }
 
     // console.log("past messages", pastMessages)
 
     // initiating the chatmodel - openai
-    const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0 });
+    const llm = new ChatOpenAI({ temperature: 0 });
 
     //  to embed property listing information
     /* Load in the file we want to do question answering over */
