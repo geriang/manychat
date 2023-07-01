@@ -230,7 +230,7 @@ App.post('/chatgpt', async (req, res) => {
         // }),
         memory: new ConversationSummaryMemory({
             memoryKey: "chat_history",
-            llm: new OpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
+            llm: new ChatOpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
           }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
