@@ -239,10 +239,10 @@ App.post('/chatgpt', async (req, res) => {
     // console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0].prompt.template)
 
     try {
-        let input = message
+        let input = `${message}`
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await executor.call(input);
+        const response = await executor.call({input});
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
