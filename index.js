@@ -142,19 +142,19 @@ App.post('/chatgpt', async (req, res) => {
     // console.log("past messages data received by chatgpt", pastMessagesData)
     // let pastMessages = []
 
-    // if (pastMessagesData) {
+    if (pastMessagesData) {
 
-    //     // pastMessages = [
-    //     //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-    //     // ]
+        // pastMessages = [
+        //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+        // ]
 
-    //     for (let i = 0; i < pastMessagesData.length; i++) {
-    //         let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-    //         let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-    //         pastMessages.push(humanMessage);
-    //         pastMessages.push(aiMessage);
-    //     }
-    // }
+        for (let i = 0; i < pastMessagesData.length; i++) {
+            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+            pastMessages.push(humanMessage);
+            pastMessages.push(aiMessage);
+        }
+    }
 
     // console.log("past messages", pastMessages)
 
@@ -221,8 +221,8 @@ App.post('/chatgpt', async (req, res) => {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
-        // earlyStoppingMethod: "force",
-        // returnIntermediateSteps: false,
+        earlyStoppingMethod: "force",
+        returnIntermediateSteps: false,
         // memory: new BufferMemory({
         //     // chatHistory: new ChatMessageHistory(pastMessages),
         //     returnMessages: true,
@@ -234,7 +234,7 @@ App.post('/chatgpt', async (req, res) => {
           }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
-            memoryPrompts: [new MessagesPlaceholder("chat_history")],
+            memoryPrompts: [("chat_history")],
             // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for a name if you do not know the person's name."

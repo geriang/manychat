@@ -27,6 +27,11 @@ const run = async () => {
   const executor = await initializeAgentExecutorWithOptions(tools, model, {
     agentType: "chat-conversational-react-description",
     verbose: true,
+    memory: new BufferMemory({
+        // chatHistory: new ChatMessageHistory(pastMessages),
+        returnMessages: true,
+        memoryKey: "chat_history",
+    }),
   });
   
 
