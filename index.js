@@ -140,8 +140,8 @@ App.post('/chatgpt', async (req, res) => {
 
     // const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
-
     // let pastMessages = []
+
     // if (pastMessagesData) {
 
     //     // pastMessages = [
@@ -206,18 +206,18 @@ App.post('/chatgpt', async (req, res) => {
         maxIterations: 5,
         // earlyStoppingMethod: "force",
         // returnIntermediateSteps: false,
-        // memory: new BufferMemory({
-        //     // chatHistory: new ChatMessageHistory(pastMessages),
-        //     returnMessages: true,
-        //     memoryKey: "chat_history",
-        // }),
-        memory: new ConversationSummaryMemory({
+        memory: new BufferMemory({
+            // chatHistory: new ChatMessageHistory(pastMessages),
             memoryKey: "chat_history",
-            llm: new ChatOpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
-          }),
+            returnMessages: true,
+        }),
+        // memory: new ConversationSummaryMemory({
+        //     memoryKey: "chat_history",
+        //     llm: new ChatOpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
+        //   }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
-            memoryPrompts: [("chat_history")],
+            memoryPrompts: [new MessagesPlaceholder("chat_history")],
             // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for a name if you do not know the person's name."
