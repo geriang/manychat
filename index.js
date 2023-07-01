@@ -206,15 +206,17 @@ App.post('/chatgpt', async (req, res) => {
         maxIterations: 5,
         // earlyStoppingMethod: "force",
         // returnIntermediateSteps: false,
-        memory: new BufferMemory({
-            // chatHistory: new ChatMessageHistory(pastMessages),
-            memoryKey: "chat_history",
-            returnMessages: true,
-        }),
-        // memory: new ConversationSummaryMemory({
+        // memory: new BufferMemory({
+        //     chatHistory: new ChatMessageHistory(pastMessages),
         //     memoryKey: "chat_history",
-        //     llm: new ChatOpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
-        //   }),
+        //     returnMessages: true,
+        // }),
+        memory: new ConversationSummaryMemory({
+            memoryKey: "chat_history",
+            llm: new ChatOpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
+            returnMessages: true,
+            chatHistory: new ChatMessageHistory("chat_history"),
+          }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
@@ -222,7 +224,7 @@ App.post('/chatgpt', async (req, res) => {
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for a name if you do not know the person's name."
             // suffix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
-            suffix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history. If a name is found, greet the person by name.",
+            // suffix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history. If a name is found, greet the person by name.",
         }
     });
 
