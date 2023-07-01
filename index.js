@@ -191,11 +191,11 @@ App.post('/chatgpt', async (req, res) => {
             func: async (input) => `${input}`,
             returnDirect: true
         }),
-        // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
-        //     location: "Singapore",
-        //     hl: "en",
-        //     gl: "sg",
-        // }),
+        new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
+            location: "Singapore",
+            hl: "en",
+            gl: "sg",
+        }),
         propertyDatabaseTool,
     ];
 
