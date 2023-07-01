@@ -148,13 +148,13 @@ App.post('/chatgpt', async (req, res) => {
 
     // if (pastMessagesData) {
 
-        // for (let i = 0; i < pastMessagesData.length; i++) {
-        //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-        //     // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+    // for (let i = 0; i < pastMessagesData.length; i++) {
+    //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+    //     // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
 
-        //     pastMessages.push(humanMessage);
-        //     // pastMessages.push(aiMessage);
-        // }
+    //     pastMessages.push(humanMessage);
+    //     // pastMessages.push(aiMessage);
+    // }
     // }
 
     // console.log("past messages", pastMessages)
@@ -220,17 +220,15 @@ App.post('/chatgpt', async (req, res) => {
     // initialize the agent
 
     const vectorStore2 = new MemoryVectorStore(new OpenAIEmbeddings());
-    const memory = new VectorStoreRetrieverMemory({
-        // 1 is how many documents to return, you might want to return more, eg. 4
-        vectorStoreRetriever: vectorStore2.asRetriever(10),
-        memoryKey: "history",
-      });
 
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
-        memory: memory,
+        memory: new VectorStoreRetrieverMemory({
+            vectorStoreRetriever: vectorStore2.asRetriever(10),
+            memoryKey: "chat_history",
+        }),
         // memory: new BufferMemory({
         //     chatHistory: new ChatMessageHistory(pastMessages),
         //     returnMessages: true,
@@ -245,7 +243,7 @@ App.post('/chatgpt', async (req, res) => {
             // suffix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
             prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history or chat record. If a name is found, greet the person by name.",
             suffix: `Relevant pieces of previous conversation:
-            {history}
+            {chat_history}
             
             (You do not need to use these pieces of information if not relevant)
             `
