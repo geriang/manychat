@@ -30,7 +30,7 @@ const {
     MessagesPlaceholder,
 } = require("langchain/prompts");
 // const { z } = require("zod")
-const { BufferMemory,BufferWindowMemory, ChatMessageHistory } = require("langchain/memory");
+const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { Calculator } = require("langchain/tools/calculator");
 
@@ -138,20 +138,20 @@ App.post('/chatgpt', async (req, res) => {
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
 
-    // const pastMessagesData = await retrieveChatHistory(whatsapp_id)
+    const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
-    // let pastMessages = []
+    let pastMessages = []
 
-    // if (pastMessagesData) {
+    if (pastMessagesData) {
 
-    //     for (let i = 0; i < pastMessagesData.length; i++) {
-    //         let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-    //         // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+        for (let i = 0; i < pastMessagesData.length; i++) {
+            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
 
-    //         pastMessages.push(humanMessage);
-    //         // pastMessages.push(aiMessage);
-    //     }
-    // }
+            pastMessages.push(humanMessage);
+            pastMessages.push(aiMessage);
+        }
+    }
 
     // console.log("past messages", pastMessages)
 
@@ -218,12 +218,12 @@ App.post('/chatgpt', async (req, res) => {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
-        // memory: new BufferMemory({
-        //     chatHistory: new ChatMessageHistory(pastMessages),
-        //     returnMessages: true,
-        //     memoryKey: "chat_history",
-        // }),
-        memory: new BufferWindowMemory({ k: 10, returnMessages: true, memoryKey: "chat_history" }),
+        returnIntermediateSteps: true,
+        memory: new BufferMemory({
+            chatHistory: new ChatMessageHistory(pastMessages),
+            returnMessages: true,
+            memoryKey: "chat_history",
+        }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
