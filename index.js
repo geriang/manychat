@@ -242,7 +242,7 @@ App.post('/chatgpt', async (req, res) => {
         let input = message
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await executor.call({ input });
+        const response = await executor.call(input);
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
