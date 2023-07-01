@@ -30,7 +30,7 @@ const {
     MessagesPlaceholder,
 } = require("langchain/prompts");
 // const { z } = require("zod")
-const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
+const { BufferMemory,BufferWindowMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { Calculator } = require("langchain/tools/calculator");
 
@@ -40,10 +40,6 @@ const { HNSWLib } = require("langchain/vectorstores/hnswlib");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const fs = require('fs');
-
-const { VectorStoreRetrieverMemory } = require("langchain/memory");
-const { MemoryVectorStore } = require("langchain/vectorstores/memory");
-
 
 
 
@@ -148,13 +144,13 @@ App.post('/chatgpt', async (req, res) => {
 
     // if (pastMessagesData) {
 
-    // for (let i = 0; i < pastMessagesData.length; i++) {
-    //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-    //     // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+    //     for (let i = 0; i < pastMessagesData.length; i++) {
+    //         let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+    //         // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
 
-    //     pastMessages.push(humanMessage);
-    //     // pastMessages.push(aiMessage);
-    // }
+    //         pastMessages.push(humanMessage);
+    //         // pastMessages.push(aiMessage);
+    //     }
     // }
 
     // console.log("past messages", pastMessages)
@@ -218,35 +214,24 @@ App.post('/chatgpt', async (req, res) => {
     ];
 
     // initialize the agent
-
-    const vectorStore2 = new MemoryVectorStore(new OpenAIEmbeddings());
-
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
-        memory: new VectorStoreRetrieverMemory({
-            vectorStoreRetriever: vectorStore2.asRetriever(10),
-            memoryKey: "chat_history",
-        }),
         // memory: new BufferMemory({
         //     chatHistory: new ChatMessageHistory(pastMessages),
         //     returnMessages: true,
         //     memoryKey: "chat_history",
         // }),
+        memory: new BufferWindowMemory({ k: 10, returnMessages: true, memoryKey: "chat_history" }),
         agentArgs: {
-            inputVariables: ["input", "agent_scratchpad"],
-            // memoryPrompts: [new MessagesPlaceholder("chat_history")],
+            inputVariables: ["input", "agent_scratchpad", "chat_history"],
+            memoryPrompts: [new MessagesPlaceholder("chat_history")],
             // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for a name if you do not know the person's name."
             // suffix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
             prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history or chat record. If a name is found, greet the person by name.",
-            suffix: `Relevant pieces of previous conversation:
-            {chat_history}
-            
-            (You do not need to use these pieces of information if not relevant)
-            `
         }
     });
 
@@ -280,11 +265,6 @@ App.post('/chatgpt', async (req, res) => {
             "client": `${message}`,
             "bot": `${response.output}`
         }
-
-        await memory.saveContext({
-            input: `${message}`,
-            output: `${response.output}`
-        })
 
         await addChatData(whatsapp_id, data)
         res.sendStatus(200);
