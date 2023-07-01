@@ -30,7 +30,7 @@ const {
     MessagesPlaceholder,
 } = require("langchain/prompts");
 // const { z } = require("zod")
-const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
+const { BufferMemory, ChatMessageHistory, ConversationSummaryMemory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { Calculator } = require("langchain/tools/calculator");
 
@@ -223,11 +223,15 @@ App.post('/chatgpt', async (req, res) => {
         maxIterations: 5,
         // earlyStoppingMethod: "force",
         // returnIntermediateSteps: false,
-        memory: new BufferMemory({
-            // chatHistory: new ChatMessageHistory(pastMessages),
-            returnMessages: true,
+        // memory: new BufferMemory({
+        //     // chatHistory: new ChatMessageHistory(pastMessages),
+        //     returnMessages: true,
+        //     memoryKey: "chat_history",
+        // }),
+        memory: new ConversationSummaryMemory({
             memoryKey: "chat_history",
-        }),
+            llm: new OpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
+          }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
