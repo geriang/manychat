@@ -140,17 +140,20 @@ App.post('/chatgpt', async (req, res) => {
 
     const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
-    let pastMessages = []
+    let pastMessages = ["Chat History:"]
 
     if (pastMessagesData) {
 
-        for (let i = 0; i < pastMessagesData.length; i++) {
-            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+        pastMessages = [
+            new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+        ]
 
-            pastMessages.push(humanMessage);
-            pastMessages.push(aiMessage);
-        }
+        // for (let i = 0; i < pastMessagesData.length; i++) {
+        //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+        //     let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+        //     pastMessages.push(humanMessage);
+        //     pastMessages.push(aiMessage);
+        // }
     }
 
     // console.log("past messages", pastMessages)
@@ -232,7 +235,7 @@ App.post('/chatgpt', async (req, res) => {
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for a name if you do not know the person's name."
             // suffix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
-            // prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history. If a name is found, greet the person by name.",
+            prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history. If a name is found, greet the person by name.",
         }
     });
 
