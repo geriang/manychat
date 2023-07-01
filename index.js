@@ -207,7 +207,7 @@ App.post('/chatgpt', async (req, res) => {
         // earlyStoppingMethod: "force",
         // returnIntermediateSteps: false,
         memory: new BufferMemory({
-            chatHistory: new ChatMessageHistory(pastMessages),
+            // chatHistory: new ChatMessageHistory(pastMessages),
             memoryKey: "chat_history",
             returnMessages: true,
         }),
