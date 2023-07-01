@@ -41,6 +41,10 @@ const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const fs = require('fs');
 
+const { VectorStoreRetrieverMemory } = require("langchain/memory");
+const { MemoryVectorStore } = require("langchain/vectorstores/memory");
+
+
 
 
 const { MongoClient } = require("mongodb");
@@ -138,20 +142,20 @@ App.post('/chatgpt', async (req, res) => {
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
 
-    const pastMessagesData = await retrieveChatHistory(whatsapp_id)
+    // const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
-    let pastMessages = []
+    // let pastMessages = []
 
-    if (pastMessagesData) {
+    // if (pastMessagesData) {
 
-        for (let i = 0; i < pastMessagesData.length; i++) {
-            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-            // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+        // for (let i = 0; i < pastMessagesData.length; i++) {
+        //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+        //     // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
 
-            pastMessages.push(humanMessage);
-            // pastMessages.push(aiMessage);
-        }
-    }
+        //     pastMessages.push(humanMessage);
+        //     // pastMessages.push(aiMessage);
+        // }
+    // }
 
     // console.log("past messages", pastMessages)
 
@@ -214,15 +218,24 @@ App.post('/chatgpt', async (req, res) => {
     ];
 
     // initialize the agent
+
+    const vectorStore2 = new MemoryVectorStore(new OpenAIEmbeddings());
+    const memory = new VectorStoreRetrieverMemory({
+        // 1 is how many documents to return, you might want to return more, eg. 4
+        vectorStoreRetriever: vectorStore2.asRetriever(10),
+        memoryKey: "history",
+      });
+
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
-        memory: new BufferMemory({
-            chatHistory: new ChatMessageHistory(pastMessages),
-            returnMessages: true,
-            memoryKey: "chat_history",
-        }),
+        memory: memory,
+        // memory: new BufferMemory({
+        //     chatHistory: new ChatMessageHistory(pastMessages),
+        //     returnMessages: true,
+        //     memoryKey: "chat_history",
+        // }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder("chat_history")],
@@ -231,6 +244,11 @@ App.post('/chatgpt', async (req, res) => {
             // suffix: "Politely asks for a name if you do not know the person's name."
             // suffix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
             prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history or chat record. If a name is found, greet the person by name.",
+            suffix: `Relevant pieces of previous conversation:
+            {history}
+            
+            (You do not need to use these pieces of information if not relevant)
+            `
         }
     });
 
@@ -264,6 +282,11 @@ App.post('/chatgpt', async (req, res) => {
             "client": `${message}`,
             "bot": `${response.output}`
         }
+
+        await memory.saveContext({
+            input: `${message}`,
+            output: `${response.output}`
+        })
 
         await addChatData(whatsapp_id, data)
         res.sendStatus(200);
