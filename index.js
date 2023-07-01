@@ -140,21 +140,21 @@ App.post('/chatgpt', async (req, res) => {
 
     // const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
+
     // let pastMessages = []
+    // if (pastMessagesData) {
 
-    if (pastMessagesData) {
+    //     // pastMessages = [
+    //     //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+    //     // ]
 
-        // pastMessages = [
-        //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-        // ]
-
-        for (let i = 0; i < pastMessagesData.length; i++) {
-            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-            pastMessages.push(humanMessage);
-            pastMessages.push(aiMessage);
-        }
-    }
+    //     for (let i = 0; i < pastMessagesData.length; i++) {
+    //         let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+    //         let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+    //         pastMessages.push(humanMessage);
+    //         pastMessages.push(aiMessage);
+    //     }
+    // }
 
     // console.log("past messages", pastMessages)
 
@@ -191,23 +191,6 @@ App.post('/chatgpt', async (req, res) => {
             func: async (input) => `${input}`,
             returnDirect: true
         }),
-        // new DynamicTool({
-        //     name: "questioning_tool",
-        //     description:
-        //         "use this tool to ask human question, or when you need more guidance to your tasks.",
-        //     func: async (input) => `${input}`,
-        //     returnDirect: true
-        // }),
-        // new DynamicTool({
-        //     name: "chat_history_tool",
-        //     description:
-        //         "use this tool to refer to chat history.",
-        //     func: async () => {
-        //         const pastMessagesData = await retrieveChatHistory(whatsapp_id)
-        //         return (pastMessagesData.map((obj) => { return obj.client }).toString())
-        //     }
-
-        // }),
         // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
         //     location: "Singapore",
         //     hl: "en",
@@ -221,8 +204,8 @@ App.post('/chatgpt', async (req, res) => {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
-        earlyStoppingMethod: "force",
-        returnIntermediateSteps: false,
+        // earlyStoppingMethod: "force",
+        // returnIntermediateSteps: false,
         // memory: new BufferMemory({
         //     // chatHistory: new ChatMessageHistory(pastMessages),
         //     returnMessages: true,
