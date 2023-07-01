@@ -134,6 +134,8 @@ App.post('/chatgpt', async (req, res) => {
 
     console.log("chatgpt req.body", req.body)
     let message = req.body.message
+    let urlRegex = /(https?:\/\/[^\s]+)/g;
+    let input_message = message.replace(urlRegex, '');
     let whatsapp_id = req.body.whatsapp_id
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
@@ -144,16 +146,16 @@ App.post('/chatgpt', async (req, res) => {
 
     if (pastMessagesData) {
 
-        // pastMessages = [
-        //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-        // ]
+        pastMessages = [
+            new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+        ]
 
-        for (let i = 0; i < pastMessagesData.length; i++) {
-            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-            pastMessages.push(humanMessage);
-            pastMessages.push(aiMessage);
-        }
+        // for (let i = 0; i < pastMessagesData.length; i++) {
+        //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+        //     let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+        //     pastMessages.push(humanMessage);
+        //     pastMessages.push(aiMessage);
+        // }
     }
 
     // console.log("past messages", pastMessages)
@@ -211,15 +213,9 @@ App.post('/chatgpt', async (req, res) => {
             memoryKey: "chat_history",
             returnMessages: true,
         }),
-        // memory: new ConversationSummaryMemory({
-        //     memoryKey: "chat_history",
-        //     llm: new ChatOpenAI({ modelName: "gpt-3.5-turbo", temperature: 0 }),
-        //     returnMessages: true,
-        //     chatHistory: new ChatMessageHistory("chat_history"),
-        //   }),
         agentArgs: {
             inputVariables: ["input", "agent_scratchpad", "chat_history"],
-            memoryPrompts: [new MessagesPlaceholder({variableName:"chat_history"})],
+            memoryPrompts: [new MessagesPlaceholder({ variableName: "chat_history" })],
             // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for a name if you do not know the person's name."
@@ -233,7 +229,7 @@ App.post('/chatgpt', async (req, res) => {
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await executor.call({ input: `${message}` });
+        const response = await executor.call({ input: `${input_message}` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
