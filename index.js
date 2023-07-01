@@ -25,9 +25,9 @@ App.use(express.urlencoded({
 
 
 const { ChatOpenAI } = require("langchain/chat_models/openai");
-const { initializeAgentExecutorWithOptions } = require("langchain/agents");
+const { initializeAgentExecutorWithOptions, AgentActionOutputParser } = require("langchain/agents");
 const {
-    MessagesPlaceholder,
+    MessagesPlaceholder, checkValidTemplate,
 } = require("langchain/prompts");
 // const { z } = require("zod")
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
@@ -215,11 +215,11 @@ App.post('/chatgpt', async (req, res) => {
 
     // initialize the agent
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
-        agentType: "chat-conversational-react-description",
+        agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
         // earlyStoppingMethod: "generate",
-        // returnIntermediateSteps: true,
+        returnIntermediateSteps: false,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
             returnMessages: true,
