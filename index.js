@@ -218,6 +218,7 @@ App.post('/chatgpt', async (req, res) => {
         agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
+        earlyStoppingMethod: "generate",
         // returnIntermediateSteps: true,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
