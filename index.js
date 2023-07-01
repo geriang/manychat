@@ -219,7 +219,7 @@ App.post('/chatgpt', async (req, res) => {
         verbose: true,
         maxIterations: 5,
         // earlyStoppingMethod: "generate",
-        returnIntermediateSteps: true,
+        // returnIntermediateSteps: true,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
             returnMessages: true,
@@ -232,7 +232,7 @@ App.post('/chatgpt', async (req, res) => {
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
             // suffix: "Politely asks for a name if you do not know the person's name."
             // suffix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
-            prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history or chat record. If a name is found, greet the person by name.",
+            prefix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history. If a name is found, greet the person by name.",
         }
     });
 
@@ -242,7 +242,7 @@ App.post('/chatgpt', async (req, res) => {
         // let input = `${message}`
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await executor.call({ input: `${message}` });
+        const response = await executor.run({ input: `${message}` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
