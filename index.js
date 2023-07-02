@@ -180,7 +180,7 @@ App.post('/chatgpt', async (req, res) => {
         description:
             "property listing database- useful for when you need to find information on a particular property listed by Huttons Sales & Auction.",
         chain: chain,
-        returnDirect: true,
+        // returnDirect: true,
     });
 
     // define the tools available
