@@ -146,16 +146,16 @@ App.post('/chatgpt', async (req, res) => {
 
     if (pastMessagesData) {
 
-        pastMessages = [
-            new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-        ]
+        // pastMessages = [
+        //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+        // ]
 
-        // for (let i = 0; i < pastMessagesData.length; i++) {
-        //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-        //     let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-        //     pastMessages.push(humanMessage);
-        //     pastMessages.push(aiMessage);
-        // }
+        for (let i = 0; i < pastMessagesData.length; i++) {
+            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+            pastMessages.push(humanMessage);
+            pastMessages.push(aiMessage);
+        }
     }
 
     // console.log("past messages", pastMessages)
@@ -205,7 +205,7 @@ App.post('/chatgpt', async (req, res) => {
 
     // initialize the agent
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
-        agentType: "chat-conversational-react-description",
+        agentType: "structured-chat-zero-shot-react-description",
         verbose: true,
         maxIterations: 5,
         // earlyStoppingMethod: "force",
@@ -216,7 +216,7 @@ App.post('/chatgpt', async (req, res) => {
             returnMessages: true,
         }),
         agentArgs: {
-            // inputVariables: ["input", "agent_scratchpad", "chat_history"],
+            inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder({ variableName: "chat_history" })],
             // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
