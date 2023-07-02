@@ -225,6 +225,9 @@ App.post('/chatgpt', async (req, res) => {
     });
 
     // console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0].prompt.template)
+    let prompt = 'You are a chatbot'
+    executor.agent.llmChain.prompt.promptMessages[0].prompt.template=prompt
+
 
     try {
         const version = process.env.WHATSAPP_VERSION
