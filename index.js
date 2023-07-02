@@ -30,11 +30,11 @@ const {
     MessagesPlaceholder,
 } = require("langchain/prompts");
 // const { z } = require("zod")
-const { BufferMemory, ChatMessageHistory, ConversationSummaryMemory } = require("langchain/memory");
+const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { Calculator } = require("langchain/tools/calculator");
-
-const { SerpAPI, ChainTool, DynamicTool } = require("langchain/tools");
+const { WebBrowser } = require("langchain/tools/webbrowser");
+const { SerpAPI, ChainTool, DynamicTool, } = require("langchain/tools");
 const { VectorDBQAChain } = require("langchain/chains");
 const { HNSWLib } = require("langchain/vectorstores/hnswlib");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
@@ -133,9 +133,9 @@ App.post('/webhook', async (req, res) => {
 App.post('/chatgpt', async (req, res) => {
 
     console.log("chatgpt req.body", req.body)
-    let received_message = req.body.message
-    let urlRegex = /(https?:\/\/[^\s]+)/g;
-    let message = received_message.replace(urlRegex, '');
+    let message = req.body.message
+    // let urlRegex = /(https?:\/\/[^\s]+)/g;
+    // let message = received_message.replace(urlRegex, '');
     let whatsapp_id = req.body.whatsapp_id
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
@@ -162,6 +162,7 @@ App.post('/chatgpt', async (req, res) => {
 
     // initiating the chatmodel - openai
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0 });
+    const embeddings = new OpenAIEmbeddings();
 
     //  to embed property listing information
     /* Load in the file we want to do question answering over */
@@ -198,6 +199,7 @@ App.post('/chatgpt', async (req, res) => {
             hl: "en",
             gl: "sg",
         }),
+        new WebBrowser({ llm, embeddings }),
         propertyDatabaseTool,
     ];
 
