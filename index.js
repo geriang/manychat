@@ -254,8 +254,8 @@ App.post('/chatgpt', async (req, res) => {
     
     \`\`\`json
     {
-      "action": $TOOL_NAME,
-      "action_input": $INPUT
+      "action": ${TOOL_NAME},
+      "action_input": ${INPUT}
     }
     \`\`\`
     
