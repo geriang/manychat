@@ -239,7 +239,7 @@ App.post('/chatgpt', async (req, res) => {
     
     Here are the JSON Schema instances for the tools you have access to:
     
-    {tool_schemas}
+    {{tool_schemas}}
     
     The way you use the tools is as follows:
     
@@ -248,7 +248,7 @@ App.post('/chatgpt', async (req, res) => {
     Output a JSON markdown code snippet containing a valid JSON blob (denoted below by $JSON_BLOB).
     This $JSON_BLOB must have a "action" key (with the name of the tool to use) and an "action_input" key (tool input).
     
-    Valid "action" values: "Final Answer" (which you must use when giving your final response to the user), or one of [{tool_names}].
+    Valid "action" values: "Final Answer" (which you must use when giving your final response to the user), or one of [{{tool_names}}].
     
     The $JSON_BLOB must be valid, parseable JSON and only contain a SINGLE action. Here is an example of an acceptable output:
     
