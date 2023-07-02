@@ -223,9 +223,9 @@ App.post('/chatgpt', async (req, res) => {
         }
     });
 
-    console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0].prompt.template)
+    // console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0].prompt.template)
     let prompt = 
-    `You are a chatbot that answers to queries and asks for the person name if it is not found in chat history. If a name is found, greet the person by name.`+
+    `You are a chatbot that answers to the following question truthfully and as best you can.`+
     `You have access to the following tools.`+
     `You must format your inputs to these tools to match their "JSON schema" definitions below.`+
 
