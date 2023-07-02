@@ -134,9 +134,9 @@ App.post('/chatgpt', async (req, res) => {
 
     console.log("chatgpt req.body", req.body)
     let message = req.body.message
-    let urlRegex = /(https?:\/\/[^\s]+)/g;
-    let input_message = message.replace(urlRegex, '');
-    let whatsapp_id = req.body.whatsapp_id
+    // let urlRegex = /(https?:\/\/[^\s]+)/g;
+    // let input_message = message.replace(urlRegex, '');
+    // let whatsapp_id = req.body.whatsapp_id
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
 
@@ -203,7 +203,7 @@ App.post('/chatgpt', async (req, res) => {
 
     // initialize the agent
     const executor = await initializeAgentExecutorWithOptions(tools, llm, {
-        agentType: "structured-chat-zero-shot-react-description",
+        agentType: "chat-conversational-react-description",
         verbose: true,
         maxIterations: 5,
         // earlyStoppingMethod: "force",
@@ -214,7 +214,7 @@ App.post('/chatgpt', async (req, res) => {
             returnMessages: true,
         }),
         agentArgs: {
-            inputVariables: ["input", "agent_scratchpad", "chat_history"],
+            // inputVariables: ["input", "agent_scratchpad", "chat_history"],
             memoryPrompts: [new MessagesPlaceholder({ variableName: "chat_history" })],
             // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
@@ -225,14 +225,14 @@ App.post('/chatgpt', async (req, res) => {
     });
 
     // console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0].prompt.template)
-    let prompt = 'You are a chatbot'
-    executor.agent.llmChain.prompt.promptMessages[0].prompt.template=prompt
+    // let prompt = 'You are a chatbot'
+    // executor.agent.llmChain.prompt.promptMessages[0].prompt.template=prompt
 
 
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await executor.call({ input: `${input_message}` });
+        const response = await executor.call({ input: `${message}` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
