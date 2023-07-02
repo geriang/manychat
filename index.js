@@ -225,7 +225,7 @@ App.post('/chatgpt', async (req, res) => {
 
     // console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0].prompt.template)
     let prompt = 
-    `You are a chatbot that answers the following questions truthfully and as best you can.`+
+    `You are a friendly chatbot that answers the following questions truthfully and as best you can.`+
     `You have access to the following tools.`+
     `You must format your inputs to these tools to match their "JSON schema" definitions below.`+
 
