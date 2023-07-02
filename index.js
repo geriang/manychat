@@ -133,9 +133,9 @@ App.post('/webhook', async (req, res) => {
 App.post('/chatgpt', async (req, res) => {
 
     console.log("chatgpt req.body", req.body)
-    let message = req.body.message
-    // let urlRegex = /(https?:\/\/[^\s]+)/g;
-    // let input_message = message.replace(urlRegex, '');
+    let received_message = req.body.message
+    let urlRegex = /(https?:\/\/[^\s]+)/g;
+    let message = received_message.replace(urlRegex, '');
     let whatsapp_id = req.body.whatsapp_id
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
