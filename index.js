@@ -219,8 +219,6 @@ App.post('/chatgpt', async (req, res) => {
             memoryPrompts: [new MessagesPlaceholder({ variableName: "chat_history" })],
             // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
             // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
-            // suffix: "Politely asks for a name if you do not know the person's name."
-            // suffix: "You are a chatbot that answers to enquires and ask for the user's name politely if it is not known."
             // suffix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history. If a name is found, greet the person by name.",
         }
     });
@@ -251,12 +249,12 @@ App.post('/chatgpt', async (req, res) => {
     
     `The $JSON_BLOB must be valid, parseable JSON and only contain a SINGLE action. Here is an example of an acceptable output:`+
     
-    `\`\`\`json
-    {{
-      "action": $TOOL_NAME,
-      "action_input": $INPUT
-    }}
-    \`\`\``+
+    ```\`\`\`json`+
+    `{{`+
+      `"action": $TOOL_NAME,`+
+      `"action_input": $INPUT`+
+    `}}`+
+    `\`\`\``+
     
     `Remember to include the surrounding markdown code snippet delimiters (begin with "\`\`\`" json and close with "\`\`\`")!`+
     
@@ -266,22 +264,22 @@ App.post('/chatgpt', async (req, res) => {
     
     `ALWAYS use the following format:`+
     
-    `Question: the input question you must answer
-    Thought: you should always think about what to do
-    Action:
-    \`\`\`json
-    $JSON_BLOB
-    \`\`\`
-    Observation: the result of the action
-    ... (this Thought/Action/Observation can repeat N times)
-    Thought: I now know the final answer
-    Action:
-    \`\`\`json
-    {{
-      "action": "Final Answer",
-      "action_input": "Final response to human"
-    }}
-    \`\`\``+
+    `Question: the input question you must answer`+
+    `Thought: you should always think about what to do`+
+    `Action:`+
+    `\`\`\`json`+
+    `$JSON_BLOB`+
+    `\`\`\``+
+    `Observation: the result of the action`+
+    `... (this Thought/Action/Observation can repeat N times)`+
+    `Thought: I now know the final answer`+
+    `Action:`+
+    `\`\`\`json`+
+    `{{`+
+      `"action": "Final Answer",`+
+      `"action_input": "Final response to human"`+
+    `}}`+
+    `\`\`\``+
     
     `Begin! Reminder to ALWAYS use the above format, and to use tools if appropriate.`;
 
