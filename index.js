@@ -186,18 +186,18 @@ App.post('/chatgpt', async (req, res) => {
     // define the tools available
     const tools = [
         // new Calculator(),
-        new DynamicTool({
-            name: "chatting_tool",
-            description:
-                "use this tool to simply chat with human, or when other tools are not found to be suitable.",
-            func: async (input) => `${input}`,
-            returnDirect: true
-        }),
-        new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
-            location: "Singapore",
-            hl: "en",
-            gl: "sg",
-        }),
+        // new DynamicTool({
+        //     name: "chatting_tool",
+        //     description:
+        //         "use this tool to simply chat with human, or when other tools are not found to be suitable.",
+        //     func: async (input) => `${input}`,
+        //     returnDirect: true
+        // }),
+        // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
+        //     location: "Singapore",
+        //     hl: "en",
+        //     gl: "sg",
+        // }),
         new WebBrowser({ llm, embeddings }),
         propertyDatabaseTool,
     ];
@@ -225,7 +225,7 @@ App.post('/chatgpt', async (req, res) => {
 
     // console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0].prompt.template)
     let prompt = 
-    `You are a friendly chatbot that answers the following questions truthfully and as best you can.`+
+    `You are a friendly chatbot that is capable of striking simple conversations and answering the following questions truthfully and as best you can.`+
     `You have access to the following tools.`+
     `You must format your inputs to these tools to match their "JSON schema" definitions below.`+
 
