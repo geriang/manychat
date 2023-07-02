@@ -224,7 +224,8 @@ App.post('/chatgpt', async (req, res) => {
     });
 
     // console.log("Check template", executor.agent.llmChain.prompt.promptMessages[0].prompt.template)
-    let prompt = `Check template Answer the following questions truthfully and as best you can.`+
+    let prompt = 
+    `Check template Answer the following questions truthfully and as best you can.`+
     `You have access to the following tools.`+
     `You must format your inputs to these tools to match their "JSON schema" definitions below.`+
 
@@ -249,7 +250,7 @@ App.post('/chatgpt', async (req, res) => {
     
     `The $JSON_BLOB must be valid, parseable JSON and only contain a SINGLE action. Here is an example of an acceptable output:`+
     
-    ```\`\`\`json`+
+    `\`\`\`json`+
     `{{`+
       `"action": $TOOL_NAME,`+
       `"action_input": $INPUT`+
@@ -284,7 +285,6 @@ App.post('/chatgpt', async (req, res) => {
     `Begin! Reminder to ALWAYS use the above format, and to use tools if appropriate.`;
 
     executor.agent.llmChain.prompt.promptMessages[0].prompt.template = prompt
-
 
     try {
         const version = process.env.WHATSAPP_VERSION
