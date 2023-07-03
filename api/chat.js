@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
 
     // defining the prompt templates
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-        SystemMessagePromptTemplate.fromTemplate(`check {{chat_history}} for the user's name if it is found write out the name, if it is not found, ask for the user's name.
+        SystemMessagePromptTemplate.fromTemplate(`check {chat_history} for the user's name if it is found write out the name, if it is not found, ask for the user's name.
          `),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
@@ -86,7 +86,7 @@ router.post('/', async (req, res) => {
             "type": "text",
             "text": {
                 "preview_url": true,
-                "body": `${response.output}`,
+                "body": `${response.response}`,
             }
         }, {
             headers: {
@@ -98,7 +98,7 @@ router.post('/', async (req, res) => {
 
         let data = {
             "client": `${message}`,
-            "bot": `${response.output}`
+            "bot": `${response.response}`
         }
 
         await addChatData(whatsapp_id, data)
