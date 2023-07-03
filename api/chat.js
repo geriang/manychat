@@ -37,10 +37,6 @@ router.post('/', async (req, res) => {
 
     if (pastMessagesData) {
 
-        // pastMessages = [
-        //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-        // ]
-
         for (let i = 0; i < pastMessagesData.length; i++) {
             let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
             let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
@@ -49,75 +45,33 @@ router.post('/', async (req, res) => {
         }
     }
 
-    // console.log("past messages", pastMessages)
-
     // initiating the chatmodel - openai
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0 });
-    const embeddings = new OpenAIEmbeddings();
 
-    //  to embed property listing information
-    /* Load in the file we want to do question answering over */
-    const text = fs.readFileSync("property.txt", "utf8");
-    /* Split the text into chunks */
-    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-    const docs = await textSplitter.createDocuments([text]);
-    /* Create the vectorstore */
-    const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
-    /* Create the chain */
-    const chain = VectorDBQAChain.fromLLM(llm, vectorStore);
+    // defining the prompt templates
+    const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+        SystemMessagePromptTemplate.fromTemplate(`check {{chat_history}} for the user's name if it is found write out the name, if it is not found, ask for the user's name.
+         `),
+        new MessagesPlaceholder("chat_history"),
+        HumanMessagePromptTemplate.fromTemplate("{input}"),
+    ]);
 
-    // create new tool for searching property information
-    const propertyDatabaseTool = new ChainTool({
-        name: "property_listing_database",
-        description:
-            "property listing database- useful for when you need to find information on a particular property listed by Huttons Sales & Auction.",
-        chain: chain,
-    });
-
-    // define the tools available
-    const tools = [
-        // new Calculator(),
-        new DynamicTool({
-            name: "chatting_tool",
-            description:
-                "use this tool to simply chat with human, or when other tools are not found to be suitable.",
-            func: async (input) => `${input}`,
-            returnDirect: true
-        }),
-        // new SerpAPI(`${process.env.SERPAPI_API_KEY}`, {
-        //     location: "Singapore",
-        //     hl: "en",
-        //     gl: "sg",
-        // }),
-        new WebBrowser({ llm, embeddings }),
-        propertyDatabaseTool,
-    ];
-
-    // initialize the agent
-    const executor = await initializeAgentExecutorWithOptions(tools, llm, {
-        agentType: "chat-conversational-react-description",
-        verbose: true,
-        maxIterations: 5,
-        // earlyStoppingMethod: "force",
-        // returnIntermediateSteps: false,
+    // initiating chain with memory function and chatprompt which introduces templates
+    const chain = new ConversationChain({
+        prompt: chatPrompt,
         memory: new BufferMemory({
             chatHistory: new ChatMessageHistory(pastMessages),
-            memoryKey: "chat_history",
             returnMessages: true,
+            memoryKey: "chat_history"
         }),
-        agentArgs: {
-            inputVariables: ["input", "agent_scratchpad", "chat_history"],
-            memoryPrompts: [new MessagesPlaceholder({ variableName: "chat_history" })],
-            // prefix: "You are a chatbot that answers to enquires. Ask for the person's name if it is unknown. If the name is known, greet the person by name.",
-            // prefix: "Remember to STRICTLY use the following format: Question, Thought, Action, Auction Input, Observation, Thought, Final Answer. DO NOT SKIP ANY OF THE STEPS AT ALL TIMES",
-            // suffix: "You are a chatbot that answers to enquires. Always ask for the name if it is not found in chat history. If a name is found, greet the person by name.",
-        }
+        llm: llm,
     });
+
 
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await executor.call({ input: `${message} ` });
+        const response = await chain.call({ input: `${message} ` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
