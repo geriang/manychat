@@ -57,7 +57,7 @@ router.post('/', async (req, res) => {
 
     //  to embed property listing information
     /* Load in the file we want to do question answering over */
-    const text = fs.readFileSync("property.txt", "utf8");
+    const text = fs.readFileSync("../property.txt", "utf8");
     /* Split the text into chunks */
     const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
     const docs = await textSplitter.createDocuments([text]);
