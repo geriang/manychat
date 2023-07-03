@@ -11,6 +11,7 @@ const {
     MessagesPlaceholder,
 } = require("langchain/prompts");
 // const { z } = require("zod")
+const { ConversationChain } = require("langchain/chains");
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { Calculator } = require("langchain/tools/calculator");
