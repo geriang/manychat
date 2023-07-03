@@ -6,7 +6,7 @@ const axios = require('axios');
 router.get('/webhook', (req, res) => {
 
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === WHATSAPP_WEBHOOK_TOKEN) {
+        req.query['hub.verify_token'] === process.env.WHATSAPP_WEBHOOK_TOKEN) {
         // console.log('Validating webhook');
         // res.sendStatus(200)
         res.status(200).send(req.query['hub.challenge']);
