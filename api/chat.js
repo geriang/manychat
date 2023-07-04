@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
             template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
             {chat_history}
-            Follow Up Input: {question}
+            Follow Up Input: {input}
             Your answer should follow the following format:
             \`\`\`
             Use the following pieces of context to answer the users question.
@@ -193,7 +193,6 @@ router.post('/', async (req, res) => {
         routerChain,
         destinationChains,
         defaultChain,
-        retrievalChain,
         verbose: true
     });
 
