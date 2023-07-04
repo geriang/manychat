@@ -167,7 +167,7 @@ router.post('/', async (req, res) => {
             .string()
             .describe('name of the prompt to use or "DEFAULT"'),
         next_inputs: z.object({
-            input: z
+            question: z
                 .string()
                 .describe('a potentially modified version of the original input')
         })
