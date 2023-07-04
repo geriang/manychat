@@ -50,11 +50,21 @@ router.post('/', async (req, res) => {
     }
 
     // initiating the chatmodel - openai
-    const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0 });
+    const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
     // defining the prompt templates
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-        SystemMessagePromptTemplate.fromTemplate(`check {chat_history} for the user's name if it is found write out the name, if it is not found, ask for the user's name.
+        SystemMessagePromptTemplate.fromTemplate(`
+        1) You are a friendly chatbot answering property sales and rental queries for Huttons Sales & Auction in Singapore.
+        2) Your task is to answer queries that customers and co-broke agents have regarding a particular property.
+        3) The steps to complete the tasks are:
+            -Find the name of the customer in previous chat conversation or {chat_history}. 
+            -If a name is found, greet the customer by name.
+            -If the name is not found, ask for the customer's name.
+            -Look up for the property information that the customer is enquiring
+            -Reply to customer accordingly base on the property infomation.
+        4) Your replies should be concise and not more than 150 words.
+        5) If there is any information you cannot find, ask the customer or co-broke agent to contact Geri 84430486.
          `),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
