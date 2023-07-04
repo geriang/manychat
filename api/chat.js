@@ -66,14 +66,14 @@ router.post('/', async (req, res) => {
             template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
             {chat_history}
-            Follow Up Input: {input}
+            Follow Up Input: {question}
             Your answer should follow the following format:
             \`\`\`
             Use the following pieces of context to answer the users question.
             If you don't know the answer, just say that you don't know, don't try to make up an answer.
             ----------------
             <Relevant chat history excerpt as context here>
-            Standalone input: <Rephrased question here>
+            Standalone question: <Rephrased question here>
             \`\`\`
             Your answer:`
         }
@@ -84,15 +84,15 @@ router.post('/', async (req, res) => {
 
 
     /* Create the chain */
-    const retrievalChain = ConversationalRetrievalQAChain.fromLLM(
-        llm,
-        vectorStore.asRetriever(),
-        {
-            memory: new BufferMemory({
-                memoryKey: "chat_history", // Must be set to "chat_history"
-            }),
-        }
-    );
+    // const retrievalChain = ConversationalRetrievalQAChain.fromLLM(
+    //     llm,
+    //     vectorStore.asRetriever(),
+    //     {
+    //         memory: new BufferMemory({
+    //             memoryKey: "chat_history", // Must be set to "chat_history"
+    //         }),
+    //     }
+    // );
 
     for (const item of templates) {
         let prompt = `${item.template}`
@@ -118,10 +118,10 @@ router.post('/', async (req, res) => {
     const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
             `You are a friendly chatbot from Huttons Sales & Auction in Singapore.` +
-            `Your job is to identify the customer by name.`
+            `Your job is to identify the customer by name.` 
         ),
         new MessagesPlaceholder("chat_history"),
-        HumanMessagePromptTemplate.fromTemplate("{input}"),
+        HumanMessagePromptTemplate.fromTemplate("{question}"),
     ]);
 
     // initiating chain with memory function and chatprompt which introduces templates
@@ -149,7 +149,7 @@ router.post('/', async (req, res) => {
         `<Destinations>` +
         `This is the question provided:` +
         `<Input>` +
-        `{input}` +
+        `{question}` +
         `<Input>` +
         `When you respond be sure to use the following format:` +
         `<Formatting>` +
@@ -178,7 +178,7 @@ router.post('/', async (req, res) => {
     // Now we can construct the router with the list of route names and descriptions
     let routerPrompt = new PromptTemplate({
         template: routerTemplate,
-        inputVariables: ['input'],
+        inputVariables: ['question'],
         outputParser: routerParser,
         partialVariables: {
             format_instructions: routerFormat
@@ -199,7 +199,7 @@ router.post('/', async (req, res) => {
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await multiPromptChain.call({ input: `${message} ` });
+        const response = await multiPromptChain.call({ question: `${message} ` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
