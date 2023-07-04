@@ -73,7 +73,7 @@ router.post('/', async (req, res) => {
             If you don't know the answer, just say that you don't know, don't try to make up an answer.
             ----------------
             <Relevant chat history excerpt as context here>
-            Standalone question: <Rephrased question here>
+            Standalone input: <Rephrased question here>
             \`\`\`
             Your answer:`
         }
