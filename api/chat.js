@@ -62,38 +62,8 @@ router.post('/', async (req, res) => {
     let templates = [
         {
             name: 'property_enquiry',
-            description: 'Good for replying enquiry on a particular property',
-            template: `You are a friendly chatbot from Huttons Sales & Auction in Singapore.` +
-                `Your job is to identify the customer by name.` +
-                `After the customer is indentified by name, Reflect on what is the intent of the customer.`
-        }
-    ];
-
-    // Build an array of destination LLMChains and a list of the names with descriptions
-    let destinationChains = {};
-
-    for (const item of templates) {
-        let prompt = ChatPromptTemplate.fromPromptMessages([SystemMessagePromptTemplate.fromTemplate(`${item.template}`),
-        new MessagesPlaceholder("chat_history"),
-        HumanMessagePromptTemplate.fromTemplate("{input}")]);
-        let chain = new ConversationChain({
-            prompt: prompt,
-            memory: new BufferMemory({
-                chatHistory: new ChatMessageHistory(pastMessages),
-                returnMessages: true,
-                memoryKey: "chat_history"
-            }),
-            llm: llm
-        });
-        destinationChains[item.name] = chain;
-    }
-
-    let destinations = templates.map(item => (item.name + ': ' + item.description)).join('\n');
-
-    // Create a default destination in case the LLM cannot decide
-    const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
-        SystemMessagePromptTemplate.fromTemplate(
-            `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
+            description: 'Good for replying when an indentified customer enquires on a particular property ',
+            template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
             {chat_history}
             Follow Up Input: {question}
@@ -106,36 +76,66 @@ router.post('/', async (req, res) => {
             Standalone question: <Rephrased question here>
             \`\`\`
             Your answer:`
+        }
+    ];
+
+    // Build an array of destination LLMChains and a list of the names with descriptions
+    let destinationChains = {};
+
+
+    /* Create the chain */
+    const retrievalChain = ConversationalRetrievalQAChain.fromLLM(
+        llm,
+        vectorStore.asRetriever(),
+        {
+            memory: new BufferMemory({
+                memoryKey: "chat_history", // Must be set to "chat_history"
+            }),
+        }
+    );
+
+    for (const item of templates) {
+        let prompt = `${item.template}`
+        let chain = ConversationalRetrievalQAChain.fromLLM(
+            llm,
+            vectorStore.asRetriever(),
+            {
+                memory: new BufferMemory({
+                    memoryKey: "chat_history", // Must be set to "chat_history"
+                    returnMessages: true
+                }),
+                questionGeneratorChainOptions: {
+                    template: prompt
+                }
+            }
+        );
+        destinationChains[item.name] = chain;
+    }
+
+    let destinations = templates.map(item => (item.name + ': ' + item.description)).join('\n');
+
+    // Create a default destination in case the LLM cannot decide
+    const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
+        SystemMessagePromptTemplate.fromTemplate(
+            `You are a friendly chatbot from Huttons Sales & Auction in Singapore.` +
+            `Your job is to identify the customer by name.` +
+            `After the customer is indentified by name, Reflect on what is the intent of the customer.`
         ),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
     // initiating chain with memory function and chatprompt which introduces templates
-    // const defaultChain = new ConversationChain({
-    //     prompt: defaultPrompt,
-    //     memory: new BufferMemory({
-    //         chatHistory: new ChatMessageHistory(pastMessages),
-    //         returnMessages: true,
-    //         memoryKey: "chat_history"
-    //     }),
-    //     llm: llm,
-    // });
+    const defaultChain = new ConversationChain({
+        prompt: defaultPrompt,
+        memory: new BufferMemory({
+            chatHistory: new ChatMessageHistory(pastMessages),
+            returnMessages: true,
+            memoryKey: "chat_history"
+        }),
+        llm: llm,
+    });
 
-    /* Create the chain */
-    const defaultChain = ConversationalRetrievalQAChain.fromLLM(
-        llm,
-        vectorStore.asRetriever(),
-        {
-            memory: new BufferMemory({
-                memoryKey: "chat_history", // Must be set to "chat_history"
-                returnMessages: true,
-            }),
-            questionGeneratorChainOptions:{
-                template: defaultPrompt,
-            },
-        }
-    );
 
     // Now set up the router and it's template
     let routerTemplate =
@@ -193,6 +193,7 @@ router.post('/', async (req, res) => {
         routerChain,
         destinationChains,
         defaultChain,
+        retrievalChain,
         verbose: true
     });
 
