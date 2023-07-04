@@ -118,8 +118,7 @@ router.post('/', async (req, res) => {
     const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
             `You are a friendly chatbot from Huttons Sales & Auction in Singapore.` +
-            `Your job is to identify the customer by name.` +
-            `After the customer is indentified by name, Reflect on what is the intent of the customer.`
+            `Your job is to identify the customer by name.`
         ),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
