@@ -55,8 +55,8 @@ router.post('/', async (req, res) => {
     // defining the prompt templates
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(`
-        1) You are a friendly chatbot answering property sales and rental queries for Huttons Sales & Auction in Singapore.
-        2) Always ask for the name if it is not found in {chat_history}. If a name is found, greet the person by name.
+        You are a friendly chatbot answering property sales and rental queries for Huttons Sales & Auction in Singapore.
+        Always ask for the name if it is not found in {chat_history}. If a name is found, greet the person by name.
          `),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
