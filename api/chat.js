@@ -3,21 +3,22 @@ const router = express.Router();
 const axios = require('axios');
 
 const { ChatOpenAI } = require("langchain/chat_models/openai");
-const { initializeAgentExecutorWithOptions } = require("langchain/agents");
 const {
+    PromptTemplate,
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
     MessagesPlaceholder,
 } = require("langchain/prompts");
-// const { z } = require("zod")
-const { ConversationChain } = require("langchain/chains");
+const { z } = require("zod")
+const { ConversationChain, LLMRouterChain, MultiPromptChain, ConversationalRetrievalQAChain } = require("langchain/chains");
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
-const { Calculator } = require("langchain/tools/calculator");
-const { WebBrowser } = require("langchain/tools/webbrowser");
-const { SerpAPI, ChainTool, DynamicTool, } = require("langchain/tools");
-const { VectorDBQAChain } = require("langchain/chains");
+const { RouterOutputParser } = require('langchain/output_parsers');
+// const { Calculator } = require("langchain/tools/calculator");
+// const { WebBrowser } = require("langchain/tools/webbrowser");
+// const { SerpAPI, ChainTool, DynamicTool, } = require("langchain/tools");
+// const { VectorDBQAChain } = require("langchain/chains");
 const { HNSWLib } = require("langchain/vectorstores/hnswlib");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
@@ -52,33 +53,154 @@ router.post('/', async (req, res) => {
     // initiating the chatmodel - openai
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
-    // defining the prompt templates
-    const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+
+    const text = fs.readFileSync("property.txt", "utf8");
+    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+    const docs = await textSplitter.createDocuments([text]);
+    const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+
+    let templates = [
+        {
+            name: 'property_enquiry',
+            description: 'Good for replying enquiry on a particular property',
+            template: `You are a friendly chatbot from Huttons Sales & Auction in Singapore.` +
+                `Your job is to identify the customer by name.` +
+                `After the customer is indentified by name, Reflect on what is the intent of the customer.`
+        }
+    ];
+
+    // Build an array of destination LLMChains and a list of the names with descriptions
+    let destinationChains = {};
+
+    for (const item of templates) {
+        let prompt = ChatPromptTemplate.fromPromptMessages([SystemMessagePromptTemplate.fromTemplate(`${item.template}`),
+        new MessagesPlaceholder("chat_history"),
+        HumanMessagePromptTemplate.fromTemplate("{input}")]);
+        let chain = new ConversationChain({
+            prompt: prompt,
+            memory: new BufferMemory({
+                chatHistory: new ChatMessageHistory(pastMessages),
+                returnMessages: true,
+                memoryKey: "chat_history"
+            }),
+            llm: llm
+        });
+        destinationChains[item.name] = chain;
+    }
+
+    let destinations = templates.map(item => (item.name + ': ' + item.description)).join('\n');
+
+    // Create a default destination in case the LLM cannot decide
+    const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
-        `You are a friendly chatbot from Huttons Sales & Auction in Singapore.`+
-        `Your job is to identify the customer by name.`+
-        `After the customer is indentified by name, Reflect on what is the intent of the customer.`
-         ),
+            `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
+            Chat History:
+            {chat_history}
+            Follow Up Input: {question}
+            Your answer should follow the following format:
+            \`\`\`
+            Use the following pieces of context to answer the users question.
+            If you don't know the answer, just say that you don't know, don't try to make up an answer.
+            ----------------
+            <Relevant chat history excerpt as context here>
+            Standalone question: <Rephrased question here>
+            \`\`\`
+            Your answer:`
+        ),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{input}"),
     ]);
 
     // initiating chain with memory function and chatprompt which introduces templates
-    const chain = new ConversationChain({
-        prompt: chatPrompt,
-        memory: new BufferMemory({
-            chatHistory: new ChatMessageHistory(pastMessages),
-            returnMessages: true,
-            memoryKey: "chat_history"
-        }),
-        llm: llm,
+    // const defaultChain = new ConversationChain({
+    //     prompt: defaultPrompt,
+    //     memory: new BufferMemory({
+    //         chatHistory: new ChatMessageHistory(pastMessages),
+    //         returnMessages: true,
+    //         memoryKey: "chat_history"
+    //     }),
+    //     llm: llm,
+    // });
+
+    /* Create the chain */
+    const defaultChain = ConversationalRetrievalQAChain.fromLLM(
+        llm,
+        vectorStore.asRetriever(),
+        {
+            memory: new BufferMemory({
+                memoryKey: "chat_history", // Must be set to "chat_history"
+                returnMessages: true,
+            }),
+            questionGeneratorChainOptions:{
+                template: defaultPrompt,
+            },
+        }
+    );
+
+    // Now set up the router and it's template
+    let routerTemplate =
+        `Based on the input question to an large language model take the following steps:` +
+        `1) decide if the question can be answered by any of the destinations based on the destination descriptions.` +
+        `2) If none of the destinations are a good fit use "DEFAULT" as the response, For example if the question is about pharmacology but there is no "health care" destination use DEFAULT.` +
+        `3) Check is set to DEFAULT, if there is no match or set it to DEFAULT.` +
+        `4) You may also revise the original input if you think that revising it will ultimately lead to a better response from the language model.` +
+        `You ONLY have the following destinations to choose from:` +
+        `<Destinations>` +
+        `{destinations}` +
+        `<Destinations>` +
+        `This is the question provided:` +
+        `<Input>` +
+        `{input}` +
+        `<Input>` +
+        `When you respond be sure to use the following format:` +
+        `<Formatting>` +
+        `{format_instructions}` +
+        `<Formatting>` +
+        `IMPORTANT: "destination" MUST be one of the destination names provided OR it can be "DEFAULT" if there is no good match.` +
+        `IMPORTANT: "next_inputs" can just be the original input if you don't think any modifications are needed.`
+
+    // Now we can construct the router with the list of route names and descriptions
+    routerTemplate = routerTemplate.replace('{destinations}', destinations);
+
+    // ***
+    let routerParser = RouterOutputParser.fromZodSchema(z.object({
+        destination: z
+            .string()
+            .describe('name of the prompt to use or "DEFAULT"'),
+        next_inputs: z.object({
+            input: z
+                .string()
+                .describe('a potentially modified version of the original input')
+        })
+    }))
+
+    let routerFormat = routerParser.getFormatInstructions();
+
+    // Now we can construct the router with the list of route names and descriptions
+    let routerPrompt = new PromptTemplate({
+        template: routerTemplate,
+        inputVariables: ['input'],
+        outputParser: routerParser,
+        partialVariables: {
+            format_instructions: routerFormat
+        }
+    });
+
+    let routerChain = LLMRouterChain.fromLLM(llm, routerPrompt);
+
+    // Now we can bring all of the pieces together!
+    let multiPromptChain = new MultiPromptChain({
+        routerChain,
+        destinationChains,
+        defaultChain,
+        verbose: true
     });
 
 
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await chain.call({ input: `${message} ` });
+        const response = await multiPromptChain.call({ input: `${message} ` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
@@ -114,7 +236,7 @@ router.post('/', async (req, res) => {
 
 });
 
-module.exports = router 
+module.exports = router
 
 
 
