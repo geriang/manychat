@@ -62,7 +62,7 @@ router.post('/', async (req, res) => {
     let templates = [
         {
             name: 'property_enquiry',
-            description: 'Good for replying when an indentified customer enquires on a particular property ',
+            description: 'Good for replying enquiry on a particular property ',
             template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
             {chat_history}
@@ -82,17 +82,6 @@ router.post('/', async (req, res) => {
     // Build an array of destination LLMChains and a list of the names with descriptions
     let destinationChains = {};
 
-
-    /* Create the chain */
-    // const retrievalChain = ConversationalRetrievalQAChain.fromLLM(
-    //     llm,
-    //     vectorStore.asRetriever(),
-    //     {
-    //         memory: new BufferMemory({
-    //             memoryKey: "chat_history", // Must be set to "chat_history"
-    //         }),
-    //     }
-    // );
 
     for (const item of templates) {
         let prompt = `${item.template}`
@@ -222,7 +211,7 @@ router.post('/', async (req, res) => {
 
         let data = {
             "client": `${message}`,
-            "bot": `${response.response}`
+            "bot": `${response.response ? response.response : response.text}`
         }
 
         await addChatData(whatsapp_id, data)
