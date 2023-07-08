@@ -1,20 +1,18 @@
-let functionAvailabilityTimestamp = null;
+let functionTriggerTimestamp = null;
 
 const triggerChat = async (req, res, next) => {
     const currentTime = Date.now();
     const sixHoursInMilliseconds = 6 * 60 * 60 * 1000;
 
-    // If functionAvailabilityTimestamp is null or current time is within the 6 hour window, proceed.
-    if (!functionAvailabilityTimestamp || currentTime - functionAvailabilityTimestamp < sixHoursInMilliseconds) {
-        if (!functionAvailabilityTimestamp) {
-            functionAvailabilityTimestamp = currentTime;
-        }
-        next();
+      // If functionTriggerTimestamp is null or 6 hours have passed since the last trigger
+      if (!functionTriggerTimestamp || currentTime - functionTriggerTimestamp >= sixHoursInMilliseconds) {
+        // Trigger the function here
+        console.log("The function is triggered!");
 
-    } else {
-        // If current time is beyond the 6 hour window, disallow access.
-        return res.status(429).send("You can only access this function for the first 6 hours after it is triggered. Please wait for the next window.");
+        functionTriggerTimestamp = currentTime;
     }
+
+    next();
 };
         // console.log("chatgpt req.body", req.body)
         // let message = req.body.message
