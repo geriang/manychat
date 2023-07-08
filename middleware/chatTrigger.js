@@ -91,10 +91,10 @@ const triggerChat = async (req, res, next) => {
 
         functionTriggerTimestamp = currentTime;
 
-        // } else {
-        // next();
+    } else {
+        next();
     }
-    next();
+    // next();
 };
 
 
