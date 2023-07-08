@@ -69,7 +69,7 @@ router.post('/', async (req, res) => {
             Follow Up Input: {question}
             Your answer should follow the following format:
             \`\`\`
-            Use the following pieces of context to answer the users question and DO NOT GREET.
+            Use the following pieces of context to answer the users question and DO NOT SAY "HI" OR "HELLO".
             If you don't know the answer, just say that you don't know, don't try to make up an answer.
             ----------------
             <Relevant chat history excerpt as context here>
@@ -108,7 +108,7 @@ router.post('/', async (req, res) => {
         SystemMessagePromptTemplate.fromTemplate(
             `You are a friendly chatbot from Huttons Sales & Auction in Singapore.` +
             // `Your job is to identify the customer by name.`
-            `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486. DO NOT GREET.`
+            `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486. DO NOT SAY "HI" OR "HELLO".`
         ),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{question}"),
