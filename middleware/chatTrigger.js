@@ -57,7 +57,7 @@ const triggerChat = async (req, res, next) => {
         try {
             const version = process.env.WHATSAPP_VERSION
             const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-            const response = await chain.call({ input: `${message} ` });
+            const response = await chain.call({ input: `${message} + Do you remember my name?` });
             console.log("response", response)
 
             await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
