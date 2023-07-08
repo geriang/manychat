@@ -67,9 +67,9 @@ router.post('/', async (req, res) => {
             Chat History:
             {chat_history}
             Follow Up Input: {question}
-            Your answer should follow the following format:
+            Your answer should follow the following format and MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS "HI" OR "HELLO":
             \`\`\`
-            Use the following pieces of context to answer the users question. YOUR REPLY MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS "HI" OR "HELLO".
+            Use the following pieces of context to answer the users question.
             If you don't know the answer, just say that you don't know, don't try to make up an answer.
             ----------------
             <Relevant chat history excerpt as context here>
@@ -108,7 +108,7 @@ router.post('/', async (req, res) => {
         SystemMessagePromptTemplate.fromTemplate(
             `You are a chatbot from Huttons Sales & Auction in Singapore.` +
             // `Your job is to identify the customer by name.`
-            `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486. YOUR REPLY MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS "HI" OR "HELLO".`
+            `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486".`
         ),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{question}"),
@@ -189,7 +189,7 @@ router.post('/', async (req, res) => {
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await multiPromptChain.call({ question: `${message}. YOUR REPLY MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS "HI" OR "HELLO". ` });
+        const response = await multiPromptChain.call({ question: `${message}` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
