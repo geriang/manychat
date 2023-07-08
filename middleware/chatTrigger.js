@@ -45,7 +45,7 @@ const triggerChat = async (req, res, next) => {
         });
 
         const prompt =
-            PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name."
+            PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found ask for the name."
         
           Current conversation:
           {chat_history}
@@ -57,7 +57,7 @@ const triggerChat = async (req, res, next) => {
         try {
             const version = process.env.WHATSAPP_VERSION
             const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-            const response = await chain.call({ input: `Greet me by my name first followed by replying to the following ${message}` });
+            const response = await chain.call({ input: `Greet me by my name` });
             console.log("response", response)
 
             await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
@@ -92,7 +92,7 @@ const triggerChat = async (req, res, next) => {
 
         functionTriggerTimestamp = currentTime;
 
-    } else {
+        // } else {
         next();
     }
 };
