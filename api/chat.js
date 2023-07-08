@@ -189,7 +189,7 @@ router.post('/', async (req, res) => {
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await multiPromptChain.call({ question: `${message} ` });
+        const response = await multiPromptChain.call({ question: `${message}. YOUR REPLY MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS "HI" OR "HELLO". ` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
