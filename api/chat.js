@@ -67,7 +67,7 @@ router.post('/', async (req, res) => {
             Chat History:
             {chat_history}
             Follow Up Input: {question}
-            Your answer should follow the following format and MUST NOT CONTAIN ANY GREETINGS SUCH AS "HI" OR "HELLO":
+            Your answer should follow the following format:
             \`\`\`
             Use the following pieces of context to answer the users question.
             If you don't know the answer, just say that you don't know, don't try to make up an answer.
@@ -111,7 +111,7 @@ router.post('/', async (req, res) => {
             `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486".`
         ),
         new MessagesPlaceholder("chat_history"),
-        HumanMessagePromptTemplate.fromTemplate("{question}"),
+        HumanMessagePromptTemplate.fromTemplate("{question}. YOUR REPLY MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS `HI` OR `HELLO`"),
     ]);
 
     // initiating chain with memory function and chatprompt which introduces templates
