@@ -1,5 +1,6 @@
+const axios = require('axios');
 const { ChatOpenAI } = require("langchain/chat_models/openai");
-const { ConversationSummaryMemory, ChatMessageHistory } = require("langchain/memory");
+const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { LLMChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
@@ -14,7 +15,7 @@ const triggerChat = async (req, res, next) => {
     // If functionTriggerTimestamp is null or 6 hours have passed since the last trigger
     if (!functionTriggerTimestamp || currentTime - functionTriggerTimestamp >= sixHoursInMilliseconds) {
         // Trigger the function here
-        console.log("The function is triggered!");
+        console.log("The first session chat function is triggered!");
         console.log("chatgpt req.body", req.body)
         let message = req.body.message
         let whatsapp_id = req.body.whatsapp_id
@@ -38,10 +39,9 @@ const triggerChat = async (req, res, next) => {
         // initiating the chatmodel - openai
         const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
-        const memory = new ConversationSummaryMemory({
+        const memory = new BufferMemory({
             memoryKey: "chat_history",
             chatHistory: new ChatMessageHistory(pastMessages),
-            llm: llm,
         });
 
         const prompt =
