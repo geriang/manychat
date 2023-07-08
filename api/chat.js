@@ -111,7 +111,7 @@ router.post('/', async (req, res) => {
             `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486".`
         ),
         new MessagesPlaceholder("chat_history"),
-        HumanMessagePromptTemplate.fromTemplate("{question}. YOUR REPLY MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS `HI` OR `HELLO`"),
+        HumanMessagePromptTemplate.fromTemplate("{question}"),
     ]);
 
     // initiating chain with memory function and chatprompt which introduces templates
@@ -189,7 +189,7 @@ router.post('/', async (req, res) => {
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await multiPromptChain.call({ question: `${message}` });
+        const response = await multiPromptChain.call({ question: `${message}. YOUR REPLY MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS "HI" OR "HELLO".` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
