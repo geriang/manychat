@@ -76,7 +76,6 @@ const triggerChat = async (req, res, next) => {
                     'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
                 }
             })
-            // res.send(response)
 
             let data = {
                 "client": `${message}`,
@@ -84,7 +83,7 @@ const triggerChat = async (req, res, next) => {
             }
 
             await addChatData(whatsapp_id, data)
-            res.sendStatus(200);
+            // res.sendStatus(200);
 
         } catch (err) {
             console.error("Error in POST /chatgpt:", err);
