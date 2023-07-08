@@ -67,7 +67,7 @@ router.post('/', async (req, res) => {
             Chat History:
             {chat_history}
             Follow Up Input: {question}
-            Your answer should follow the following format and MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS "HI" OR "HELLO":
+            Your answer should follow the following format and MUST NOT CONTAIN ANY GREETINGS SUCH AS "HI" OR "HELLO":
             \`\`\`
             Use the following pieces of context to answer the users question.
             If you don't know the answer, just say that you don't know, don't try to make up an answer.
@@ -189,7 +189,7 @@ router.post('/', async (req, res) => {
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await multiPromptChain.call({ question: `${message}` });
+        const response = await multiPromptChain.call({ question: `${message}. REPLY MUST NOT CONTAIN ANY GREETINGS SUCH AS "HI" OR "HELLO".` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
