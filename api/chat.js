@@ -107,7 +107,8 @@ router.post('/', async (req, res) => {
     const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
             `You are a friendly chatbot from Huttons Sales & Auction in Singapore.` +
-            `Your job is to identify the customer by name.`
+            // `Your job is to identify the customer by name.`
+            `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486`
         ),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{question}"),

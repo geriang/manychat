@@ -45,7 +45,7 @@ const triggerChat = async (req, res, next) => {
         });
 
         const prompt =
-            PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found ask for the name."
+            PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found greet and ask for the name."
         
           Current conversation:
           {chat_history}
@@ -92,7 +92,7 @@ const triggerChat = async (req, res, next) => {
 
         functionTriggerTimestamp = currentTime;
 
-    } else {
+    // } else {
         next();
     }
 };
