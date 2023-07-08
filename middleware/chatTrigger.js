@@ -1,25 +1,33 @@
-let lastFunctionCallTimestamp = null;
+let functionAvailabilityTimestamp = null;
 
 const triggerChat = async (req, res, next) => {
     const currentTime = Date.now();
     const sixHoursInMilliseconds = 6 * 60 * 60 * 1000;
 
-    if (lastFunctionCallTimestamp && currentTime - lastFunctionCallTimestamp < sixHoursInMilliseconds) {
-        console.log("Triggered")
-        return res.status(429).send("You can only trigger this function once every 6 hours.");
+    // If functionAvailabilityTimestamp is null or current time is within the 6 hour window, proceed.
+    if (!functionAvailabilityTimestamp || currentTime - functionAvailabilityTimestamp < sixHoursInMilliseconds) {
+        if (!functionAvailabilityTimestamp) {
+            functionAvailabilityTimestamp = currentTime;
+        }
+        next();
 
+    } else {
+        // If current time is beyond the 6 hour window, disallow access.
+        return res.status(429).send("You can only access this function for the first 6 hours after it is triggered. Please wait for the next window.");
+    }
+};
         // console.log("chatgpt req.body", req.body)
         // let message = req.body.message
         // let whatsapp_id = req.body.whatsapp_id
         // console.log("message received by chatgpt", message)
         // console.log("whatsappid received by chatgpt", whatsapp_id)
-    
+
         // const pastMessagesData = await retrieveChatHistory(whatsapp_id)
         // // console.log("past messages data received by chatgpt", pastMessagesData)
         // let pastMessages = []
-    
+
         // if (pastMessagesData) {
-    
+
         //     for (let i = 0; i < pastMessagesData.length; i++) {
         //         let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
         //         let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
@@ -27,16 +35,16 @@ const triggerChat = async (req, res, next) => {
         //         pastMessages.push(aiMessage);
         //     }
         // }
-    
+
         // // initiating the chatmodel - openai
         // const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
-    
-    
+
+
         // const text = fs.readFileSync("property.txt", "utf8");
         // const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
         // const docs = await textSplitter.createDocuments([text]);
         // const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
-    
+
         // let templates = [
         //     {
         //         name: 'property_enquiry',
@@ -56,11 +64,11 @@ const triggerChat = async (req, res, next) => {
         //         Your answer:`
         //     }
         // ];
-    
+
         // // Build an array of destination LLMChains and a list of the names with descriptions
         // let destinationChains = {};
-    
-    
+
+
         // for (const item of templates) {
         //     let prompt = `${item.template}`
         //     let chain = ConversationalRetrievalQAChain.fromLLM(
@@ -78,9 +86,9 @@ const triggerChat = async (req, res, next) => {
         //     );
         //     destinationChains[item.name] = chain;
         // }
-    
+
         // let destinations = templates.map(item => (item.name + ': ' + item.description)).join('\n');
-    
+
         // // Create a default destination in case the LLM cannot decide
         // const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         //     SystemMessagePromptTemplate.fromTemplate(
@@ -90,7 +98,7 @@ const triggerChat = async (req, res, next) => {
         //     new MessagesPlaceholder("chat_history"),
         //     HumanMessagePromptTemplate.fromTemplate("{question}"),
         // ]);
-    
+
         // // initiating chain with memory function and chatprompt which introduces templates
         // const defaultChain = new ConversationChain({
         //     prompt: defaultPrompt,
@@ -101,8 +109,8 @@ const triggerChat = async (req, res, next) => {
         //     }),
         //     llm: llm,
         // });
-    
-    
+
+
         // // Now set up the router and it's template
         // let routerTemplate =
         //     `Based on the input question to an large language model take the following steps:` +
@@ -124,10 +132,10 @@ const triggerChat = async (req, res, next) => {
         //     `<Formatting>` +
         //     `IMPORTANT: "destination" MUST be one of the destination names provided OR it can be "DEFAULT" if there is no good match.` +
         //     `IMPORTANT: "next_inputs" can just be the original input if you don't think any modifications are needed.`
-    
+
         // // Now we can construct the router with the list of route names and descriptions
         // routerTemplate = routerTemplate.replace('{destinations}', destinations);
-    
+
         // // ***
         // let routerParser = RouterOutputParser.fromZodSchema(z.object({
         //     destination: z
@@ -139,9 +147,9 @@ const triggerChat = async (req, res, next) => {
         //             .describe('a potentially modified version of the original input')
         //     })
         // }))
-    
+
         // let routerFormat = routerParser.getFormatInstructions();
-    
+
         // // Now we can construct the router with the list of route names and descriptions
         // let routerPrompt = new PromptTemplate({
         //     template: routerTemplate,
@@ -151,9 +159,9 @@ const triggerChat = async (req, res, next) => {
         //         format_instructions: routerFormat
         //     }
         // });
-    
+
         // let routerChain = LLMRouterChain.fromLLM(llm, routerPrompt);
-    
+
         // // Now we can bring all of the pieces together!
         // let multiPromptChain = new MultiPromptChain({
         //     routerChain,
@@ -161,16 +169,16 @@ const triggerChat = async (req, res, next) => {
         //     defaultChain,
         //     verbose: true
         // });
-    
-    
+
+
         // try {
         //     const version = process.env.WHATSAPP_VERSION
         //     const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
         //     const response = await multiPromptChain.call({ question: `${message} ` });
         //     console.log("response", response)
-    
+
         //     await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
-    
+
         //         "messaging_product": "whatsapp",
         //         "recipient_type": "individual",
         //         "to": `${whatsapp_id}`,
@@ -186,23 +194,19 @@ const triggerChat = async (req, res, next) => {
         //         }
         //     })
         //     // res.send(response)
-    
+
         //     let data = {
         //         "client": `${message}`,
         //         "bot": `${response.response ? response.response : response.text}`
         //     }
-    
+
         //     await addChatData(whatsapp_id, data)
         //     res.sendStatus(200);
-    
+
         // } catch (err) {
         //     console.error("Error in POST /chatgpt:", err);
         // }
-    
-    };
 
-    lastFunctionCallTimestamp = currentTime;
-    next();
-};
 
-module.exports = triggerChat;
+
+module.exports = triggerChat
