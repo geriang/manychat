@@ -3,6 +3,7 @@ const { ConversationSummaryMemory, ChatMessageHistory } = require("langchain/mem
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { LLMChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
+const { retrieveChatHistory, addChatData } = require("../database")
 
 let functionTriggerTimestamp = null;
 
