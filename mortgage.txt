@@ -1,0 +1,28 @@
+Following is a list of Banks and the loan interest rates they are offering:
+
+Development Bank Singapore (DBS) - 4.5% per annum
+United Overseas Bank (UOB) - 4.38% per annum
+Overseas Chinese Banking Corporation (OCBC) - 4% per annum
+
+
+To calculate the monthly repayment amount, we need the following information:
+
+Loan amount: The total amount of money borrowed.
+Loan period: The duration of the loan in months.
+Interest rate: The annual interest rate applied to the loan amount.
+Once we have these details, we can use the following formula to calculate the monthly repayment amount:
+
+Monthly repayment amount = (Loan amount * Monthly interest rate) / (1 - (1 + Monthly interest rate)^(-Loan period))
+
+The monthly interest rate can be calculated by dividing the annual interest rate by 12 (months).
+
+Let's say you have a loan amount of $10,000, a loan period of 36 months (3 years), and an annual interest rate of 5%. To calculate the monthly repayment amount, we first need to convert the annual interest rate to a monthly interest rate:
+
+Monthly interest rate = 5% / 12 = 0.05 / 12 = 0.0041667
+
+Now we can substitute the values into the formula:
+
+Monthly repayment amount = (10,000 * 0.0041667) / (1 - (1 + 0.0041667)^(-36))
+
+By evaluating this expression, we can find the monthly repayment amount.
+

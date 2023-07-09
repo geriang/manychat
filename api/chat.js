@@ -54,15 +54,39 @@ router.post('/', async (req, res) => {
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
 
-    const text = fs.readFileSync("property.txt", "utf8");
-    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-    const docs = await textSplitter.createDocuments([text]);
-    const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+    const listingText = fs.readFileSync("property.txt", "utf8");
+    const listingTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+    const listingDocs = await listingTextSplitter.createDocuments([listingText]);
+    const listingVectorStore = await HNSWLib.fromDocuments(listingDocs, new OpenAIEmbeddings());
+
+    const mortgageText = fs.readFileSync("mortgage.txt", "utf8");
+    const mortgageTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+    const mortgageDocs = await mortgageTextSplitter.createDocuments([mortgageText]);
+    const mortgageVectorStore = await HNSWLib.fromDocuments(mortgageDocs, new OpenAIEmbeddings());
 
     let templates = [
         {
             name: 'property_enquiry',
             description: 'Good for replying enquiry on a particular property ',
+            vector: listingVectorStore,
+            template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
+            Chat History:
+            {chat_history}
+            Follow Up Input: {question}
+            Your answer should follow the following format:
+            \`\`\`
+            Use the following pieces of context to answer the users question.
+            If you don't know the answer, just say that you don't know, don't try to make up an answer.
+            ----------------
+            <Relevant chat history excerpt as context here>
+            Standalone question: <Rephrased question here>
+            \`\`\`
+            Your answer:`
+        },
+        {
+            name: 'mortgage_loan_repayment_enquiry',
+            description: 'Good for replying enquiry on mortgage loan repayment caluculation ',
+            vector: mortgageVectorStore,
             template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
             {chat_history}
@@ -87,7 +111,7 @@ router.post('/', async (req, res) => {
         let prompt = `${item.template}`
         let chain = ConversationalRetrievalQAChain.fromLLM(
             llm,
-            vectorStore.asRetriever(),
+            item.vector.asRetriever(),
             {
                 memory: new BufferMemory({
                     memoryKey: "chat_history", // Must be set to "chat_history"
@@ -189,7 +213,7 @@ router.post('/', async (req, res) => {
     try {
         const version = process.env.WHATSAPP_VERSION
         const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await multiPromptChain.call({ question: `${message}. YOUR REPLY MUST NOT CONTAIN ANY GREETING MESSEAGES SUCH AS "HI" OR "HELLO".` });
+        const response = await multiPromptChain.call({ question: `${message}` });
         console.log("response", response)
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
@@ -226,16 +250,3 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router
-
-
-
-// 1) You are a friendly chatbot answering property sales and rental queries for Huttons Sales & Auction in Singapore.
-// 2) Your task is to answer queries that customers and co-broke agents have regarding a particular property.
-// 3) The steps to complete the tasks are:
-//     -Find the name of the customer in previous chat conversation or {chat_history}. 
-//     -If a name is found, greet the customer by name.
-//     -If the name is not found, ask for the customer's name.
-//     -Look up for the property information that the customer is enquiring
-//     -Reply to customer accordingly base on the property infomation.
-// 4) Your replies should be concise and not more than 150 words.
-// 5) If there is any information you cannot find, ask the customer or co-broke agent to contact Geri 84430486.

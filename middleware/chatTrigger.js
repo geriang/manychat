@@ -16,11 +16,8 @@ const triggerChat = async (req, res, next) => {
     if (!functionTriggerTimestamp || currentTime - functionTriggerTimestamp >= sixHoursInMilliseconds) {
         // Trigger the function here
         console.log("The first session chat function is triggered!");
-        console.log("chatgpt req.body", req.body)
         let message = req.body.message
         let whatsapp_id = req.body.whatsapp_id
-        console.log("message received by chatgpt", message)
-        console.log("whatsappid received by chatgpt", whatsapp_id)
 
         const pastMessagesData = await retrieveChatHistory(whatsapp_id)
         // console.log("past messages data received by chatgpt", pastMessagesData)
@@ -45,7 +42,7 @@ const triggerChat = async (req, res, next) => {
         });
 
         const prompt =
-            PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found greet and ask for the name."
+            PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found greet and ask for the name politely."
         
           Current conversation:
           {chat_history}
@@ -96,8 +93,6 @@ const triggerChat = async (req, res, next) => {
     }
     // next();
 };
-
-
 
 
 module.exports = triggerChat
