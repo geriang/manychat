@@ -85,9 +85,9 @@ router.post('/', async (req, res) => {
         },
         {
             name: 'mortgage_loan_repayment_enquiry',
-            description: 'Good for replying enquiry on mortgage loan repayment caluculation ',
+            description: 'Good for replying enquiry on mortgage loan and monthly loan repayment calculation ',
             vector: mortgageVectorStore,
-            template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
+            template: `You are a calculator good at calculating monthly loan repayment figures. Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
             {chat_history}
             Follow Up Input: {question}
