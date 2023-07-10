@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
     }
 
     // initiating the chatmodel - openai
-    const llm = new ChatOpenAI({ modelName: "gpt-4", temperature: 0.0, verbose: true });
+    const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
 
     const listingText = fs.readFileSync("property.txt", "utf8");
@@ -59,10 +59,10 @@ router.post('/', async (req, res) => {
     const listingDocs = await listingTextSplitter.createDocuments([listingText]);
     const listingVectorStore = await HNSWLib.fromDocuments(listingDocs, new OpenAIEmbeddings());
 
-    const mortgageText = fs.readFileSync("mortgage.txt", "utf8");
-    const mortgageTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-    const mortgageDocs = await mortgageTextSplitter.createDocuments([mortgageText]);
-    const mortgageVectorStore = await HNSWLib.fromDocuments(mortgageDocs, new OpenAIEmbeddings());
+    const stampdutyText = fs.readFileSync("stampduty.txt", "utf8");
+    const stampdutyTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+    const stampdutyDocs = await stampdutyTextSplitter.createDocuments([stampdutyText]);
+    const stampdutyVectorStore = await HNSWLib.fromDocuments(stampdutyDocs, new OpenAIEmbeddings());
 
     let templates = [
         {
@@ -84,9 +84,9 @@ router.post('/', async (req, res) => {
             Your answer:`
         },
         {
-            name: 'mortgage_loan_repayment_enquiry',
-            description: 'Good for replying enquiry on mortgage loan and monthly loan repayment calculation ',
-            vector: mortgageVectorStore,
+            name: 'stampduty_enquiry',
+            description: 'Good for replying enquiry on Additional Buyers Stamp Duty (ABSD) payable when a buyer wants to buy a residential property in Singapore ',
+            vector: stampdutyVectorStore,
             template: `You are a calculator good at calculating monthly loan repayment figures. Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
             {chat_history}
