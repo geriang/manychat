@@ -131,8 +131,8 @@ router.post('/', async (req, res) => {
     const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
             `You are a chatbot from Huttons Sales & Auction in Singapore.` +
-            // `Your job is to identify the customer by name.`
-            `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486".`
+            `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486".`+
+            `You should always try to ask for their email address so that we could send our monthly auction property listings to them.`
         ),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{question}"),
