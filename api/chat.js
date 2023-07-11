@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
             if (pastMessagesData[i].bot) {
                 let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
                 pastMessages.push(aiMessage)
-                stringPastMessages.push(`bot: ${aiMessage[i].bot}`)
+                stringPastMessages.push(`bot: ${pastMessages[i].bot}`)
             };
         }
     }
