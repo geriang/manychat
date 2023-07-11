@@ -79,7 +79,6 @@ async function checkName(name) {
     } finally {
         await client.close();
     }
-
 }
 // Add check email address function 
 // Add name function
