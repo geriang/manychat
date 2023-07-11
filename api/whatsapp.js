@@ -29,7 +29,7 @@ router.post('/webhook', async (req, res) => {
         // data.entry[0].changes[0].value.messages = data.entry[0].changes[0].value.messages.filter((message) => message.timestamp > (Date.now() - 1000 * 60 * 5)/1000);
         let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body);
         let whatsapp_id = JSON.stringify(data.entry[0].changes[0].value.contacts[0].wa_id);
-        let profile_name = JSON.stringify(data.entry[0].changes[0].value.contacts[0].profile.name[0]);
+        let profile_name = JSON.stringify(data.entry[0].changes[0].value.contacts[0].profile.name);
         let timestamp = JSON.stringify(data.entry[0].changes[0].value.messages[0].timestamp);
         // console.log("contacts", data.entry[0].changes[0].value.contacts)
         // console.log("messages", data.entry[0].changes[0].value.messages)
