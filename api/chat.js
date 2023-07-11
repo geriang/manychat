@@ -48,8 +48,8 @@ router.post('/', async (req, res) => {
 
 
         for (let i = 0; i < pastMessagesData.length; i++) {
-            let humanMessage = new HumanChatMessage((pastMessagesData[i].client ? pastMessagesData[i].client : null).toString());
-            let aiMessage = new AIChatMessage((pastMessagesData[i].bot ? pastMessagesData[i].bot : null).toString());
+            let humanMessage = new HumanChatMessage((pastMessagesData[i].client ? (pastMessagesData[i].client).toString() : null));
+            let aiMessage = new AIChatMessage((pastMessagesData[i].bot ? (pastMessagesData[i].bot).toString() : null));
             if (humanMessage) { pastMessages.push(humanMessage) };
             if (aiMessage) { pastMessages.push(aiMessage) };
         }
