@@ -56,13 +56,16 @@ router.post('/', async (req, res) => {
 
     const clientName = await checkName(whatsapp_id)
     console.log("client name", clientName)
-    if(!clientName) {
+    if (!clientName) {
         let chatHistory = stringPastMessages.join(" ")
         const name = await findName(chatHistory)
-        // console.log("FIND NAME EXTRACTED", name)
-        const modifiedName = name.replace(/<|>|\s/g, "");
-        // console.log("modified name", modifiedName)
-        await addName(whatsapp_id, modifiedName)
+        const nameCheck = name.includes("<")
+        if (nameCheck) {
+            // console.log("FIND NAME EXTRACTED", name)
+            const modifiedName = name.replace(/<|>|\s/g, "");
+            // console.log("modified name", modifiedName)
+            await addName(whatsapp_id, modifiedName)
+        }
     }
 
 

@@ -12,7 +12,7 @@ const findName = async (chatHistory) => {
     // initiating the chatmodel - openai
     const llm = new OpenAI({ temperature: 0.0, verbose: true });
 
-    const lookUpNameTemplate = `You are tasked to extract information from a given data source. Are you able to accurately identify the client's name from the following chat history?
+    const lookUpNameTemplate = `You are tasked to extract information from a given data source. Are you able to identify the client's name from the following chat history?
     Chat History: {chat_history}
     Observation: This is your observation on the task given:`
 
