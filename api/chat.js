@@ -34,6 +34,7 @@ router.post('/', async (req, res) => {
     const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     // console.log("past messages data received by chatgpt", pastMessagesData)
     let pastMessages = []
+    let stringPastMessages = []
 
     if (pastMessagesData) {
         for (let i = 0; i < pastMessagesData.length; i++) {
@@ -41,16 +42,20 @@ router.post('/', async (req, res) => {
             if (pastMessagesData[i].client) {
                 let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
                 pastMessages.push(humanMessage)
+                stringPastMessages.push(`client: ${humanMessage}`)
             };
 
             if (pastMessagesData[i].bot) {
                 let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
                 pastMessages.push(aiMessage)
+                stringPastMessages.push(`bot: ${aiMessage}`)
             };
         }
     }
 
-    const name = await findName(pastMessages)
+    let chatHistory = stringPastMessages.join(" ")
+
+    const name = await findName(chatHistory)
     console.log("FIND NAME EXTRACTED", name)
 
     // initiating the chatmodel - openai
