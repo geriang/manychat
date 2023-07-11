@@ -18,7 +18,7 @@ const findName = async (chatHistory) => {
 
     const lookUpNamePromptTemplate = new PromptTemplate({
         inputVariables: ["chat_history"],
-        lookUpNameTemplate, 
+        template: lookUpNameTemplate, 
     });
 
     const lookUpNamechain = new LLMChain({ llm: llm, prompt: lookUpNamePromptTemplate });
@@ -29,7 +29,7 @@ const findName = async (chatHistory) => {
 
     const extractNamePromptTemplate = new PromptTemplate({
         inputVariables: ["observation"],
-        extractNameTemplate, 
+        template: extractNameTemplate, 
     })
 
     const extractNameChain = new LLMChain({ llm: llm, prompt: extractNamePromptTemplate });
