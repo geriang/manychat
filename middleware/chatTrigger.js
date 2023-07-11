@@ -24,9 +24,9 @@ const triggerChat = async (req, res, next) => {
         let pastMessages = []
 
         if (pastMessagesData) {
-
+            pastMessages = [
             new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-            new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
+            new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString()) ]
 
             // for (let i = 0; i < pastMessagesData.length; i++) {
             //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
@@ -78,8 +78,9 @@ const triggerChat = async (req, res, next) => {
             })
 
             let data = {
-                "client": `${message}`,
-                "bot": `${response.response ? response.response : response.text}`
+                // "client": `${message}`,
+                "bot": `${response.response ? response.response : response.text}`,
+                "timestamp": new Date()
             }
 
             await addChatData(whatsapp_id, data)
