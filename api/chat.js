@@ -42,12 +42,15 @@ router.post('/', async (req, res) => {
 
     if (pastMessagesData) {
 
-        for (let i = 0; i < pastMessagesData.length; i++) {
-            let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-            let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-            pastMessages.push(humanMessage);
-            pastMessages.push(aiMessage);
-        }
+        new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+        new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString())
+
+        // for (let i = 0; i < pastMessagesData.length; i++) {
+        //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+        //     let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+        //     pastMessages.push(humanMessage);
+        //     pastMessages.push(aiMessage);
+        // }
     }
 
     // initiating the chatmodel - openai

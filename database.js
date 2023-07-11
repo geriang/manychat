@@ -62,4 +62,7 @@ async function addMessageReceived(id, data, profile_name) {
     }
 }
 
+// Add check email address function 
+// Add name function
+
 module.exports = { retrieveChatHistory, addChatData, addMessageReceived }
