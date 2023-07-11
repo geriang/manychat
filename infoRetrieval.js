@@ -16,12 +16,12 @@ const findName = async (chatHistory) => {
     Chat History: {chat_history}
     Observation: This is your observation on the task given:`
 
-    const lookUpNamepromptTemplate = new PromptTemplate({
+    const lookUpNamePromptTemplate = new PromptTemplate({
         inputVariables: ["chat_history"],
         lookUpNameTemplate, 
     });
 
-    const lookUpNamechain = new LLMChain({ llm, prompt: lookUpNamepromptTemplate });
+    const lookUpNamechain = new LLMChain({ llm: llm, prompt: lookUpNamePromptTemplate });
 
     const extractNameTemplate = `Given the observation, if you are able to identify the client's name, please extract out the name by wrapping the name with <>. For example, <Mary>. Otherwise say no name is found.
     Observation: {observation}
@@ -32,14 +32,14 @@ const findName = async (chatHistory) => {
         extractNameTemplate, 
     })
 
-    const extractNameChain = new LLMChain({ llm, prompt: extractNamePromptTemplate });
+    const extractNameChain = new LLMChain({ llm: llm, prompt: extractNamePromptTemplate });
 
     const chain = new SimpleSequentialChain({
         chains: [lookUpNamechain, extractNameChain],
         verbose: true,
     });
 
-    const result = await overallChain.run(chatHistory);
+    const result = await chain.run(chatHistory);
 
     return result
 
