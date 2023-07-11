@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
         }
     }
 
-    const name = await findName(pastMessages)
+    const name = await findName("Hi there, who are you? I am Sean")
     console.log("FIND NAME EXTRACTED", name)
 
     // initiating the chatmodel - openai
