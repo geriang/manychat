@@ -26,8 +26,10 @@ async function addChatData(id, data) {
         const query = { whatsapp_id: id };
         const update = {
             $setOnInsert: { whatsapp_id: id },
-            $push: {message: data},
-            $set: { timestamp: new Date() }
+            $push: {
+                message: data,
+                timestamp: new Date()
+            }
         };
         const options = { upsert: true };
         const result = await collection.updateOne(query, update, options);
