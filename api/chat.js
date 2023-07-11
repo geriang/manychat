@@ -15,23 +15,18 @@ const { ConversationChain, LLMRouterChain, MultiPromptChain, ConversationalRetri
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { RouterOutputParser } = require('langchain/output_parsers');
-// const { Calculator } = require("langchain/tools/calculator");
-// const { WebBrowser } = require("langchain/tools/webbrowser");
-// const { SerpAPI, ChainTool, DynamicTool, } = require("langchain/tools");
-// const { VectorDBQAChain } = require("langchain/chains");
 const { HNSWLib } = require("langchain/vectorstores/hnswlib");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const fs = require('fs');
 
 const { retrieveChatHistory, addChatData } = require("../database")
+const checkName = require("../infoRetrieval")
 
 router.post('/', async (req, res) => {
 
     console.log("chatgpt req.body", req.body)
     let message = req.body.message
-    // let urlRegex = /(https?:\/\/[^\s]+)/g;
-    // let message = received_message.replace(urlRegex, '');
     let whatsapp_id = req.body.whatsapp_id
     console.log("message received by chatgpt", message)
     console.log("whatsappid received by chatgpt", whatsapp_id)
@@ -42,7 +37,7 @@ router.post('/', async (req, res) => {
 
     if (pastMessagesData) {
         for (let i = 0; i < pastMessagesData.length; i++) {
-            console.log(`passMessageData[${i}]`, pastMessagesData[i].client, pastMessagesData[i].bot)
+            // console.log(`passMessageData[${i}]`, pastMessagesData[i].client, pastMessagesData[i].bot)
             if (pastMessagesData[i].client) {
                 let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
                 pastMessages.push(humanMessage)
@@ -53,18 +48,13 @@ router.post('/', async (req, res) => {
                 pastMessages.push(aiMessage)
             };
         }
-
-        // for (let i = 0; i < pastMessagesData.length; i++) {
-        //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-        //     let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-        //     pastMessages.push(humanMessage);
-        //     pastMessages.push(aiMessage);
-        // }
     }
+
+    const findName = await checkName(pastMessages)
+    console.log("FIND NAME EXTRACTED", findName)
 
     // initiating the chatmodel - openai
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
-
 
     const listingText = fs.readFileSync("property.txt", "utf8");
     const listingTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });

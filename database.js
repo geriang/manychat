@@ -28,7 +28,7 @@ async function addChatData(id, data) {
             $setOnInsert: { whatsapp_id: id },
             $push: {
                 message: data,
-    
+
             }
         };
         const options = { upsert: true };
@@ -62,7 +62,26 @@ async function addMessageReceived(id, data, profile_name) {
     }
 }
 
+async function checkName(name) {
+    try {
+        await client.connect();
+        const collection = client.db("project").collection("chat_history");
+        const query = { name };
+        const document = await collection.findOne(query);
+
+        if (document) {
+            console.log("Name exists in the collection.");
+        } else {
+            console.log("Name does not exist in the collection.");
+        }
+    } catch (err) {
+        console.error(err);
+    } finally {
+        await client.close();
+    }
+
+}
 // Add check email address function 
 // Add name function
 
-module.exports = { retrieveChatHistory, addChatData, addMessageReceived }
+module.exports = { retrieveChatHistory, addChatData, addMessageReceived, checkName }

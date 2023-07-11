@@ -16,7 +16,7 @@ const triggerChat = async (req, res, next) => {
     if (!functionTriggerTimestamp || currentTime - functionTriggerTimestamp >= sixHoursInMilliseconds) {
         // Trigger the function here
         console.log("The first session chat function is triggered!");
-        let message = req.body.message
+        // let message = req.body.message
         let whatsapp_id = req.body.whatsapp_id
 
         const pastMessagesData = await retrieveChatHistory(whatsapp_id)
@@ -26,7 +26,7 @@ const triggerChat = async (req, res, next) => {
         if (pastMessagesData) {
 
             for (let i = 0; i < pastMessagesData.length; i++) {
-                console.log(`passMessageData[${i}]`, pastMessagesData[i].client, pastMessagesData[i].bot )
+                // console.log(`passMessageData[${i}]`, pastMessagesData[i].client, pastMessagesData[i].bot )
                 if (pastMessagesData[i].client) {
                     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
                     pastMessages.push(humanMessage)
