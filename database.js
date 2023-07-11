@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, Timestamp } = require("mongodb");
 const uri = process.env.MONGO_URI
 const client = new MongoClient(uri);
 
@@ -26,7 +26,10 @@ async function addChatData(id, data) {
         const query = { whatsapp_id: id };
         const update = {
             $setOnInsert: { whatsapp_id: id },
-            $push: { message: data },
+            $push: {
+                message: data,
+                created: Timestamp
+            },
         };
         const options = { upsert: true };
         const result = await collection.updateOne(query, update, options);

@@ -1,8 +1,70 @@
+Manner of acquisitions
+Examples of property acquisition in which stamp duty is payable:  
+
+BSD stands for Buyer's Stamp Duty
+By way of purchase e.g. acceptance to option to purchase, sale and purchase agreement
+By way of gift including a voluntary declaration of trust and settlement
+Declaration of Trust / Trust Deed:
+A fixed duty of $10 is payable on the Declaration of Trust/Trust deed which does not result in a change in beneficial interest in the property. 
+Where there is a change in beneficial interest in the property, full stamp duty (i.e. BSD, ABSD and SSD, whichever applicable) will be payable on the Declaration of Trust / Trust Deed.
+By way of distribution in specie upon the winding up of a company
+By way of distribution from the estate of a deceased that is not in accordance to the Will, Intestate Succession Act or Muslim Law of Inheritance.
+By way of resulting trust pursuant to a renunciation of interest in residential property held under a bare trust 
+Renunciation of interest in trust over residential property by beneficial owner (Section 22C)
+Where any beneficiary renounces his interest in a residential property that is transferred to be held on bare trust on or after 10 May 2022, the settlor will need to pay stamp duty i.e. BSD and ABSD on the transfer of the share of the residential property back to him, under Section 22C of the Stamp Duties Act. 
+
+You can refer to Renunciation of Interest in Trust over residential property by Beneficial Owner (Section 22C) for more information.
+
+Example: A settlor sets up a trust where a residential property is held on bare trust for a sole identifiable beneficiary. The beneficiary later renounces his interest in the property, and a resulting trust is formed in favour of the settlor. The settlor is required to pay BSD and ABSD (based on the settlor’s profile) on the transfer of the residential property back to him. 
+Requirement to pay BSD
+You are required to pay BSD for documents executed for the transfer or sale and purchase of property located in Singapore. BSD will be computed on the purchase price as stated in the document to be stamped or market value of the property (whichever is the higher amount).
+
+If there is a benefit associated with the acquisition, and the benefit is stated in the document to be stamped and is a cash discount (i.e. cash, non-post dated cashier's order or cheque) to be given to the purchaser upon execution of the document (and not later), the amount of discount may be deducted from the purchase price to determine the consideration for stamp duty purpose. This is provided that the nett price is still reflective of market value. 
+
+If the document to be stamped stated a non-cash benefit to be given (e.g. furniture voucher, rental guarantee, car or lucky draw), the value of benefit is not deductible from the purchase price for stamp duty purpose.  
+
+If the cash or non- cash benefit is not stated in the document to be stamped, the value of the benefit is also not deductible from the purchase price for stamp duty purpose.
+
+The first instrument executed relating to a sale and purchase is liable to ad valorem duty (i.e. full duty). Subsequent document(s) relating to the same sale transaction are not liable to stamp duty.
+
+Acquisition of property through an en-bloc purchase or “block” purchase
+Where multiple properties are acquired collectively, stamp duty will be calculated on the total purchase price of the multiple properties if:
+
+There is a single contract for the purchase of the multiple properties; or
+The purchases of the multiple properties are dependent and conditional on one another.
+Stamp duty on a single contract for multiple properties
+Where there is a single contract for the purchase of multiple properties followed by individual documents for the purchase of each property, the single contract should be stamped at ad valorem duty based on the total purchase price.
+
+Stamp duty on multiple documents
+Where there are multiple documents (with purchases which are dependent and conditional on one another), only one of the documents is required to be stamped at ad valorem duty, based on the total purchase price of all the related properties.
+
+Rates and computation
+BSD is computed based on the purchase price or market value of the property, whichever is higher.
+
+Prior to 20 Feb 2018, the BSD rate was up to 3%. With effect from 20 Feb 2018, there are differentiated BSD rates between residential and non-residential properties. The BSD rate for acquisition of residential properties from 20 Feb 2018 to 14 Feb 2023 is up to 4%. From 15 Feb 2023, the top marginal rate for residential properties is 6%, and the top marginal rate for non-residential properties is 5%.
+
+For definition of residential or non-residential properties, click here.
+
+The BSD rates are as follows:
+
+On or after 15 Feb 2023
+		
+Purchase price or market value of the property First $180,000, BSD rates for residential properties is 1%, BSD rates for non-residential properties is 1%
+Purchase price or market value of the property Next $180,000, BSD rates for residential properties is 2%, BSD rates for non-residential properties is 2%
+Purchase price or market value of the property Next $640,000, BSD rates for residential properties is 3%, BSD rates for non-residential properties is 3%
+Purchase price or market value of the property Next $500,000, BSD rates for residential properties is 4%, BSD rates for non-residential properties is 4%
+Purchase price or market value of the property Next $1,500,000, BSD rates for residential properties is 5%, BSD rates for non-residential properties is 5%
+Purchase price or market value of the property Remaining amount, BSD rates for residential properties is 6%
+BSD is rounded down to the nearest dollar, subject to a minimum duty of $1.
+
+For more information on Buyer's Stamp Duty (BSD) please refer to : https://www.iras.gov.sg/taxes/stamp-duty/for-property/buying-or-acquiring-property/buyer's-stamp-duty-(bsd)
+
 FACT SHEET ON NEW ABSD RATES FOR ACQUISITIONS MADE ON / AFTER 27 APR 2023
 
 1. Aim
 1.1 This factsheet provides a summary of the
 - Adjusted ABSD rates for acquisitions made on/after 27 Apr 2023;
+- ABSD does not apply to commercial and industrial properties. 
 - Transitional ABSD remission for acquisition of residential properties (“ABSD Transitional Remission”); and
 - Frequently Asked Questions (“FAQs”).
 
