@@ -4,7 +4,8 @@ const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
 const { LLMChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
-const { retrieveChatHistory, addChatData } = require("../database")
+const { retrieveChatHistory } = require("../database")
+const sendWhatsappMessage = require("../sendMessage")
 
 let functionTriggerTimestamp = null;
 
@@ -57,41 +58,45 @@ const triggerChat = async (req, res, next) => {
 
         const chain = new LLMChain({ llm: llm, prompt, memory });
 
-        try {
-            const version = process.env.WHATSAPP_VERSION
-            const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-            const response = await chain.call({ input: `Greet me by my name` });
-            console.log("response", response)
+        const response = await chain.call({ input: `Greet me by my name` });
+        await sendWhatsappMessage(whatsapp_id, response)
+        res.sendStatus(200);
 
-            await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
+        // try {
+        //     const version = process.env.WHATSAPP_VERSION
+        //     const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
+        //     const response = await chain.call({ input: `Greet me by my name` });
+        //     console.log("response", response)
 
-                "messaging_product": "whatsapp",
-                "recipient_type": "individual",
-                "to": `${whatsapp_id}`,
-                "type": "text",
-                "text": {
-                    "preview_url": true,
-                    "body": `${response.response ? response.response : response.text}`,
-                }
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
-                }
-            })
+        //     await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
 
-            let data = {
-                // "client": `${message}`,
-                "bot": `${response.response ? response.response : response.text}`,
-                "timestamp": new Date()
-            }
+        //         "messaging_product": "whatsapp",
+        //         "recipient_type": "individual",
+        //         "to": `${whatsapp_id}`,
+        //         "type": "text",
+        //         "text": {
+        //             "preview_url": true,
+        //             "body": `${response.response ? response.response : response.text}`,
+        //         }
+        //     }, {
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
+        //         }
+        //     })
 
-            await addChatData(whatsapp_id, data)
-            // res.sendStatus(200);
+        //     let data = {
+        //         // "client": `${message}`,
+        //         "bot": `${response.response ? response.response : response.text}`,
+        //         "timestamp": new Date()
+        //     }
 
-        } catch (err) {
-            console.error("Error in POST /chatgpt:", err);
-        }
+        //     await addMessageSent(whatsapp_id, data)
+        //     // res.sendStatus(200);
+
+        // } catch (err) {
+        //     console.error("Error in POST /chatgpt:", err);
+        // }
 
         functionTriggerTimestamp = currentTime;
 
