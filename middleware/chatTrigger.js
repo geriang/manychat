@@ -24,16 +24,18 @@ const triggerChat = async (req, res, next) => {
         let pastMessages = []
 
         if (pastMessagesData) {
-            pastMessages = [
-            new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-            new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString()) ]
 
-            // for (let i = 0; i < pastMessagesData.length; i++) {
-            //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-            //     let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-            //     pastMessages.push(humanMessage);
-            //     pastMessages.push(aiMessage);
-            // }
+            for (let i = 0; i < pastMessagesData.length; i++) {
+                if (pastMessagesData[i].client) {
+                    let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
+                    pastMessages.push(humanMessage)
+                };
+
+                if (pastMessagesData[i].bot) {
+                    let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+                    pastMessages.push(aiMessage)
+                };
+            }
         }
 
         // initiating the chatmodel - openai
