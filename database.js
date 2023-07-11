@@ -49,8 +49,8 @@ async function addMessageReceived(id, data, profile_name) {
         const update = {
             $setOnInsert: { whatsapp_id: id },
             $push: {
-                message: data,
-                profile_name
+                "message": data,
+                "profile_name": profile_name 
             }
         };
         const options = { upsert: true };

@@ -27,7 +27,7 @@ const triggerChat = async (req, res, next) => {
 
             for (let i = 0; i < pastMessagesData.length; i++) {
                 let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-                let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
+                // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
                 pastMessages.push(humanMessage);
                 pastMessages.push(aiMessage);
             }
