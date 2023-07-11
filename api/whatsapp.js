@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const { addMessageReceived } = require('../database')
 
 
 router.get('/webhook', (req, res) => {
@@ -29,8 +30,16 @@ router.post('/webhook', async (req, res) => {
         let message = JSON.stringify(data.entry[0].changes[0].value.messages[0].text.body);
         let whatsapp_id = JSON.stringify(data.entry[0].changes[0].value.contacts[0].wa_id);
         let profile_name = JSON.stringify(data.entry[0].changes[0].value.contacts[0].profile.name);
+        let timestamp = JSON.stringify(data.entry[0].changes[0].value.messages[0].timestamp);
         // console.log("contacts", data.entry[0].changes[0].value.contacts)
         // console.log("messages", data.entry[0].changes[0].value.messages)
+        let data = {
+            "client": `${message}`,
+            timestamp
+        }
+        // add received message to database first
+        addMessageReceived(whatsapp_id, data) 
+
         res.sendStatus(200);
         try {
             const data = {

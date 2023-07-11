@@ -28,7 +28,7 @@ async function addChatData(id, data) {
             $setOnInsert: { whatsapp_id: id },
             $push: {
                 message: data,
-                timestamp: new Date()
+    
             }
         };
         const options = { upsert: true };
@@ -41,4 +41,25 @@ async function addChatData(id, data) {
     }
 }
 
-module.exports = { retrieveChatHistory, addChatData }
+async function addMessageReceived(id, data) {
+    try {
+        await client.connect();
+        const collection = client.db("project").collection("chat_history"); // replace "test" and "users" with your database and collection name
+        const query = { whatsapp_id: id };
+        const update = {
+            $setOnInsert: { whatsapp_id: id },
+            $push: {
+                message: data,
+            }
+        };
+        const options = { upsert: true };
+        const result = await collection.updateOne(query, update, options);
+        console.log(`A document was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
+    } catch (err) {
+        console.error(err);
+    } finally {
+        await client.close();
+    }
+}
+
+module.exports = { retrieveChatHistory, addChatData, addMessageReceived }

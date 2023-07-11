@@ -235,8 +235,9 @@ router.post('/', async (req, res) => {
         // res.send(response)
 
         let data = {
-            "client": `${message}`,
-            "bot": `${response.response ? response.response : response.text}`
+            // "client": `${message}`,
+            "bot": `${response.response ? response.response : response.text}`,
+            "timestamp": new Date()
         }
 
         await addChatData(whatsapp_id, data)
