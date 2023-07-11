@@ -40,7 +40,7 @@ const triggerChat = async (req, res, next) => {
         }
 
         // initiating the chatmodel - openai
-        const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
+        const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.3, verbose: true });
 
         const memory = new BufferMemory({
             memoryKey: "chat_history",
