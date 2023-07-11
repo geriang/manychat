@@ -1,4 +1,4 @@
-const { MongoClient, Timestamp } = require("mongodb");
+const { MongoClient } = require("mongodb");
 const uri = process.env.MONGO_URI
 const client = new MongoClient(uri);
 
@@ -19,7 +19,7 @@ async function retrieveChatHistory(id) {
     }
 }
 
-async function addChatData(id, data) {
+async function addMessageSent(id, data) {
     try {
         await client.connect();
         const collection = client.db("project").collection("chat_history"); // replace "test" and "users" with your database and collection name
@@ -33,7 +33,7 @@ async function addChatData(id, data) {
         };
         const options = { upsert: true };
         const result = await collection.updateOne(query, update, options);
-        console.log(`A document was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
+        console.log(`A document (addMessageSent) was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
     } catch (err) {
         console.error(err);
     } finally {
@@ -54,7 +54,7 @@ async function addMessageReceived(id, data, profile_name) {
         };
         const options = { upsert: true };
         const result = await collection.updateOne(query, update, options);
-        console.log(`A document was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
+        console.log(`A document (addMessageReceived) was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
     } catch (err) {
         console.error(err);
     } finally {
@@ -90,7 +90,7 @@ async function addName(id, name) {
         };
         const options = { upsert: true };
         const result = await collection.updateOne(query, update, options);
-        console.log(`A document was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
+        console.log(`A document (addName) was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
     } catch (err) {
         console.error(err);
     } finally {
@@ -100,4 +100,4 @@ async function addName(id, name) {
 // Add check email address function 
 // Add name function
 
-module.exports = { retrieveChatHistory, addChatData, addMessageReceived, checkName, addName }
+module.exports = { retrieveChatHistory, addMessageSent, addMessageReceived, checkName, addName }

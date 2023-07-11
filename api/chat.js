@@ -20,7 +20,8 @@ const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const fs = require('fs');
 
-const { retrieveChatHistory, addChatData, checkName, addName } = require("../database")
+const { retrieveChatHistory, addMessageSent, checkName, addName } = require("../database")
+const sendWhatsappMessage = require("../sendMessage")
 const findName = require("../infoRetrieval")
 
 router.post('/', async (req, res) => {
@@ -54,12 +55,13 @@ router.post('/', async (req, res) => {
     }
 
     const clientName = await checkName(whatsapp_id)
+    console.log("client name", clientName)
     if(!clientName) {
         let chatHistory = stringPastMessages.join(" ")
         const name = await findName(chatHistory)
-        console.log("FIND NAME EXTRACTED", name)
-        const modifiedName = name.replace(/<|>/g, "")
-        console.log("modified name", modifiedName)
+        // console.log("FIND NAME EXTRACTED", name)
+        const modifiedName = name.replace(/<|>|\s/g, "");
+        // console.log("modified name", modifiedName)
         await addName(whatsapp_id, modifiedName)
     }
 
@@ -222,43 +224,47 @@ router.post('/', async (req, res) => {
         verbose: true
     });
 
+    const response = await multiPromptChain.call({ question: `${message}` });
+    await sendWhatsappMessage(whatsapp_id, response)
+    res.sendStatus(200);
 
-    try {
-        const version = process.env.WHATSAPP_VERSION
-        const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-        const response = await multiPromptChain.call({ question: `${message}` });
-        console.log("response", response)
 
-        await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
+    // try {
+    //     const version = process.env.WHATSAPP_VERSION
+    //     const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
+    //     const response = await multiPromptChain.call({ question: `${message}` });
+    //     console.log("response", response)
 
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": `${whatsapp_id}`,
-            "type": "text",
-            "text": {
-                "preview_url": true,
-                "body": `${response.response ? response.response : response.text}`,
-            }
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
-            }
-        })
-        // res.send(response)
+    //     await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
 
-        let data = {
-            // "client": `${message}`,
-            "bot": `${response.response ? response.response : response.text}`,
-            "timestamp": new Date()
-        }
+    //         "messaging_product": "whatsapp",
+    //         "recipient_type": "individual",
+    //         "to": `${whatsapp_id}`,
+    //         "type": "text",
+    //         "text": {
+    //             "preview_url": true,
+    //             "body": `${response.response ? response.response : response.text}`,
+    //         }
+    //     }, {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
+    //         }
+    //     })
+    //     // res.send(response)
 
-        await addChatData(whatsapp_id, data)
-        res.sendStatus(200);
+    //     let data = {
+    //         // "client": `${message}`,
+    //         "bot": `${response.response ? response.response : response.text}`,
+    //         "timestamp": new Date()
+    //     }
 
-    } catch (err) {
-        console.error("Error in POST /chatgpt:", err);
-    }
+    //     await addMessageSent(whatsapp_id, data)
+    //     res.sendStatus(200);
+
+    // } catch (err) {
+    //     console.error("Error in POST /chatgpt:", err);
+    // }
 
 
 });

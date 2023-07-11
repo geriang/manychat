@@ -38,34 +38,5 @@ App.listen(process.env.PORT || 3000, () => {
 
 
 
-// const express = require('express');
-// const app = express();
-
-// // In-memory store for the last function call timestamp.
-// let lastFunctionCallTimestamp = null;
-
-// // Your middleware function.
-// const rateLimit = (req, res, next) => {
-//     const currentTime = Date.now();
-//     const sixHoursInMilliseconds = 6 * 60 * 60 * 1000;
-
-//     if (lastFunctionCallTimestamp && currentTime - lastFunctionCallTimestamp < sixHoursInMilliseconds) {
-//         return res.status(429).send("You can only trigger this function once every 6 hours.");
-//     }
-
-//     lastFunctionCallTimestamp = currentTime;
-//     next();
-// };
-
-// app.use(rateLimit);
-
-// app.get('/', function (req, res) {
-//     res.send('This function is called!');
-// });
-
-// app.listen(3000, function () {
-//     console.log('App is listening on port 3000');
-// });
-
 
 
