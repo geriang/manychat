@@ -41,7 +41,7 @@ async function addChatData(id, data) {
     }
 }
 
-async function addMessageReceived(id, data) {
+async function addMessageReceived(id, data, profile_name) {
     try {
         await client.connect();
         const collection = client.db("project").collection("chat_history"); // replace "test" and "users" with your database and collection name
@@ -50,6 +50,7 @@ async function addMessageReceived(id, data) {
             $setOnInsert: { whatsapp_id: id },
             $push: {
                 message: data,
+                profile_name
             }
         };
         const options = { upsert: true };

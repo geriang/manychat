@@ -33,19 +33,19 @@ router.post('/webhook', async (req, res) => {
         let timestamp = JSON.stringify(data.entry[0].changes[0].value.messages[0].timestamp);
         // console.log("contacts", data.entry[0].changes[0].value.contacts)
         // console.log("messages", data.entry[0].changes[0].value.messages)
-        let data = {
+        let messageData = {
             "client": `${message}`,
             timestamp
         }
         // add received message to database first
-        await addMessageReceived(whatsapp_id, data) 
+        await addMessageReceived(whatsapp_id, messageData, profile_name) 
 
         res.sendStatus(200);
         try {
             const data = {
                 message,
                 whatsapp_id,
-                profile_name
+                // profile_name
             }
             await axios.post("https://geriang-manychat.onrender.com/chatgpt", data)
 
