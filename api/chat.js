@@ -20,7 +20,7 @@ const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const fs = require('fs');
 
-const { retrieveChatHistory, addChatData } = require("../database")
+const { retrieveChatHistory, addChatData, checkName, addName, checkName } = require("../database")
 const findName = require("../infoRetrieval")
 
 router.post('/', async (req, res) => {
@@ -53,10 +53,15 @@ router.post('/', async (req, res) => {
         }
     }
 
-    let chatHistory = stringPastMessages.join(" ")
+    const checkName = await checkName(whatsapp_id)
+    if(!checkName) {
+        let chatHistory = stringPastMessages.join(" ")
+        const name = await findName(chatHistory)
+        console.log("FIND NAME EXTRACTED", name)
+        const modifiedName = name.replace(/<|>/g, "")
+        await addName(whatsapp_id, modifiedName)
+    }
 
-    const name = await findName(chatHistory)
-    console.log("FIND NAME EXTRACTED", name)
 
     // initiating the chatmodel - openai
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });

@@ -62,18 +62,34 @@ async function addMessageReceived(id, data, profile_name) {
     }
 }
 
-async function checkName(name) {
+async function checkName(id) {
     try {
         await client.connect();
         const collection = client.db("project").collection("chat_history");
-        const query = { name };
+        const query = { whatsapp_id: id };
         const document = await collection.findOne(query);
-
-        if (document) {
-            console.log("Name exists in the collection.");
-        } else {
-            console.log("Name does not exist in the collection.");
+        if (document && document.name) {
+            return document.name
         }
+
+    } catch (err) {
+        console.error(err);
+    } finally {
+        await client.close();
+    }
+}
+
+async function addName(id, name) {
+    try {
+        await client.connect();
+        const collection = client.db("project").collection("chat_history"); // replace "test" and "users" with your database and collection name
+        const query = { whatsapp_id: id };
+        const update = {
+            $setOnInsert: { whatsapp_id: id, name },
+        };
+        const options = { upsert: true };
+        const result = await collection.updateOne(query, update, options);
+        console.log(`A document was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
     } catch (err) {
         console.error(err);
     } finally {
@@ -83,4 +99,4 @@ async function checkName(name) {
 // Add check email address function 
 // Add name function
 
-module.exports = { retrieveChatHistory, addChatData, addMessageReceived, checkName }
+module.exports = { retrieveChatHistory, addChatData, addMessageReceived, checkName, addName }

@@ -23,7 +23,7 @@ const findName = async (chatHistory) => {
 
     const lookUpNamechain = new LLMChain({ llm: llm, prompt: lookUpNamePromptTemplate });
 
-    const extractNameTemplate = `Given the observation, if you are able to identify the client's name, please extract out the name by wrapping the name with <>. For example, <Mary>. Otherwise say no name is found.
+    const extractNameTemplate = `Given the observation, if you are able to identify the client's name, please extract out the name by wrapping the name with "<" ">". For example,<Mary>. Otherwise say no name is found.
     Observation: {observation}
     Name: This is the name extracted:`
 
