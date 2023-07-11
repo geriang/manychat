@@ -29,7 +29,7 @@ const triggerChat = async (req, res, next) => {
                 let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
                 // let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
                 pastMessages.push(humanMessage);
-                pastMessages.push(aiMessage);
+                // pastMessages.push(aiMessage);
             }
         }
 
