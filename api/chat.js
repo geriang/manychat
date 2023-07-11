@@ -59,6 +59,7 @@ router.post('/', async (req, res) => {
         const name = await findName(chatHistory)
         console.log("FIND NAME EXTRACTED", name)
         const modifiedName = name.replace(/<|>/g, "")
+        console.log("modified name", modifiedName)
         await addName(whatsapp_id, modifiedName)
     }
 
