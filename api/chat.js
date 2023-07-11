@@ -42,9 +42,17 @@ router.post('/', async (req, res) => {
 
     if (pastMessagesData) {
 
-        pastMessages = [
-            new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
-            new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString()) ]
+        // pastMessages = [
+        //     new HumanChatMessage((pastMessagesData.map((obj) => { return obj.client })).toString()),
+        //     new AIChatMessage((pastMessagesData.map((obj) => { return obj.bot })).toString()) ]
+
+
+        for (let i = 0; i < pastMessagesData.length; i++) {
+            let humanMessage = new HumanChatMessage((pastMessagesData[i].client ? pastMessagesData[i].client : null).toString());
+            let aiMessage = new AIChatMessage((pastMessagesData[i].bot ? pastMessagesData[i].bot : null).toString());
+            if (humanMessage) { pastMessages.push(humanMessage) };
+            if (aiMessage) { pastMessages.push(aiMessage) };
+        }
 
         // for (let i = 0; i < pastMessagesData.length; i++) {
         //     let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
@@ -135,7 +143,7 @@ router.post('/', async (req, res) => {
     const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
             `You are a chatbot from Huttons Sales & Auction in Singapore.` +
-            `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486".`+
+            `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486".` +
             `You should always try to ask for their email address so that we could send our monthly auction property listings to them.`
         ),
         new MessagesPlaceholder("chat_history"),
