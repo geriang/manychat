@@ -42,13 +42,13 @@ router.post('/', async (req, res) => {
             if (pastMessagesData[i].client) {
                 let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
                 pastMessages.push(humanMessage)
-                stringPastMessages.push(`client: ${humanMessage}`)
+                stringPastMessages.push(`client: ${pastMessages[i].client}`)
             };
 
             if (pastMessagesData[i].bot) {
                 let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
                 pastMessages.push(aiMessage)
-                stringPastMessages.push(`bot: ${aiMessage}`)
+                stringPastMessages.push(`bot: ${aiMessage[i].bot}`)
             };
         }
     }
