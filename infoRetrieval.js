@@ -12,7 +12,9 @@ const findName = async (chatHistory) => {
     // initiating the chatmodel - openai
     const llm = new OpenAI({ temperature: 0.0, verbose: true });
 
-    const lookUpNameTemplate = "You are tasked to extract information from a given data source. Are you able to accurately identify the client's name from the following {chat_history}?"
+    const lookUpNameTemplate = `You are tasked to extract information from a given data source. Are you able to accurately identify the client's name from the following chat history?
+    Chat History: {chat_history}
+    Observation: This is your observation on the task given:`
 
     const lookUpNamepromptTemplate = new PromptTemplate({
         inputVariables: ["chat_history"],
@@ -21,7 +23,9 @@ const findName = async (chatHistory) => {
 
     const lookUpNamechain = new LLMChain({ llm, prompt: lookUpNamepromptTemplate });
 
-    const extractNameTemplate = "Given the following observation {observation}, if you are able to identify the client's name, please extract out the name by wrapping the name with <>. For example, <Mary>. Otherwise say no name is found "
+    const extractNameTemplate = `Given the observation, if you are able to identify the client's name, please extract out the name by wrapping the name with <>. For example, <Mary>. Otherwise say no name is found.
+    Observation: {observation}
+    Name: This is the name extracted:`
 
     const extractNamePromptTemplate = new PromptTemplate({
         inputVariables: ["observation"],
@@ -40,7 +44,6 @@ const findName = async (chatHistory) => {
     return result
 
 };
-
 
 module.exports = findName
 
