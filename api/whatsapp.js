@@ -38,7 +38,7 @@ router.post('/webhook', async (req, res) => {
             timestamp
         }
         // add received message to database first
-        addMessageReceived(whatsapp_id, data) 
+        await addMessageReceived(whatsapp_id, data) 
 
         res.sendStatus(200);
         try {
