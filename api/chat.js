@@ -133,7 +133,8 @@ router.post('/', async (req, res) => {
             {
                 memory: new BufferMemory({
                     memoryKey: "chat_history", // Must be set to "chat_history"
-                    returnMessages: true
+                    returnMessages: true,
+                    chatHistory: new ChatMessageHistory(pastMessages),
                 }),
                 questionGeneratorChainOptions: {
                     template: prompt
