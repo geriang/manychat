@@ -33,12 +33,17 @@ router.post('/webhook', async (req, res) => {
         let timestamp = data.entry[0].changes[0].value.messages[0].timestamp;
         // console.log("contacts", data.entry[0].changes[0].value.contacts)
         // console.log("messages", data.entry[0].changes[0].value.messages)
+
+        // convert unix timestamp to ISO date-time
+        let date = new Date(timestamp * 1000);
+        let formattedTimestamp = date.toISOString();
+
         let messageData = {
             "client": `${message}`,
-            timestamp
+            "timestamp": formattedTimestamp
         }
         // add received message to database first
-        await addMessageReceived(whatsapp_id, messageData, profile_name) 
+        await addMessageReceived(whatsapp_id, messageData, profile_name)
 
         res.sendStatus(200);
         try {
