@@ -20,7 +20,7 @@ const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const fs = require('fs');
 
-const { retrieveChatHistory, addChatData, checkName, addName, checkName } = require("../database")
+const { retrieveChatHistory, addChatData, checkName, addName } = require("../database")
 const findName = require("../infoRetrieval")
 
 router.post('/', async (req, res) => {
@@ -53,8 +53,8 @@ router.post('/', async (req, res) => {
         }
     }
 
-    const checkName = await checkName(whatsapp_id)
-    if(!checkName) {
+    const clientName = await checkName(whatsapp_id)
+    if(!clientName) {
         let chatHistory = stringPastMessages.join(" ")
         const name = await findName(chatHistory)
         console.log("FIND NAME EXTRACTED", name)

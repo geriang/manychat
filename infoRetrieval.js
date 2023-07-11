@@ -45,5 +45,7 @@ const findName = async (chatHistory) => {
 
 };
 
+// need to write find email
+
 module.exports = findName
 
