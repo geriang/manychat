@@ -85,7 +85,8 @@ async function addName(id, name) {
         const collection = client.db("project").collection("chat_history"); // replace "test" and "users" with your database and collection name
         const query = { whatsapp_id: id };
         const update = {
-            $setOnInsert: { whatsapp_id: id, name },
+            $setOnInsert: { whatsapp_id: id },
+            $set: { name },
         };
         const options = { upsert: true };
         const result = await collection.updateOne(query, update, options);
