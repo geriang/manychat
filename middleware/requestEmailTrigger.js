@@ -14,7 +14,9 @@ const triggerEmailRequest = async (req, res, next) => {
 
         askEmailQueue.add({ whatsapp_id }, { delay: 1800000 });
         next();
+        return;
     }
+    next();
     res.sendStatus(200);
 
 };
