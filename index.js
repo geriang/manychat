@@ -14,6 +14,7 @@ const App = express();
 const whatsappEndpoint = require("./api/whatsapp")
 const chatEndpoint = require("./api/chat")
 const triggerChat = require("./middleware/chatTrigger")
+const triggerEmailRequest = require("./middleware/requestEmailTrigger")
 
 App.use(express.json()); // Middleware for parsing JSON bodies of incoming requests
 App.use(bodyParser.json());
@@ -28,7 +29,7 @@ App.use(express.urlencoded({
 
 
 App.use('/whatsapp', whatsappEndpoint);
-App.use('/chatgpt', triggerChat, chatEndpoint)
+App.use('/chatgpt', triggerChat, triggerEmailRequest, chatEndpoint)
 
 
 App.listen(process.env.PORT || 3000, () => {

@@ -97,7 +97,25 @@ async function addName(id, name) {
         await client.close();
     }
 }
-// Add check email address function 
-// Add name function
 
-module.exports = { retrieveChatHistory, addMessageSent, addMessageReceived, checkName, addName }
+// Add check email address function 
+
+async function checkEmail(id) {
+    try {
+        await client.connect();
+        const collection = client.db("project").collection("chat_history");
+        const query = { whatsapp_id: id };
+        const document = await collection.findOne(query);
+        if (document && document.email) {
+            return document.email
+        }
+
+    } catch (err) {
+        console.error(err);
+    } finally {
+        await client.close();
+    }
+}
+
+
+module.exports = { retrieveChatHistory, addMessageSent, addMessageReceived, checkName, addName, checkEmail }
