@@ -102,6 +102,7 @@ async function addName(id, name) {
 
 async function checkEmail(id) {
     try {
+        console.log("checking email... database.js")
         await client.connect();
         const collection = client.db("project").collection("chat_history");
         const query = { whatsapp_id: id };
