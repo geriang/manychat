@@ -29,7 +29,7 @@ App.use(express.urlencoded({
 
 
 App.use('/whatsapp', whatsappEndpoint);
-App.use('/chatgpt', triggerEmailRequest, triggerChat, chatEndpoint)
+App.use('/chatgpt', triggerChat, chatEndpoint)
 
 
 App.listen(process.env.PORT || 3000, () => {

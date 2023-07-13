@@ -3,6 +3,7 @@ const askEmailQueue = new Queue("askEmailQueue")
 const sendWhatsappMessage = require("../sendMessage")
 const { checkEmail } = require("../database")
 
+let functionTriggerTimestamp = null;
 
 const triggerEmailRequest = async (req, res, next) => {
 

@@ -57,7 +57,7 @@ const triggerChat = async (req, res, next) => {
 
         const chain = new LLMChain({ llm: llm, prompt, memory });
 
-        const response = await chain.call({ input: `You are Geri Ang. Greet me by my name.` });
+        const response = await chain.call({ input: `Greet me by my name.` });
         await sendWhatsappMessage(whatsapp_id, response)
         res.sendStatus(200);
 
