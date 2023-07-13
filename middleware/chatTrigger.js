@@ -40,7 +40,7 @@ const triggerChat = async (req, res, next) => {
         }
 
         // initiating the chatmodel - openai
-        const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.3, verbose: true });
+        const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
         const memory = new BufferMemory({
             memoryKey: "chat_history",
@@ -48,7 +48,7 @@ const triggerChat = async (req, res, next) => {
         });
 
         const prompt =
-            PromptTemplate.fromTemplate(`The following is a friendly conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found greet and ask for the name politely."
+            PromptTemplate.fromTemplate(`The following is a conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found just greet and ask for the name politely."
         
           Current conversation:
           {chat_history}
