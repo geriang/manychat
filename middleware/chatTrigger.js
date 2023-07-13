@@ -52,7 +52,6 @@ const triggerChat = async (req, res, next) => {
         
           Current conversation:
           {chat_history}
-          Human: {input}
           AI:`);
 
         const chain = new LLMChain({ llm: llm, prompt, memory });
