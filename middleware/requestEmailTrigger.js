@@ -14,7 +14,7 @@ const triggerEmailRequest = async (req, res, next) => {
         setTimeout(async () => {
             console.log('This runs one hour after the route is accessed.');
             // put your function here
-            await sendWhatsappMessage(job.data.whatsapp_id, response)
+            await sendWhatsappMessage(whatsapp_id, response)
           }, 450000); // 3600000 milliseconds = 1 hour
         
         next();
