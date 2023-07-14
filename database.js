@@ -118,5 +118,24 @@ async function checkEmail(id) {
     }
 }
 
+async function addEmail(id, email) {
+    try {
+        await client.connect();
+        const collection = client.db("project").collection("chat_history"); // replace "test" and "users" with your database and collection name
+        const query = { whatsapp_id: id };
+        const update = {
+            $setOnInsert: { whatsapp_id: id },
+            $set: { email },
+        };
+        const options = { upsert: true };
+        const result = await collection.updateOne(query, update, options);
+        console.log(`A document (addName) was ${result.upsertedCount === 1 ? 'inserted' : 'updated'}.`);
+    } catch (err) {
+        console.error(err);
+    } finally {
+        await client.close();
+    }
+}
 
-module.exports = { retrieveChatHistory, addMessageSent, addMessageReceived, checkName, addName, checkEmail }
+
+module.exports = { retrieveChatHistory, addMessageSent, addMessageReceived, checkName, addName, checkEmail, addEmail }
