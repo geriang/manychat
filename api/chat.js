@@ -20,9 +20,10 @@ const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
 const fs = require('fs');
 
-const { retrieveChatHistory, checkName, addName } = require("../database")
+const { retrieveChatHistory, checkName, addName, checkEmail } = require("../database")
 const sendWhatsappMessage = require("../sendMessage")
 const findName = require("../infoRetrieval")
+const findEmail = require("../infoRetrieval")
 
 router.post('/', async (req, res) => {
 
@@ -65,6 +66,20 @@ router.post('/', async (req, res) => {
             const modifiedName = name.replace(/<|>|\s/g, "");
             // console.log("modified name", modifiedName)
             await addName(whatsapp_id, modifiedName)
+        }
+    }
+
+    const clientEmail = await checkEmail(whatsapp_id)
+    console.log("client name", clientEmail)
+    if (!clientEmail) {
+        let chatHistory = stringPastMessages.join(" ")
+        const email = await findEmail(chatHistory)
+        const emailCheck = email.includes("<")
+        if (emailCheck) {
+            // console.log("FIND NAME EXTRACTED", name)
+            const modifiedEmail = name.replace(/<|>|\s/g, "");
+            console.log("modified email address is", modifiedEmail)
+            // await addName(whatsapp_id, modifiedName)
         }
     }
 
@@ -151,7 +166,8 @@ router.post('/', async (req, res) => {
         SystemMessagePromptTemplate.fromTemplate(
             `You are a chatbot from Huttons Sales & Auction in Singapore.` +
             `Your job is to answer any questions that customers have. If there is any question that you do not know, say that you do not know and refer them to contact Geri at 84430486".` +
-            `You should always try to ask for their email address so that we could send our monthly auction property listings to them.`
+            `You should always try to ask for their email address so that we could send our monthly auction property listings to them.`+
+            `All email addresses given by customers need to be properly validated.`
         ),
         new MessagesPlaceholder("chat_history"),
         HumanMessagePromptTemplate.fromTemplate("{question}"),
@@ -231,44 +247,6 @@ router.post('/', async (req, res) => {
     const response = await multiPromptChain.call({ question: `${message}` });
     await sendWhatsappMessage(whatsapp_id, response)
     res.sendStatus(200);
-
-
-    // try {
-    //     const version = process.env.WHATSAPP_VERSION
-    //     const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
-    //     const response = await multiPromptChain.call({ question: `${message}` });
-    //     console.log("response", response)
-
-    //     await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
-
-    //         "messaging_product": "whatsapp",
-    //         "recipient_type": "individual",
-    //         "to": `${whatsapp_id}`,
-    //         "type": "text",
-    //         "text": {
-    //             "preview_url": true,
-    //             "body": `${response.response ? response.response : response.text}`,
-    //         }
-    //     }, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Bearer ${process.env.WHATSAPP_BEARER_TOKEN} `
-    //         }
-    //     })
-    //     // res.send(response)
-
-    //     let data = {
-    //         // "client": `${message}`,
-    //         "bot": `${response.response ? response.response : response.text}`,
-    //         "timestamp": new Date()
-    //     }
-
-    //     await addMessageSent(whatsapp_id, data)
-    //     res.sendStatus(200);
-
-    // } catch (err) {
-    //     console.error("Error in POST /chatgpt:", err);
-    // }
 
 
 });

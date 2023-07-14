@@ -62,6 +62,26 @@ const triggerChat = async (req, res, next) => {
 
         functionTriggerTimestamp = currentTime;
 
+        // email request trigger
+        const clientEmail = await checkEmail(whatsapp_id)
+        console.log("Client Email is", clientEmail)
+        if (!clientEmail) {
+    
+            console.log('Setting up setTimeout.');
+            
+            const response = {
+                response: `Would you be interested to join our exclusive mailing list for firsthand monthly updates on bank sale and auction properties? We promise to email only up to twice a month`
+            }
+            setTimeout(async () => {
+                console.log('This runs 7.5 minutes after the route is accessed.');
+                // put your function here
+                await sendWhatsappMessage(whatsapp_id, response)
+            }, 450000); // 3600000 milliseconds = 1 hour
+    
+          
+            return;
+        }
+
     } else {
         next();
     }

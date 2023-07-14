@@ -10,6 +10,8 @@ const triggerEmailRequest = async (req, res, next) => {
     console.log("Client Email is", clientEmail)
     if (!clientEmail) {
 
+        console.log('Setting up setTimeout.');
+        
         const response = {
             response: `Would you be interested to join our exclusive mailing list for firsthand monthly updates on bank sale and auction properties? We promise to email only up to twice a month`
         }
@@ -19,6 +21,9 @@ const triggerEmailRequest = async (req, res, next) => {
             await sendWhatsappMessage(whatsapp_id, response)
         }, 450000); // 3600000 milliseconds = 1 hour
 
+
+        // ******** Need to set the trigger only once. 
+        // Need to make sure that it does trigger another send message after next()
         next();
         return;
     }

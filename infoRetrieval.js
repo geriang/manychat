@@ -45,7 +45,44 @@ const findName = async (chatHistory) => {
 
 };
 
+const findEmail = async (chatHistory) => {
+
+    // initiating the chatmodel - openai
+    const llm = new OpenAI({ temperature: 0.0, verbose: true });
+
+    const lookUpEmailTemplate = `You are tasked to extract information from a given data source. Any email address mentioned after client: can potentially be the client's email address. Are you able to identify the client's email address from the following chat history?
+    Chat History: {chat_history}
+    Observation: This is your observation on the task given:`
+
+    const lookUpEmailPromptTemplate = new PromptTemplate({
+        inputVariables: ["chat_history"],
+        template: lookUpEmailTemplate, 
+    });
+
+    const lookUpEmailchain = new LLMChain({ llm: llm, prompt: lookUpEmailPromptTemplate });
+
+    const extractEmailTemplate = `Given the observation, if you are able to identify the client's email address, please extract out the email address by wrapping it with "<" ">". For example,<mary@abc.com>. Otherwise say no email is found.
+    Observation: {observation}
+    Email: This is the email address extracted:`
+
+    const extractEmailPromptTemplate = new PromptTemplate({
+        inputVariables: ["observation"],
+        template: extractEmailTemplate, 
+    })
+
+    const extractEmailChain = new LLMChain({ llm: llm, prompt: extractEmailPromptTemplate });
+
+    const chain = new SimpleSequentialChain({
+        chains: [lookUpEmailchain, extractEmailChain],
+        verbose: true,
+    });
+
+    const result = await chain.run(chatHistory);
+
+    return result
+
+};
 // need to write find email
 
-module.exports = findName
+module.exports = findName, findEmail
 
