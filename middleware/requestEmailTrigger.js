@@ -10,13 +10,15 @@ const triggerEmailRequest = async (req, res, next) => {
     console.log("Client Email is", clientEmail)
     if (!clientEmail) {
 
-        const response = `Would you be interested to join our exclusive mailing list for firsthand monthly updates on bank sale and auction properties? We promise to email only up to twice a month`
+        const response = {
+            response: `Would you be interested to join our exclusive mailing list for firsthand monthly updates on bank sale and auction properties? We promise to email only up to twice a month`
+        }
         setTimeout(async () => {
             console.log('This runs one hour after the route is accessed.');
             // put your function here
             await sendWhatsappMessage(whatsapp_id, response)
-          }, 450000); // 3600000 milliseconds = 1 hour
-        
+        }, 450000); // 3600000 milliseconds = 1 hour
+
         next();
         return;
     }
