@@ -5,6 +5,7 @@ const { LLMChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
 const { retrieveChatHistory } = require("../database")
 const sendWhatsappMessage = require("../sendMessage")
+const { checkEmail } = require("../database")
 
 let functionTriggerTimestamp = null;
 
