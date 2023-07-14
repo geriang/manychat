@@ -22,8 +22,7 @@ const fs = require('fs');
 
 const { retrieveChatHistory, checkName, addName, checkEmail, addEmail } = require("../database")
 const sendWhatsappMessage = require("../sendMessage")
-const findName = require("../infoRetrieval")
-const findEmail = require("../infoRetrieval")
+const {findName, findEmail} = require("../infoRetrieval")
 
 router.post('/', async (req, res) => {
 

@@ -12,7 +12,7 @@ const findName = async (chatHistory) => {
     // initiating the chatmodel - openai
     const llm = new OpenAI({ temperature: 0.0, verbose: true });
 
-    const lookUpNameTemplate = `You are tasked to extract information from a given data source. Any name mentioned after client: can potentially be the client's name. Are you able to identify the client's name from the following chat history?
+    const lookUpNameTemplate = `You are tasked to extract a client's name from a given data source. Any name mentioned after client: can potentially be the client's name. Are you able to identify the client's name from the following chat history?
     Chat History: {chat_history}
     Observation: This is your observation on the task given:`
 
@@ -50,7 +50,7 @@ const findEmail = async (chatHistory) => {
     // initiating the chatmodel - openai
     const llm = new OpenAI({ temperature: 0.0, verbose: true });
 
-    const lookUpEmailTemplate = `You are tasked to extract information from a given data source. Any email address mentioned after client: can potentially be the client's email address. Are you able to identify the client's email address from the following chat history?
+    const lookUpEmailTemplate = `You are tasked to extract a client's email address from a given data source. An email address should contain "@" and "." for example, mary@abc.com. Are you able to identify the client's email address from the following chat history?
     Chat History: {chat_history}
     Observation: This is your observation on the task given:`
 
@@ -84,5 +84,5 @@ const findEmail = async (chatHistory) => {
 };
 // need to write find email
 
-module.exports = findName, findEmail
+module.exports = {findName, findEmail}
 
