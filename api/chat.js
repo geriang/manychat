@@ -192,8 +192,8 @@ router.post('/', async (req, res) => {
     // Create a default destination in case the LLM cannot decide
     const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
-            `You are a chatbot from Huttons Sales & Auction in Singapore.` +
-            `If you don't know the answer, just say that you don't know, don't try to make up an answer. Alternatively, you can get them to contact Geri at 84430486 for assistance` +
+            // `You are a chatbot from Huttons Sales & Auction in Singapore.` +
+            `Your job is to answer any questions that customers have. If you don't know the answer, just say that you don't know, don't try to make up an answer. Alternatively, you can get them to contact Geri at 84430486 for assistance.` +
             `You should always try to ask for their email address so that we could send our monthly auction property listings to them.`+
             `All email addresses given by customers need to be properly validated.` 
         ),
