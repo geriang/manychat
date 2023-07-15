@@ -1,24 +1,5 @@
-const { ChatOpenAI } = require("langchain/chat_models/openai");
-const {
-    PromptTemplate,
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-    MessagesPlaceholder,
-} = require("langchain/prompts");
-const { z } = require("zod")
-const { ConversationChain, LLMRouterChain, MultiPromptChain, ConversationalRetrievalQAChain } = require("langchain/chains");
+const { ConversationalRetrievalQAChain } = require("langchain/chains");
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
-const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
-const { RouterOutputParser } = require('langchain/output_parsers');
-const { HNSWLib } = require("langchain/vectorstores/hnswlib");
-const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
-const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
-const fs = require('fs');
-
-const { retrieveChatHistory, checkName, addName, checkEmail, addEmail } = require("../database")
-const sendWhatsappMessage = require("../sendMessage")
-const {findName, findEmail} = require("../infoRetrieval")
 
 const createDestinations = (listingVectorStore, stampdutyVectorStore, auctionScheduleVectorStore) => {
 
