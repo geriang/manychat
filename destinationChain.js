@@ -85,7 +85,12 @@ const createDestinations = (listingVectorStore, stampdutyVectorStore, auctionSch
     
     let destinations = templates.map(item => (item.name + ': ' + item.description)).join('\n');
 
-    return destinations
+    const destinationObj = {
+        destinationChains,
+        destinations
+    }
+
+    return destinationObj
 }
 
 module.exports = createDestinations
