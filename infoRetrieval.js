@@ -50,7 +50,7 @@ const findEmail = async (chatHistory) => {
     // initiating the chatmodel - openai
     const llm = new OpenAI({ temperature: 0.0, verbose: true });
 
-    const lookUpEmailTemplate = `You are tasked to extract a client's email address from a given data source. Are you able to identify the client's email address in a valid email format from the following chat history?
+    const lookUpEmailTemplate = `You are tasked to extract a client's email address from a given data source. Are you able to identify client's email address from the following chat history? The email address must be in a valid format.
     Chat History: {chat_history}
     Observation: This is your observation on the task given:`
 
