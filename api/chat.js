@@ -87,7 +87,7 @@ router.post('/', async (req, res) => {
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
     const listingText = fs.readFileSync("property.txt", "utf8");
-    const listingTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+    const listingTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 2000 });
     const listingDocs = await listingTextSplitter.createDocuments([listingText]);
     const listingVectorStore = await HNSWLib.fromDocuments(listingDocs, new OpenAIEmbeddings());
 
