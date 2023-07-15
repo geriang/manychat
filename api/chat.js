@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
+// const axios = require('axios');
 
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const {
@@ -23,6 +23,7 @@ const fs = require('fs');
 const { retrieveChatHistory, checkName, addName, checkEmail, addEmail } = require("../database")
 const sendWhatsappMessage = require("../sendMessage")
 const {findName, findEmail} = require("../infoRetrieval")
+const createDestinations = require("../destinationChain")
 
 router.post('/', async (req, res) => {
 
@@ -39,7 +40,6 @@ router.post('/', async (req, res) => {
 
     if (pastMessagesData) {
         for (let i = 0; i < pastMessagesData.length; i++) {
-            // console.log(`passMessageData[${i}]`, pastMessagesData[i].client, pastMessagesData[i].bot)
             if (pastMessagesData[i].client) {
                 let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
                 pastMessages.push(humanMessage)
@@ -87,78 +87,105 @@ router.post('/', async (req, res) => {
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
     const listingText = fs.readFileSync("property.txt", "utf8");
-    const listingTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 2000 });
+    const listingTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1500 });
     const listingDocs = await listingTextSplitter.createDocuments([listingText]);
     const listingVectorStore = await HNSWLib.fromDocuments(listingDocs, new OpenAIEmbeddings());
 
     const stampdutyText = fs.readFileSync("stampduty.txt", "utf8");
-    const stampdutyTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+    const stampdutyTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1500 });
     const stampdutyDocs = await stampdutyTextSplitter.createDocuments([stampdutyText]);
     const stampdutyVectorStore = await HNSWLib.fromDocuments(stampdutyDocs, new OpenAIEmbeddings());
 
-    let templates = [
-        {
-            name: 'property_enquiry',
-            description: 'Good for replying enquiry on a particular property ',
-            vector: listingVectorStore,
-            template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
-            Chat History:
-            {chat_history}
-            Follow Up Input: {question}
-            Your answer should follow the following format:
-            \`\`\`
-            Use the following pieces of context to answer the users question.
-            If you don't know the answer, just say that you don't know, don't try to make up an answer.
-            ----------------
-            <Relevant chat history excerpt as context here>
-            Standalone question: <Rephrased question here>
-            \`\`\`
-            Your answer:`
-        },
-        {
-            name: 'stampduty_enquiry',
-            description: 'Good for replying enquiry on Additional Buyers Stamp Duty (ABSD) payable when a buyer wants to buy a residential property in Singapore ',
-            vector: stampdutyVectorStore,
-            template: `You are a calculator good at calculating monthly loan repayment figures. Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
-            Chat History:
-            {chat_history}
-            Follow Up Input: {question}
-            Your answer should follow the following format:
-            \`\`\`
-            Use the following pieces of context to answer the users question.
-            If you don't know the answer, just say that you don't know, don't try to make up an answer.
-            ----------------
-            <Relevant chat history excerpt as context here>
-            Standalone question: <Rephrased question here>
-            \`\`\`
-            Your answer:`
-        }
-    ];
-
-    // Build an array of destination LLMChains and a list of the names with descriptions
-    let destinationChains = {};
+    const auctionScheduleText = fs.readFileSync("auctionschedule.txt", "utf8");
+    const auctionScheduleTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1500 });
+    const auctionScheduleDocs = await auctionScheduleTextSplitter.createDocuments([auctionScheduleText]);
+    const auctionScheduleVectorStore = await HNSWLib.fromDocuments(auctionScheduleDocs, new OpenAIEmbeddings());
 
 
-    for (const item of templates) {
-        let prompt = `${item.template}`
-        let chain = ConversationalRetrievalQAChain.fromLLM(
-            llm,
-            item.vector.asRetriever(),
-            {
-                memory: new BufferMemory({
-                    memoryKey: "chat_history", // Must be set to "chat_history"
-                    returnMessages: true,
-                    chatHistory: new ChatMessageHistory(pastMessages),
-                }),
-                questionGeneratorChainOptions: {
-                    template: prompt
-                }
-            }
-        );
-        destinationChains[item.name] = chain;
-    }
+    let destinations = createDestinations(listingVectorStore,stampdutyVectorStore,auctionScheduleVectorStore)
+    // let templates = [
+    //     {
+    //         name: 'property_enquiry',
+    //         description: 'Good for replying enquiry on a particular property ',
+    //         vector: listingVectorStore,
+    //         template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
+    //         Chat History:
+    //         {chat_history}
+    //         Follow Up Input: {question}
+    //         Your answer should follow the following format:
+    //         \`\`\`
+    //         Use the following pieces of context to answer the users question.
+    //         If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    //         ----------------
+    //         <Relevant chat history excerpt as context here>
+    //         Standalone question: <Rephrased question here>
+    //         \`\`\`
+    //         Your answer:`
+    //     },
+    //     {
+    //         name: 'stamp_duty_enquiry',
+    //         description: 'Good for replying enquiry on Additional Buyers Stamp Duty (ABSD) payable when a buyer wants to buy a residential property in Singapore ',
+    //         vector: stampdutyVectorStore,
+    //         template: `You are a calculator good at calculating monthly loan repayment figures. Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
+    //         Chat History:
+    //         {chat_history}
+    //         Follow Up Input: {question}
+    //         Your answer should follow the following format:
+    //         \`\`\`
+    //         Use the following pieces of context to answer the users question.
+    //         If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    //         ----------------
+    //         <Relevant chat history excerpt as context here>
+    //         Standalone question: <Rephrased question here>
+    //         \`\`\`
+    //         Your answer:`
+    //     },
+    //     {
+    //         name: 'auction_schedule_enquiry',
+    //         description: 'Good for replying enquiry on Auction Schedule, such as questions on date, time and venue of auction',
+    //         vector: auctionScheduleVectorStore,
+    //         template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
+    //         Chat History:
+    //         {chat_history}
+    //         Follow Up Input: {question}
+    //         Your answer should follow the following format:
+    //         \`\`\`
+    //         Use the following pieces of context to answer the users question.
+    //         If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    //         ----------------
+    //         <Relevant chat history excerpt as context here>
+    //         Standalone question: <Rephrased question here>
+    //         \`\`\`
+    //         Your answer:`
+    //     }
+        
 
-    let destinations = templates.map(item => (item.name + ': ' + item.description)).join('\n');
+    // ];
+
+    // // Build an array of destination LLMChains and a list of the names with descriptions
+    // let destinationChains = {};
+
+
+    // for (const item of templates) {
+    //     let prompt = `${item.template}`
+    //     let chain = ConversationalRetrievalQAChain.fromLLM(
+    //         llm,
+    //         item.vector.asRetriever(),
+    //         {
+    //             memory: new BufferMemory({
+    //                 memoryKey: "chat_history", // Must be set to "chat_history"
+    //                 returnMessages: true,
+    //                 chatHistory: new ChatMessageHistory(pastMessages),
+    //             }),
+    //             questionGeneratorChainOptions: {
+    //                 template: prompt
+    //             }
+    //         }
+    //     );
+    //     destinationChains[item.name] = chain;
+    // }
+
+    // let destinations = templates.map(item => (item.name + ': ' + item.description)).join('\n');
 
     // Create a default destination in case the LLM cannot decide
     const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
