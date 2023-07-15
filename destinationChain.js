@@ -1,7 +1,7 @@
 const { ConversationalRetrievalQAChain } = require("langchain/chains");
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 
-const createDestinations = (listingVectorStore, stampdutyVectorStore, auctionScheduleVectorStore, llm) => {
+const createDestinations = (listingVectorStore, stampdutyVectorStore, auctionScheduleVectorStore, llm, pastMessages) => {
 
     let templates = [
         {

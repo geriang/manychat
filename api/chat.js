@@ -102,7 +102,7 @@ router.post('/', async (req, res) => {
     const auctionScheduleVectorStore = await HNSWLib.fromDocuments(auctionScheduleDocs, new OpenAIEmbeddings());
 
 
-    let destinations = createDestinations(listingVectorStore,stampdutyVectorStore,auctionScheduleVectorStore, llm)
+    let destinations = createDestinations(listingVectorStore,stampdutyVectorStore,auctionScheduleVectorStore, llm, pastMessages)
     // let templates = [
     //     {
     //         name: 'property_enquiry',
