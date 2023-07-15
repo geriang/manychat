@@ -2,7 +2,10 @@ const { ConversationalRetrievalQAChain } = require("langchain/chains");
 const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
 
 const createDestinations = (listingVectorStore, stampdutyVectorStore, auctionScheduleVectorStore, llm, pastMessages) => {
-
+    
+    const now = new Date();
+    const localeString = now.toLocaleDateString('en-US', { timeZone: 'Asia/Singapore' });  // Asia/Singapore is in the GMT+8 timezone
+    
     let templates = [
         {
             name: 'property_enquiry',
@@ -44,7 +47,7 @@ const createDestinations = (listingVectorStore, stampdutyVectorStore, auctionSch
             name: 'auction_schedule_enquiry',
             description: 'Good for replying enquiry on Auction Schedule, such as questions on date, time and venue of auction',
             vector: auctionScheduleVectorStore,
-            template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
+            template: `Given today's date: ${localeString}, the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
             {chat_history}
             Follow Up Input: {question}
