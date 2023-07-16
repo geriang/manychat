@@ -76,7 +76,7 @@ router.post('/', async (req, res) => {
         const emailCheck = email.includes("<")
         if (emailCheck) {
             // console.log("FIND NAME EXTRACTED", name)
-            const modifiedEmail = email.replace(/<|>|\s/g, "");
+            const modifiedEmail = email.replace(/(?<=<)\s+|\s+(?=>)/g);
             // console.log("modified email address is", modifiedEmail)
             await addEmail(whatsapp_id, modifiedEmail)
         }
