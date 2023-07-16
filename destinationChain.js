@@ -9,7 +9,7 @@ const createDestinations = (listingVectorStore, stampdutyVectorStore, auctionSch
     let templates = [
         {
             name: 'property_enquiry',
-            description: 'Good for replying enquiry on a particular property ',
+            description: 'Good for replying enquiry on a particular property. For example enquiry on property prices and property specifications ',
             vector: listingVectorStore,
             template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
@@ -45,7 +45,7 @@ const createDestinations = (listingVectorStore, stampdutyVectorStore, auctionSch
         },
         {
             name: 'auction_schedule_enquiry',
-            description: 'Good for searching for the date and venue of auction event, such as when and where is the next auction',
+            description: 'Good for replying on the date and venue of auction event, such as when and where is the next auction',
             vector: auctionScheduleVectorStore,
             template: `Given today's date: ${localeString}, the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
             Chat History:
