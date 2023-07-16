@@ -62,7 +62,7 @@ router.post('/', async (req, res) => {
         const nameCheck = name.includes("<")
         if (nameCheck) {
             // console.log("FIND NAME EXTRACTED", name)
-            const modifiedName = name.replace(/<|>|\s/g, "");
+            const modifiedName = name.replace(/^\s*<([^>]+)>$/, '$1');
             // console.log("modified name", modifiedName)
             await addName(whatsapp_id, modifiedName)
         }
@@ -76,7 +76,7 @@ router.post('/', async (req, res) => {
         const emailCheck = email.includes("<")
         if (emailCheck) {
             // console.log("FIND NAME EXTRACTED", name)
-            const modifiedEmail = email.replace(/(?<=<)\s+|\s+(?=>)/g);
+            const modifiedEmail = email.replace(/<|>|\s/g, "");
             // console.log("modified email address is", modifiedEmail)
             await addEmail(whatsapp_id, modifiedEmail)
         }
@@ -192,7 +192,7 @@ router.post('/', async (req, res) => {
     // Create a default destination in case the LLM cannot decide
     const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
-            `You are a chat bot from Huttons Sales & Auction in Singapore.` +
+            // `You are a chat bot from Huttons Sales & Auction in Singapore.` +
             `Your job is to greet customers by their name and answer any questions that customers have. If you don't know the answer, just say that you don't know, don't try to make up an answer. Alternatively, you can get them to contact Geri at 84430486 for assistance.` +
             `You should always try to ask for their email address so that we could send our monthly auction property listings to them.`+
             `All email addresses given by customers need to be properly validated.` 
