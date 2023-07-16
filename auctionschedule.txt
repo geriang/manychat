@@ -1,18 +1,18 @@
 Event: Huttons Sales and Auction
 Venue: 3 Bishan Place, CPF Building Bishan #05-01, Singapore 579838
 Auction Schedule for 2023:
+- January 10, 2023 (completed)
+- February 15, 2023 (completed)
+- March 15, 2023 (completed)
+- April 12, 2023 (completed)
+- May 10, 2023 (completed)
+- June 14, 2023 (completed)
+- July 19, 2023 (upcoming)
+- August 16, 2023
+- September 13, 2023
+- October 18, 2023
+- November 15, 2023
+- December 6, 2023
 
-January 10, 2023 (completed)
-February 15, 2023 (completed)
-March 15, 2023 (completed)
-April 12, 2023 (completed)
-May 10, 2023 (completed)
-June 14, 2023 (completed)
-July 19, 2023 (upcoming)
-August 16, 2023
-September 13, 2023
-October 18, 2023
-November 15, 2023
-December 6, 2023
 Time: Auctions usually start at 2:30 PM.
 Note: Please be aware that the venue and dates are subject to change.
