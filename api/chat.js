@@ -85,17 +85,17 @@ router.post('/', async (req, res) => {
     // initiating the chatmodel - openai
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
-    const listingText = fs.readFileSync("property.txt", "utf8");
+    const listingText = fs.readFileSync("./docs/property.txt", "utf8");
     const listingTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1500 });
     const listingDocs = await listingTextSplitter.createDocuments([listingText]);
     const listingVectorStore = await HNSWLib.fromDocuments(listingDocs, new OpenAIEmbeddings());
 
-    const stampdutyText = fs.readFileSync("stampduty.txt", "utf8");
+    const stampdutyText = fs.readFileSync("./docs/stampduty.txt", "utf8");
     const stampdutyTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1500 });
     const stampdutyDocs = await stampdutyTextSplitter.createDocuments([stampdutyText]);
     const stampdutyVectorStore = await HNSWLib.fromDocuments(stampdutyDocs, new OpenAIEmbeddings());
 
-    const auctionScheduleText = fs.readFileSync("auctionschedule.txt", "utf8");
+    const auctionScheduleText = fs.readFileSync("./docs/auctionschedule.txt", "utf8");
     const auctionScheduleTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1500 });
     const auctionScheduleDocs = await auctionScheduleTextSplitter.createDocuments([auctionScheduleText]);
     const auctionScheduleVectorStore = await HNSWLib.fromDocuments(auctionScheduleDocs, new OpenAIEmbeddings());
