@@ -82,7 +82,6 @@ router.post('/', async (req, res) => {
         }
     }
 
-
     // initiating the chatmodel - openai
     const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
@@ -101,99 +100,15 @@ router.post('/', async (req, res) => {
     const auctionScheduleDocs = await auctionScheduleTextSplitter.createDocuments([auctionScheduleText]);
     const auctionScheduleVectorStore = await HNSWLib.fromDocuments(auctionScheduleDocs, new OpenAIEmbeddings());
 
-
     let destinationObj = createDestinations(listingVectorStore,stampdutyVectorStore,auctionScheduleVectorStore, llm, pastMessages)
     let destinations = destinationObj.destinations
     let destinationChains = destinationObj.destinationChains
-    // let templates = [
-    //     {
-    //         name: 'property_enquiry',
-    //         description: 'Good for replying enquiry on a particular property ',
-    //         vector: listingVectorStore,
-    //         template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
-    //         Chat History:
-    //         {chat_history}
-    //         Follow Up Input: {question}
-    //         Your answer should follow the following format:
-    //         \`\`\`
-    //         Use the following pieces of context to answer the users question.
-    //         If you don't know the answer, just say that you don't know, don't try to make up an answer.
-    //         ----------------
-    //         <Relevant chat history excerpt as context here>
-    //         Standalone question: <Rephrased question here>
-    //         \`\`\`
-    //         Your answer:`
-    //     },
-    //     {
-    //         name: 'stamp_duty_enquiry',
-    //         description: 'Good for replying enquiry on Additional Buyers Stamp Duty (ABSD) payable when a buyer wants to buy a residential property in Singapore ',
-    //         vector: stampdutyVectorStore,
-    //         template: `You are a calculator good at calculating monthly loan repayment figures. Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
-    //         Chat History:
-    //         {chat_history}
-    //         Follow Up Input: {question}
-    //         Your answer should follow the following format:
-    //         \`\`\`
-    //         Use the following pieces of context to answer the users question.
-    //         If you don't know the answer, just say that you don't know, don't try to make up an answer.
-    //         ----------------
-    //         <Relevant chat history excerpt as context here>
-    //         Standalone question: <Rephrased question here>
-    //         \`\`\`
-    //         Your answer:`
-    //     },
-    //     {
-    //         name: 'auction_schedule_enquiry',
-    //         description: 'Good for replying enquiry on Auction Schedule, such as questions on date, time and venue of auction',
-    //         vector: auctionScheduleVectorStore,
-    //         template: `Given the following conversation and a follow up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow up question to be a standalone question.
-    //         Chat History:
-    //         {chat_history}
-    //         Follow Up Input: {question}
-    //         Your answer should follow the following format:
-    //         \`\`\`
-    //         Use the following pieces of context to answer the users question.
-    //         If you don't know the answer, just say that you don't know, don't try to make up an answer.
-    //         ----------------
-    //         <Relevant chat history excerpt as context here>
-    //         Standalone question: <Rephrased question here>
-    //         \`\`\`
-    //         Your answer:`
-    //     }
-        
-
-    // ];
-
-    // // Build an array of destination LLMChains and a list of the names with descriptions
-    // let destinationChains = {};
-
-
-    // for (const item of templates) {
-    //     let prompt = `${item.template}`
-    //     let chain = ConversationalRetrievalQAChain.fromLLM(
-    //         llm,
-    //         item.vector.asRetriever(),
-    //         {
-    //             memory: new BufferMemory({
-    //                 memoryKey: "chat_history", // Must be set to "chat_history"
-    //                 returnMessages: true,
-    //                 chatHistory: new ChatMessageHistory(pastMessages),
-    //             }),
-    //             questionGeneratorChainOptions: {
-    //                 template: prompt
-    //             }
-    //         }
-    //     );
-    //     destinationChains[item.name] = chain;
-    // }
-
-    // let destinations = templates.map(item => (item.name + ': ' + item.description)).join('\n');
 
     // Create a default destination in case the LLM cannot decide
     const defaultPrompt = ChatPromptTemplate.fromPromptMessages([
         SystemMessagePromptTemplate.fromTemplate(
-            // `You are a chat bot from Huttons Sales & Auction in Singapore.` +
-            `Your job is to greet customers by their name and answer questions that customers have truthfully. If you don't know the answer, just say that you don't know, don't try to make up an answer. Alternatively, you can get them to contact Geri at 84430486 for assistance.` +
+            `You are a chat bot from Huttons Sales & Auction in Singapore.` +
+            `Your job is to greet customers by their name and answer questions that customers have accurately. If you don't know the answer, just say that you don't know, don't try to make up an answer. Alternatively, you can get them to contact Geri at 84430486 for assistance.` +
             `You should always try to ask for their email address so that we could send our monthly auction property listings to them.`+
             `All email addresses given by customers need to be properly validated.` 
         ),
@@ -275,7 +190,6 @@ router.post('/', async (req, res) => {
     const response = await multiPromptChain.call({ question: `${message}` });
     await sendWhatsappMessage(whatsapp_id, response)
     res.sendStatus(200);
-
 
 });
 
