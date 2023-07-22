@@ -51,7 +51,7 @@ const triggerChat = async (req, res, next) => {
         });
 
         const prompt =
-            PromptTemplate.fromTemplate(`The following is a past conversation between a client and you. Your task is to greet client by name. If the name is not found, greet and ask for the client's name politely.
+            PromptTemplate.fromTemplate(`The following is a past conversation between a client and you. Your task is to greet client by name: {name}. If the name is not found, greet and ask for the client's name politely.
 
           Current conversation:
           {chat_history}
@@ -59,7 +59,7 @@ const triggerChat = async (req, res, next) => {
 
         const chain = new LLMChain({ llm: llm, prompt, memory });
 
-        const response = await chain.call({ input: `My name is ${name}. Greet me by my name` });
+        const response = await chain.call({ name: `My name is ${name}.` });
         await sendWhatsappMessage(whatsapp_id, response)
         res.sendStatus(200);
 
