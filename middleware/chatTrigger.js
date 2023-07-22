@@ -51,9 +51,9 @@ const triggerChat = async (req, res, next) => {
         });
 
         const prompt =
-            PromptTemplate.fromTemplate(`The following is a conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found just greet and ask for the name politely.
+            PromptTemplate.fromTemplate(`The following is a conversation between a human and an AI. Your task is to greet the human by name. If the name is not found, greet and ask for the human's name politely.
 
-          Human's name: ${name}
+          Name of human you must greet: ${name}
           Current conversation:
           {chat_history}
           AI:`);
