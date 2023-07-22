@@ -53,14 +53,13 @@ const triggerChat = async (req, res, next) => {
         const prompt =
             PromptTemplate.fromTemplate(`The following is a conversation between a human and an AI. Your task is to greet the human by name. If the name is not found, greet and ask for the human's name politely.
 
-          Name of human you must greet: ${name}
           Current conversation:
           {chat_history}
           AI:`);
 
         const chain = new LLMChain({ llm: llm, prompt, memory });
 
-        const response = await chain.call({ input: `Greet me by my name.` });
+        const response = await chain.call({ input: `My name is ${name}.` });
         await sendWhatsappMessage(whatsapp_id, response)
         res.sendStatus(200);
 
