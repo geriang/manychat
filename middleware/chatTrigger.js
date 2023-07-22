@@ -17,7 +17,7 @@ const triggerChat = async (req, res, next) => {
     if (!functionTriggerTimestamp || currentTime - functionTriggerTimestamp >= sixHoursInMilliseconds) {
         // Trigger the function here
         console.log("The first session chat function is triggered!");
-        // let message = req.body.message
+        let message = req.body.message
         let whatsapp_id = req.body.whatsapp_id
 
         const pastMessagesData = await retrieveChatHistory(whatsapp_id)
@@ -51,7 +51,7 @@ const triggerChat = async (req, res, next) => {
         });
 
         const prompt =
-            PromptTemplate.fromTemplate(`The following is a conversation between a human and an AI. Your task is to greet the human by name. If the name is not found, greet and ask for the human's name politely.
+            PromptTemplate.fromTemplate(`The following is a past conversation between a client and you. Your task is to greet client by name. If the name is not found, greet and ask for the client's name politely.
 
           Current conversation:
           {chat_history}
@@ -59,7 +59,7 @@ const triggerChat = async (req, res, next) => {
 
         const chain = new LLMChain({ llm: llm, prompt, memory });
 
-        const response = await chain.call({ input: `My name is ${name}.` });
+        const response = await chain.call({ input: `My name is ${name}. Greet me by my name` });
         await sendWhatsappMessage(whatsapp_id, response)
         res.sendStatus(200);
 
