@@ -5,7 +5,7 @@ const { LLMChain } = require("langchain/chains");
 const { PromptTemplate } = require("langchain/prompts");
 const { retrieveChatHistory } = require("../database")
 const sendWhatsappMessage = require("../sendMessage")
-const { checkEmail } = require("../database")
+const { checkEmail, checkName } = require("../database")
 
 let functionTriggerTimestamp = null;
 
@@ -40,6 +40,8 @@ const triggerChat = async (req, res, next) => {
             }
         }
 
+        const name = await checkName(whatsapp_id)
+
         // initiating the chatmodel - openai
         const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
 
@@ -49,8 +51,9 @@ const triggerChat = async (req, res, next) => {
         });
 
         const prompt =
-            PromptTemplate.fromTemplate(`The following is a conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found just greet and ask for the name politely."
-        
+            PromptTemplate.fromTemplate(`The following is a conversation between a human and an AI. Your task is to identify the name of the human and greet the human by name. If the name is not found just greet and ask for the name politely.
+
+          Human's name: ${name}
           Current conversation:
           {chat_history}
           AI:`);
