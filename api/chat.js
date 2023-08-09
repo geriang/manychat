@@ -83,7 +83,7 @@ router.post('/', async (req, res) => {
     }
 
     // initiating the chatmodel - openai
-    const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
+    const llm = new ChatOpenAI({ modelName: "gpt-4", temperature: 0.0, verbose: true });
 
     const listingText = fs.readFileSync("./docs/property.txt", "utf8");
     const listingTextSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1500 });
