@@ -6,7 +6,7 @@ const sendWhatsappMessage = async (whatsapp_id, response) => {
 
     try {
         const version = process.env.WHATSAPP_VERSION
-        const phoneNumberID = process.env.WHATSAPP_PHONE_NUMBER_ID
+        const phoneNumberID = process.env.WHATSAPP_TEST_PHONE_NUMBER_ID
 
         await axios.post(`https://graph.facebook.com/${version}/${phoneNumberID}/messages`, {
 

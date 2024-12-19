@@ -43,7 +43,7 @@ const triggerChat = async (req, res, next) => {
         const name = await checkName(whatsapp_id)
 
         // initiating the chatmodel - openai
-        const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo-0613", temperature: 0.0, verbose: true });
+        const llm = new ChatOpenAI({ modelName: process.env.GPT_MODEL_VERSION, temperature: 0.0, verbose: true });
 
         // const memory = new BufferMemory({
         //     memoryKey: "chat_history",
