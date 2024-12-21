@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-const openai = new OpenAI({
-    apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
-  })
-
+const { OpenAI } = require('openai'); 
 
 const fs = require('fs');
 
@@ -13,6 +9,10 @@ const sendWhatsappMessage = require("../sendMessage")
 const {findName, findEmail} = require("../infoRetrieval")
 const createDestinations = require("../destinationChain");
 const { default: OpenAI } = require('openai/index.mjs');
+
+const openai = new OpenAI({
+    apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+  })
 
 router.post('/', async (req, res) => {
 
