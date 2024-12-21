@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const { retrieveChatHistory, checkName, addName, checkEmail, addEmail } = require("../database")
 const sendWhatsappMessage = require("../sendMessage")
-const {findName, findEmail} = require("../infoRetrieval")
+// const {findName, findEmail} = require("../infoRetrieval")
 
 const openai = new OpenAI({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
