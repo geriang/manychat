@@ -1,11 +1,9 @@
-const { ChatOpenAI } = require("langchain/chat_models/openai");
-const { BufferMemory, ChatMessageHistory } = require("langchain/memory");
-const { HumanChatMessage, AIChatMessage } = require("langchain/schema");
-const { LLMChain } = require("langchain/chains");
-const { PromptTemplate } = require("langchain/prompts");
 const { retrieveChatHistory } = require("../database")
 const sendWhatsappMessage = require("../sendMessage")
 const { checkEmail, checkName } = require("../database")
+const { OpenAI } = require('openai'); 
+
+const openai = new OpenAI();
 
 let functionTriggerTimestamp = null;
 
@@ -43,22 +41,50 @@ const triggerChat = async (req, res, next) => {
         const name = await checkName(whatsapp_id)
 
         // initiating the chatmodel - openai
+
+
         const llm = new ChatOpenAI({ modelName: process.env.GPT_MODEL_VERSION, temperature: 0.0, verbose: true });
 
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+              {
+                "role": "system",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": `
+                      You are a helpful chatbot from Tuition Center ABC that answers to customer's enquiry. 
+                    `
+                  }
+                ]
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": `Your task is to greet your client by name. If the name is not found, greet and ask for the client's name politely.
+                      The client's name is ${name}`
+                  }
+                ]
+              }
+            ]
+          });
         // const memory = new BufferMemory({
         //     memoryKey: "chat_history",
         //     chatHistory: new ChatMessageHistory(pastMessages),
         // });
 
-        const prompt =
-            PromptTemplate.fromTemplate(`You are a chatbot from Huttons Sales & Auction. Your task is to greet your client by name. If the name is not found, greet and ask for the client's name politely.
-            The client's name is {name}
+        // const prompt =
+        //     PromptTemplate.fromTemplate(`You are a chatbot from Huttons Sales & Auction. Your task is to greet your client by name. If the name is not found, greet and ask for the client's name politely.
+        //     The client's name is {name}
 
-          AI:`);
+        //   AI:`);
 
-        const chain = new LLMChain({ llm: llm, prompt });
+        // const chain = new LLMChain({ llm: llm, prompt });
 
-        const response = await chain.call({ name: `${name}` });
+        // const response = await chain.call({ name: `${name}` });
         await sendWhatsappMessage(whatsapp_id, response)
         res.sendStatus(200);
 
