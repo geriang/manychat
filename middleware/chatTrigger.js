@@ -43,7 +43,7 @@ const triggerChat = async (req, res, next) => {
         // initiating the chatmodel - openai
 
 
-        const llm = new ChatOpenAI({ modelName: process.env.GPT_MODEL_VERSION, temperature: 0.0, verbose: true });
+        // const llm = new ChatOpenAI({ modelName: process.env.GPT_MODEL_VERSION, temperature: 0.0, verbose: true });
 
         const response = await openai.chat.completions.create({
             model: "gpt-4o",
