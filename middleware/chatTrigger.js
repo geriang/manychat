@@ -85,7 +85,7 @@ const triggerChat = async (req, res, next) => {
         // const chain = new LLMChain({ llm: llm, prompt });
 
         // const response = await chain.call({ name: `${name}` });
-        const response_llm = response.choices[0].message
+        const response_llm = response.choices[0].message.content
         console.log(`response from llm: ${response_llm}`)
         await sendWhatsappMessage(whatsapp_id, response_llm)
         res.sendStatus(200);
