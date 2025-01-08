@@ -85,34 +85,35 @@ const triggerChat = async (req, res, next) => {
         // const chain = new LLMChain({ llm: llm, prompt });
 
         // const response = await chain.call({ name: `${name}` });
+        console.log(`response from llm: ${response}`)
         await sendWhatsappMessage(whatsapp_id, response)
         res.sendStatus(200);
 
         functionTriggerTimestamp = currentTime;
 
         // email request trigger
-        const clientEmail = await checkEmail(whatsapp_id)
-        console.log("Client Email is", clientEmail)
-        if (!clientEmail) {
+        // const clientEmail = await checkEmail(whatsapp_id)
+        // console.log("Client Email is", clientEmail)
+        // if (!clientEmail) {
 
-            console.log('Setting up setTimeout.');
+        //     console.log('Setting up setTimeout.');
 
-            const response = {
-                response: `Would you be interested to join our exclusive mailing list for firsthand monthly updates on bank sale and auction properties? We promise to email only up to twice a month`
-            }
-            setTimeout(async () => {
-                console.log('This runs 7.5 minutes after the route is accessed.');
-                // put your function here
-                const clientEmail = await checkEmail(whatsapp_id)
-                if (!clientEmail) {
-                    await sendWhatsappMessage(whatsapp_id, response)
-                }
+        //     const response = {
+        //         response: `Would you be interested to join our exclusive mailing list for firsthand monthly updates on bank sale and auction properties? We promise to email only up to twice a month`
+        //     }
+        //     setTimeout(async () => {
+        //         console.log('This runs 7.5 minutes after the route is accessed.');
+        //         // put your function here
+        //         const clientEmail = await checkEmail(whatsapp_id)
+        //         if (!clientEmail) {
+        //             await sendWhatsappMessage(whatsapp_id, response)
+        //         }
 
-            }, 450000); // 3600000 milliseconds = 1 hour
+        //     }, 450000); // 3600000 milliseconds = 1 hour
 
 
-            return;
-        }
+        //     return;
+        // }
 
     } else {
         next();
