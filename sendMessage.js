@@ -16,7 +16,7 @@ const sendWhatsappMessage = async (whatsapp_id, response) => {
             "type": "text",
             "text": {
                 "preview_url": true,
-                "body": `${response.response ? response.response : response.text}`,
+                "body": `${response}`,
             }
         }, {
             headers: {
