@@ -25,21 +25,23 @@ router.post('/', async (req, res) => {
     let pastMessages = []
     let stringPastMessages = []
 
-    // if (pastMessagesData) {
-    //     for (let i = 0; i < pastMessagesData.length; i++) {
-    //         if (pastMessagesData[i].client) {
-    //             let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-    //             pastMessages.push(humanMessage)
-    //             stringPastMessages.push(`client: ${pastMessagesData[i].client}`)
-    //         };
+    if (pastMessagesData) {
+        for (let i = 0; i < pastMessagesData.length; i++) {
+            if (pastMessagesData[i].client) {
+                let humanMessage = `client: ${(pastMessagesData[i].client).toString()}`;
+                pastMessages.push(humanMessage)
+                stringPastMessages.push(`client: ${pastMessagesData[i].client}`)
+            };
 
-    //         if (pastMessagesData[i].bot) {
-    //             let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-    //             pastMessages.push(aiMessage)
-    //             stringPastMessages.push(`bot: ${pastMessagesData[i].bot}`)
-    //         };
-    //     }
-    // }
+            if (pastMessagesData[i].bot) {
+                let aiMessage = `ai: ${(pastMessagesData[i].bot).toString()}`;
+                pastMessages.push(aiMessage)
+                stringPastMessages.push(`ai: ${pastMessagesData[i].bot}`)
+            };
+        }
+    }
+    console.log("chat.js pastMessages", pastMessages)
+    console.log("chat.js stringPastMessages", stringPastMessages)
 
     const clientName = await checkName(whatsapp_id)
     console.log("client name", clientName)
@@ -55,19 +57,19 @@ router.post('/', async (req, res) => {
         }
     }
 
-    const clientEmail = await checkEmail(whatsapp_id)
-    console.log("client name", clientEmail)
-    if (!clientEmail) {
-        let chatHistory = stringPastMessages.join(" ")
-        const email = await findEmail(chatHistory)
-        const emailCheck = email.includes("<")
-        if (emailCheck) {
-            // console.log("FIND NAME EXTRACTED", name)
-            const modifiedEmail = email.replace(/<|>|\s/g, "");
-            // console.log("modified email address is", modifiedEmail)
-            await addEmail(whatsapp_id, modifiedEmail)
-        }
-    }
+    // const clientEmail = await checkEmail(whatsapp_id)
+    // console.log("client name", clientEmail)
+    // if (!clientEmail) {
+    //     let chatHistory = stringPastMessages.join(" ")
+    //     const email = await findEmail(chatHistory)
+    //     const emailCheck = email.includes("<")
+    //     if (emailCheck) {
+    //         // console.log("FIND NAME EXTRACTED", name)
+    //         const modifiedEmail = email.replace(/<|>|\s/g, "");
+    //         // console.log("modified email address is", modifiedEmail)
+    //         await addEmail(whatsapp_id, modifiedEmail)
+    //     }
+    // }
 
     
     const response = await openai.chat.completions.create({

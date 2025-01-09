@@ -18,32 +18,29 @@ const triggerChat = async (req, res, next) => {
         // let message = req.body.message
         let whatsapp_id = req.body.whatsapp_id
 
-        // const pastMessagesData = await retrieveChatHistory(whatsapp_id)
-        // // console.log("past messages data received by chatgpt", pastMessagesData)
-        // let pastMessages = []
+        const pastMessagesData = await retrieveChatHistory(whatsapp_id)
+        // console.log("past messages data received by chatgpt", pastMessagesData)
+        let pastMessages = []
 
-        // if (pastMessagesData) {
+        if (pastMessagesData) {
 
-        //     for (let i = 0; i < pastMessagesData.length; i++) {
-        //         // console.log(`passMessageData[${i}]`, pastMessagesData[i].client, pastMessagesData[i].bot )
-        //         if (pastMessagesData[i].client) {
-        //             let humanMessage = new HumanChatMessage((pastMessagesData[i].client).toString());
-        //             pastMessages.push(humanMessage)
-        //         };
+            for (let i = 0; i < pastMessagesData.length; i++) {
+                // console.log(`passMessageData[${i}]`, pastMessagesData[i].client, pastMessagesData[i].bot )
+                if (pastMessagesData[i].client) {
+                    let humanMessage = `client: ${(pastMessagesData[i].client).toString()}`;
+                    pastMessages.push(humanMessage)
+                };
 
-        //         if (pastMessagesData[i].bot) {
-        //             let aiMessage = new AIChatMessage((pastMessagesData[i].bot).toString());
-        //             pastMessages.push(aiMessage)
-        //         };
-        //     }
-        // }
+                if (pastMessagesData[i].bot) {
+                    let aiMessage = `ai: ${(pastMessagesData[i].bot).toString()}`;
+                    pastMessages.push(aiMessage)
+                };
+            }
+        }
 
         const name = await checkName(whatsapp_id)
 
         // initiating the chatmodel - openai
-
-
-        // const llm = new ChatOpenAI({ modelName: process.env.GPT_MODEL_VERSION, temperature: 0.0, verbose: true });
 
         const response = await openai.chat.completions.create({
             model: "gpt-4o",
@@ -65,7 +62,7 @@ const triggerChat = async (req, res, next) => {
                   {
                     "type": "text",
                     "text": `Your task is to greet your client by name. If the name is not found, greet and ask for the client's name politely.
-                      The client's name is ${name}`
+                      The client's name retrieved from the database is, ${name}`
                   }
                 ]
               }
