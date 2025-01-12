@@ -1,49 +1,83 @@
-
-// const { OpenAI } = require('openai'); 
+const { OpenAI } = require('openai'); 
 
 // const { SimpleSequentialChain, LLMChain } = require("langchain/chains");
 // const { PromptTemplate } = require("langchain/prompts");
-// // const { checkName } = require("./database")
+// const { checkName } = require("./database")
 
-// const findName = async (chatHistory) => {
+const openai = new OpenAI();
 
-//     // initiating the chatmodel - openai
-//     const openai = new OpenAI({
-//         apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
-//       })
+// The following function attempts to extract out the chat history and asks an agent to indentify the name of the user.
+const findName = async (chatHistory) => {
 
-//     const lookUpNameTemplate = `You are tasked to extract a client's name from a given data source. Any name mentioned after client: can potentially be the client's name. Are you able to identify the client's name from the following chat history?
-//     Chat History: {chat_history}
-//     Observation: This is your observation on the task given:`
 
-//     const lookUpNamePromptTemplate = new PromptTemplate({
-//         inputVariables: ["chat_history"],
-//         template: lookUpNameTemplate, 
-//     });
+    const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "text",
+                "text": `You are tasked to extract a client's name from a given data source. Any name mentioned after client: can potentially be the client's name. Are you able to identify the client's name from the following chat history?
+                         Chat History: ${chatHistory}`
+                        
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": `Base on the Chat History obtained, determine the name of the client and extract out the name by wrapping the name with "<" ">". For example,<Mary>. Otherwise say no name is found.
+                         Respond according to the following format-
+                         Name: This is the name extracted: <John>`
+              }
+            ]
+          }
+        ]
+      });
 
-//     const lookUpNamechain = new LLMChain({ llm: llm, prompt: lookUpNamePromptTemplate });
+    
+    const llm_reponse = response.choices[0].message.content
 
-//     const extractNameTemplate = `Given the observation, if you are able to identify the client's name, please extract out the name by wrapping the name with "<" ">". For example,<Mary>. Otherwise say no name is found.
-//     Observation: {observation}
-//     Name: This is the name extracted:`
+    console.log("infoRetreval.js, llm_reponse:", llm_reponse)
 
-//     const extractNamePromptTemplate = new PromptTemplate({
-//         inputVariables: ["observation"],
-//         template: extractNameTemplate, 
-//     })
+    return llm_reponse
+    // // initiating the chatmodel - openai
+    // const openai = new OpenAI({
+    //     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+    //   })
 
-//     const extractNameChain = new LLMChain({ llm: llm, prompt: extractNamePromptTemplate });
+    // const lookUpNameTemplate = `You are tasked to extract a client's name from a given data source. Any name mentioned after client: can potentially be the client's name. Are you able to identify the client's name from the following chat history?
+    // Chat History: {chat_history}
+    // Observation: This is your observation on the task given:`
 
-//     const chain = new SimpleSequentialChain({
-//         chains: [lookUpNamechain, extractNameChain],
-//         verbose: true,
-//     });
+    // const lookUpNamePromptTemplate = new PromptTemplate({
+    //     inputVariables: ["chat_history"],
+    //     template: lookUpNameTemplate, 
+    // });
 
-//     const result = await chain.run(chatHistory);
+    // const lookUpNamechain = new LLMChain({ llm: llm, prompt: lookUpNamePromptTemplate });
 
-//     return result
+    // const extractNameTemplate = `Given the observation, if you are able to identify the client's name, please extract out the name by wrapping the name with "<" ">". For example,<Mary>. Otherwise say no name is found.
+    // Observation: {observation}
+    // Name: This is the name extracted:`
 
-// };
+    // const extractNamePromptTemplate = new PromptTemplate({
+    //     inputVariables: ["observation"],
+    //     template: extractNameTemplate, 
+    // })
+
+    // const extractNameChain = new LLMChain({ llm: llm, prompt: extractNamePromptTemplate });
+
+    // const chain = new SimpleSequentialChain({
+    //     chains: [lookUpNamechain, extractNameChain],
+    //     verbose: true,
+    // });
+
+    // const result = await chain.run(chatHistory);
+};
 
 // const findEmail = async (chatHistory) => {
 
@@ -84,4 +118,4 @@
 // };
 // // need to write find email
 
-// module.exports = {findName, findEmail}
+module.exports = {findName}
