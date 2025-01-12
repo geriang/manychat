@@ -26,7 +26,7 @@ const sendWhatsappMessage = async (whatsapp_id, response) => {
         })
 
         let data = {
-            "bot": `${response.response ? response.response : response.text}`,
+            "bot": `${response}`,
             "timestamp": new Date()
         }
         await addMessageSent(whatsapp_id, data)

@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
         const nameCheck = name.includes("<")
         if (nameCheck) {
             console.log("FIND NAME EXTRACTED", name)
-            const modifiedName = name.replace(/^\s*<([^>]+)>$/, '$1');
+            const modifiedName = name.replace(/.*<([^>]+)>.*/, '$1');
             console.log("modified name", modifiedName)
             await addName(whatsapp_id, modifiedName)
         }
