@@ -23,30 +23,30 @@ router.post('/', async (req, res) => {
     const pastMessagesData = await retrieveChatHistory(whatsapp_id)
     console.log("past messages data received by chatgpt", pastMessagesData)
     let pastMessages = []
-    let stringPastMessages = []
+    // let stringPastMessages = []
 
     if (pastMessagesData) {
         for (let i = 0; i < pastMessagesData.length; i++) {
             if (pastMessagesData[i].client) {
                 let humanMessage = `client: ${(pastMessagesData[i].client).toString()}`;
                 pastMessages.push(humanMessage)
-                stringPastMessages.push(`client: ${pastMessagesData[i].client}`)
+                // stringPastMessages.push(`client: ${pastMessagesData[i].client}`)
             };
 
             if (pastMessagesData[i].bot) {
                 let aiMessage = `ai: ${(pastMessagesData[i].bot).toString()}`;
                 pastMessages.push(aiMessage)
-                stringPastMessages.push(`ai: ${pastMessagesData[i].bot}`)
+                // stringPastMessages.push(`ai: ${pastMessagesData[i].bot}`)
             };
         }
     }
     console.log("chat.js pastMessages", pastMessages)
-    console.log("chat.js stringPastMessages", stringPastMessages)
+    // console.log("chat.js stringPastMessages", stringPastMessages)
 
     const clientName = await checkName(whatsapp_id)
     console.log("client name", clientName)
     if (!clientName) {
-        let chatHistory = stringPastMessages.join(" ")
+        let chatHistory = pastMessages.join(" ")
         const name = await findName(chatHistory)
         const nameCheck = name.includes("<")
         if (nameCheck) {
@@ -75,12 +75,29 @@ router.post('/', async (req, res) => {
     const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
-            { role: "developer", content: "You are a helpful assistant." },
-            {
-                role: "user",
-                content: `${message}`,
+            { "role": "developer", 
+              "content": [
+                {
+                    "type": "text",
+                    "text": `You are a helpful chatbot from Tuition Center ABC that answers to customer's enquiry. Refer to the following chat history and use it to answer the client's question when possible
+                            Chat History: ${pastMessages}` 
+                }
+              ]
             },
-        ],
+            {
+                "role": "user",
+                "content": [
+                    {     
+                     "type": "text",
+                     "text": `This is your chat history with the client where your past reponses were recorded as "ai":
+                              ${pastMessages}
+                              This is client's current message: ${message}
+                              Please respond accordinly.`
+                              
+                    }
+                ]
+            }
+        ]
     });
 
     const llm_reply = response.choices[0].message.content
