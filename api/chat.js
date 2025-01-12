@@ -83,9 +83,11 @@ router.post('/', async (req, res) => {
         ],
     });
 
-    console.log(completion.choices[0].message);
+    const llm_reply = response.choices[0].message.content
 
-    await sendWhatsappMessage(whatsapp_id, response)
+    console.log(llm_reply);
+
+    await sendWhatsappMessage(whatsapp_id, llm_reply)
     res.sendStatus(200);
 
 });
