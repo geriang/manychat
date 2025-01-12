@@ -50,9 +50,9 @@ router.post('/', async (req, res) => {
         const name = await findName(chatHistory)
         const nameCheck = name.includes("<")
         if (nameCheck) {
-            // console.log("FIND NAME EXTRACTED", name)
+            console.log("FIND NAME EXTRACTED", name)
             const modifiedName = name.replace(/^\s*<([^>]+)>$/, '$1');
-            // console.log("modified name", modifiedName)
+            console.log("modified name", modifiedName)
             await addName(whatsapp_id, modifiedName)
         }
     }
